@@ -20,12 +20,7 @@ public class Messages {
         }
     }
 
-    public static void addMessage(String key, String value){
-        messages.put(key, value);
-    }
-
     public static void init(ConfigurationNode config){
-//        messages = (HashMap<String, String>)config.getValue();
-        System.out.println("messages = " + config.getValue());
+        messages = (HashMap<String, String>)config.getValue();
     }
 }
