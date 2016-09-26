@@ -40,8 +40,8 @@ public abstract class Use extends Active{
     }
 
     protected boolean isItemPresentInHand(Player player) {
-        return itemStack.equals(player.getItemInHand(MAIN_HAND).orElse(null))
-                || itemStack.equals(player.getItemInHand(OFF_HAND).orElse(null));
+        return itemStack.equalTo(player.getItemInHand(MAIN_HAND).orElse(null))
+                || itemStack.equalTo(player.getItemInHand(OFF_HAND).orElse(null));
     }
 
 }

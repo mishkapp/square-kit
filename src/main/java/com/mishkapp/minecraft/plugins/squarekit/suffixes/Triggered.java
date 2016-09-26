@@ -18,14 +18,14 @@ public abstract class Triggered extends Passive {
     @Override
     protected boolean isItemPresent(Player player) {
         if(ItemUtils.isArmor(itemStack)){
-            return itemStack.equals(player.getHelmet().orElse(null)) ||
-                    itemStack.equals(player.getChestplate().orElse(null)) ||
-                    itemStack.equals(player.getLeggings().orElse(null)) ||
-                    itemStack.equals(player.getBoots().orElse(null));
+            return itemStack.equalTo(player.getHelmet().orElse(null)) ||
+                    itemStack.equalTo(player.getChestplate().orElse(null)) ||
+                    itemStack.equalTo(player.getLeggings().orElse(null)) ||
+                    itemStack.equalTo(player.getBoots().orElse(null));
 
         } else {
-            return itemStack.equals(player.getItemInHand(MAIN_HAND).orElse(null))
-                    || itemStack.equals(player.getItemInHand(OFF_HAND).orElse(null));
+            return itemStack.equalTo(player.getItemInHand(MAIN_HAND).orElse(null))
+                    || itemStack.equalTo(player.getItemInHand(OFF_HAND).orElse(null));
         }
     }
 }
