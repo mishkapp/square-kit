@@ -1,6 +1,7 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.ticked;
 
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
+import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.Utils;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
@@ -9,10 +10,10 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.text.format.TextColors;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by mishkapp on 29.06.2016.
@@ -40,10 +41,10 @@ public class ItemEffect extends Ticked {
                 for (PotionEffect e : effects) {
                     if(e.getType().equals(effect.getType()) && (e.getAmplifier() <= effect.getAmplifier())){
                         effects.remove(e);
-                        effects.add(effect);
                         break;
                     }
                 }
+                effects.add(effect);
             } else {
                 for (PotionEffect e : effects) {
                     if(e.getType().equals(effect.getType()) && (e.getAmplifier() <= effect.getAmplifier())){
@@ -58,6 +59,7 @@ public class ItemEffect extends Ticked {
 
     @Override
     public String getLoreEntry() {
-        return TextColors.YELLOW + "" + effect.getType().getName() + " " + (effect.getAmplifier() - 1) + TextColors.WHITE + " при ношении";
+        return Messages.getMessage("suffix-item-effect")
+                .replace("%EFFECT%", effect.getType().getTranslation().get(Locale.ENGLISH) + " " + (effect.getAmplifier() + 1));
     }
 }

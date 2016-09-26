@@ -82,8 +82,6 @@ public class Utils {
 
     public static PotionEffect getEffectByLevel(Integer level, int time) {
 
-        PotionEffect effect;
-
         int effectId = level/10;
         int effectLevel = level % 10;
         PotionEffectType effectType;
@@ -202,7 +200,10 @@ public class Utils {
             }
         }
 
-        effect = PotionEffect.of(effectType, effectLevel, time);
-        return effect;
+        return PotionEffect.builder()
+                .potionType(effectType)
+                .amplifier(effectLevel)
+                .duration(time)
+                .build();
     }
 }
