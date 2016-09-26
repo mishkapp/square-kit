@@ -1,6 +1,7 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.stat;
 
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
+import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Stat;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
@@ -45,6 +46,6 @@ public class HealthIncrease extends Stat {
 
     @Override
     public String getLoreEntry() {
-        return "&4" + health + " &fк HP";
+        return Messages.getMessage("suffix-health-increase").replace("%HEALTH%", Integer.toString((int)health));
     }
 }
