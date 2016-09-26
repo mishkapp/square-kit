@@ -189,6 +189,10 @@ public class KitPlayer {
         return currentMana;
     }
 
+    public void setCurrentMana(double currentMana) {
+        this.currentMana = currentMana;
+    }
+
     public void addPhysicalDamage(double damage){
         addPureDamage(damage * (1.0 - getPhysicalResist()));
     }

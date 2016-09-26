@@ -140,6 +140,10 @@ public class SquareKit{
         return configDir;
     }
 
+    public PluginContainer getPlugin() {
+        return plugin;
+    }
+
     private void saveConf(){
         if(Files.exists(getConfigDir())){
             try {
