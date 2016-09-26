@@ -1,0 +1,35 @@
+package com.mishkapp.minecraft.plugins.squarekit.suffixes;
+
+import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
+import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.item.inventory.ItemStack;
+
+/**
+ * Created by mishkapp on 27.04.2016.
+ */
+public abstract class Suffix {
+
+    protected ItemStack itemStack;
+    protected int level;
+
+    public Suffix(ItemStack itemStack, int level) {
+        this.itemStack = itemStack;
+        this.level = level;
+    }
+
+    protected abstract boolean isItemPresent(Player player);
+
+    public abstract void register(KitPlayer player);
+    public abstract void handle(KitEvent event, KitPlayer kitPlayer);
+
+    public ItemStack getItemStack() {
+        return itemStack;
+    }
+
+    public void setItemStack(ItemStack itemStack) {
+        this.itemStack = itemStack;
+    }
+
+    public abstract String getLoreEntry();
+}
