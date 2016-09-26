@@ -5,6 +5,11 @@ import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.entity.HealthData;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.scoreboard.Scoreboard;
+import org.spongepowered.api.scoreboard.critieria.Criteria;
+import org.spongepowered.api.scoreboard.displayslot.DisplaySlots;
+import org.spongepowered.api.scoreboard.objective.Objective;
+import org.spongepowered.api.text.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +24,8 @@ public class KitPlayer {
     private List<Suffix> suffixes = new ArrayList<>();
 
     private final double ATTACK_DAMAGE = 1.0;
-    private final float MANA_REGEN = 0.0f;
+    private final double MAX_MANA = 10.0;
+    private final double MANA_REGEN = 0.0;
     private final double HEALTH_REGEN = 0.10;
     private final float SPEED = 1.0f;
     private final double COOLDOWN_RATE = 1.0;
@@ -28,7 +34,8 @@ public class KitPlayer {
     private final double MAX_HEALTH = 100.0;
 
     private HashMap<Suffix, Double> attackDamageAdds = new HashMap<>();
-    private HashMap<Suffix, Float> manaRegenAdds = new HashMap<>();
+    private HashMap<Suffix, Double> maxManaAds = new HashMap<>();
+    private HashMap<Suffix, Double> manaRegenAdds = new HashMap<>();
     private HashMap<Suffix, Double> healthRegenAdds = new HashMap<>();
     private HashMap<Suffix, Float> speedAdds = new HashMap<>();
     private HashMap<Suffix, Double> physicalResistAdds = new HashMap<>();
@@ -36,8 +43,11 @@ public class KitPlayer {
     private HashMap<Suffix, Double> cooldownRateAdds = new HashMap<>();
     private HashMap<Suffix, Double> maxHealthAdds = new HashMap<>();
 
+    private double currentMana = 0.0;
 
     private Player player;
+    private Scoreboard scoreboard;
+    private Objective statsObj;
 
     //Stats
     private Stats base = new Stats();
@@ -45,6 +55,22 @@ public class KitPlayer {
 
     public KitPlayer(Player player) {
         this.player = player;
+
+        scoreboard = Scoreboard.builder()
+                .build();
+
+        statsObj = Objective.builder()
+                .name("stats")
+                .criterion(Criteria.DUMMY)
+                .displayName(Text.of("Stats"))
+                .build();
+        scoreboard.addObjective(statsObj);
+        updateScoreboard();
+        player.setScoreboard(scoreboard);
+    }
+
+    private Text getManaScoreText() {
+        return Text.of("Мана: " + Formatters.hundredth.format(currentMana) + "/" + Formatters.hundredth.format(getMaxMana()));
     }
 
     public UUID getUuid(){
@@ -75,9 +101,17 @@ public class KitPlayer {
         return result;
     }
 
-    public float getManaRegen() {
-        float result = MANA_REGEN;
-        for(float i : manaRegenAdds.values()){
+    public double getMaxMana(){
+        double result = MAX_MANA;
+        for(double i : maxManaAds.values()){
+            result += i;
+        }
+        return result;
+    }
+
+    public double getManaRegen() {
+        double result = MANA_REGEN;
+        for(double i : manaRegenAdds.values()){
             result += i;
         }
         return result;
@@ -119,7 +153,11 @@ public class KitPlayer {
         return attackDamageAdds;
     }
 
-    public HashMap<Suffix, Float> getManaRegenAdds() {
+    public HashMap<Suffix, Double> getMaxManaAds() {
+        return maxManaAds;
+    }
+
+    public HashMap<Suffix, Double> getManaRegenAdds() {
         return manaRegenAdds;
     }
 
@@ -147,6 +185,10 @@ public class KitPlayer {
         return maxHealthAdds;
     }
 
+    public double getCurrentMana() {
+        return currentMana;
+    }
+
     public void addPhysicalDamage(double damage){
         addPureDamage(damage * (1.0 - getPhysicalResist()));
     }
@@ -165,6 +207,7 @@ public class KitPlayer {
     public void tick(){
         if(getMcPlayer().isOnline()){
             tickRegens();
+            updateScoreboard();
         } else {
             SquareKit.getPlayersRegistry().unregisterPlayer(getMcPlayer());
         }
@@ -189,8 +232,17 @@ public class KitPlayer {
         maxHealthAdds = new HashMap<>();
     }
 
+    private void updateScoreboard(){
+        for(Text t : statsObj.getScores().keySet()){
+            statsObj.removeScore(t);
+        }
+
+        statsObj.getOrCreateScore(getManaScoreText()).setScore(0);
+
+        scoreboard.updateDisplaySlot(statsObj, DisplaySlots.SIDEBAR);
+    }
+
     public void updateStats(){
-//        player.getHealthData().maxHealth().set(getMaxHealth());
         player.offer(Keys.MAX_HEALTH, getMaxHealth());
         player.offer(Keys.WALKING_SPEED, (getSpeed() * 0.2));
         player.offer(Keys.ATTACK_DAMAGE, getAttackDamage());
@@ -209,13 +261,18 @@ public class KitPlayer {
         regenMana();
     }
 
-    //TODO: xp system differs from bukkit, need to think about it
     private void regenMana(){
-//        float mana = player.getExp();
-//        if(mana == 1.0f) {return;}
-//        float newMana = mana + getManaRegen();
-//        if(newMana > 1.0f) {newMana = 1.0f;}
-//        player.setExp(newMana);
+        double maxMana = getMaxMana();
+        double manaDelta = maxMana - currentMana;
+        double manaRegen = getManaRegen();
+        if(maxMana == currentMana){
+            return;
+        }
+        if(manaDelta < manaRegen){
+            currentMana += manaDelta;
+        } else {
+            currentMana += manaRegen;
+        }
     }
 
     private void regenHealth(){
