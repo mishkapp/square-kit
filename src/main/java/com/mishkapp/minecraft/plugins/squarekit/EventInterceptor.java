@@ -8,8 +8,10 @@ import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
+import org.spongepowered.api.event.filter.type.Exclude;
 import org.spongepowered.api.event.impl.AbstractAttackEntityEvent;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
+import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
 
@@ -146,8 +148,14 @@ public class EventInterceptor {
 
 
     @Listener
-    public void onPickup(ChangeInventoryEvent event, @First Player player){
-        //TODO: It updates VERY often, should rework it
+    @Exclude({ChangeInventoryEvent.Held.class, ChangeInventoryEvent.Transfer.class})
+    public void onInventoryChange(ChangeInventoryEvent event, @First Player player){
+        requestUpdate(player.getUniqueId());
+    }
+
+    //TODO: not working
+    @Listener
+    public void onDrop(DropItemEvent event, @First Player player){
         requestUpdate(player.getUniqueId());
     }
 
