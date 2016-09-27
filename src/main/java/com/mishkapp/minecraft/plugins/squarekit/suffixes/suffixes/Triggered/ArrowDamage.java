@@ -1,4 +1,4 @@
-package com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.Triggered;
+package com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.triggered;
 
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
