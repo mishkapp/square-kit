@@ -1,15 +1,14 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.ticked;
 
+import com.mishkapp.minecraft.plugins.squarekit.Formatters;
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
+import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Ticked;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.text.format.TextColors;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.HashMap;
 
 /**
@@ -52,7 +51,6 @@ public class ItemPhysicalResist extends Ticked {
 
     @Override
     public String getLoreEntry() {
-        NumberFormat formatter = new DecimalFormat("#0.00");
-        return TextColors.RED + "" + formatter.format(resist * 100) + "%" + TextColors.WHITE + " к физическому сопротивлению";
+        return Messages.getMessage("suffix-item-physical-resist").replace("%P_RES%", Formatters.tenth.format(resist * 100));
     }
 }
