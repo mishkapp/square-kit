@@ -51,6 +51,6 @@ public class ItemPhysicalResist extends Ticked {
 
     @Override
     public String getLoreEntry() {
-        return Messages.getMessage("suffix-item-physical-resist").replace("%P_RES%", Formatters.tenth.format(resist * 100));
+        return Messages.getMessage("suffix-item-physical-resist").replace("%P_RES%", Formatters.round.format(resist * 100));
     }
 }
