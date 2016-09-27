@@ -7,6 +7,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.type.CarriedInventory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -101,7 +102,9 @@ public class Kit {
         player.setChestplate(chestplate);
         player.setLeggings(leggings);
         player.setBoots(boots);
-        items.forEach(inventory::offer);
+        List<ItemStack> other = new ArrayList<>();
+        items.forEach(o -> other.add(o.copy()));
+        other.forEach(inventory::offer);
         SquareKit.getPlayersRegistry().updatePlayer(player.getUniqueId());
     }
 }
