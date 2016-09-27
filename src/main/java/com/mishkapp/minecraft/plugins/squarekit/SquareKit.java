@@ -36,7 +36,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * Created by mishkapp on 27.04.2016.
@@ -178,23 +183,59 @@ public class SquareKit{
     }
 
     private void registerKits(){
-        System.out.println(1);
-        KitRegistry registry = getKitRegistry();
+        try{
+            KitRegistry registry = getKitRegistry();
 
-        File[] kitFiles = configDir.resolve("kits").toFile().listFiles((dir, name) -> name.endsWith(".conf"));
+            Path kitsPath = getConfigDir().resolve("kits");
 
-        for(File f : kitFiles){
-            String kitId = f.getName().substring(0, f.getName().length() - 5);
-            System.out.println(kitId);
-            try{
-                ConfigurationNode cn = HoconConfigurationLoader.builder()
-                        .setPath(f.toPath())
-                        .build()
-                        .load(ConfigurationOptions.defaults().setObjectMapperFactory(factory).setSerializers(serializers));
-                registry.registerKit(kitId, cn.getValue(TypeToken.of(Kit.class)));
-            } catch (IOException | ObjectMappingException e){
-                e.printStackTrace();
+            Asset asset = game.getAssetManager().getAsset(plugin, "kits").orElse(null);
+
+            String zipPath = asset.getUrl().toString()
+                    .replace("jar:file:", "")
+                    .replaceFirst("!/.*", "");
+
+            String pathInZip = asset.getUrl().toString()
+                    .replaceFirst(".*jar!/", "");
+
+            ZipFile zipFile = new ZipFile(zipPath);
+
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+
+            Set<String> kitNames = new HashSet<>();
+
+            while(entries.hasMoreElements()){
+                String fileName = entries.nextElement().getName();
+                if(fileName.startsWith(pathInZip) && fileName.endsWith("conf")){
+                    kitNames.add(fileName.replaceFirst(".*/", ""));
+                }
             }
+
+            Files.createDirectories(kitsPath);
+
+            for(String s : kitNames){
+                if(!Files.exists(kitsPath.resolve(s))){
+                    Asset a = game.getAssetManager().getAsset(plugin, "kits/" + s).orElse(null);
+                    a.copyToDirectory(kitsPath);
+                }
+            }
+
+            File[] kitFiles = configDir.resolve("kits").toFile().listFiles((dir, name) -> name.endsWith(".conf"));
+
+            for(File f : kitFiles){
+                String kitId = f.getName().substring(0, f.getName().length() - 5);
+                System.out.println(kitId);
+                try{
+                    ConfigurationNode cn = HoconConfigurationLoader.builder()
+                            .setPath(f.toPath())
+                            .build()
+                            .load(ConfigurationOptions.defaults().setObjectMapperFactory(factory).setSerializers(serializers));
+                    registry.registerKit(kitId, cn.getValue(TypeToken.of(Kit.class)));
+                } catch (ObjectMappingException e){
+                    e.printStackTrace();
+                }
+            }
+        } catch (IOException e){
+            e.printStackTrace();
         }
     }
 
