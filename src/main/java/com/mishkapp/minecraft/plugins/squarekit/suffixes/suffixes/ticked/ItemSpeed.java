@@ -1,15 +1,14 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.ticked;
 
+import com.mishkapp.minecraft.plugins.squarekit.Formatters;
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
+import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Ticked;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.text.format.TextColors;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.HashMap;
 
 /**
@@ -39,13 +38,9 @@ public class ItemSpeed extends Ticked {
         if(event instanceof SuffixTickEvent){
             HashMap<Suffix, Float> adds = kitPlayer.getSpeedAdds();
             if(isItemPresent(kitPlayer.getMcPlayer())){
-//                if(!adds.containsKey(this)){
                     adds.put(this, speed);
-//                }
             } else {
-//                if(!adds.containsKey(this)){
                     adds.put(this, 0.0f);
-//                }
             }
         }
         kitPlayer.updateStats();
@@ -53,7 +48,6 @@ public class ItemSpeed extends Ticked {
 
     @Override
     public String getLoreEntry() {
-        NumberFormat formatter = new DecimalFormat("#0.00");
-        return TextColors.YELLOW + "" + formatter.format(speed * 100) + "%" + TextColors.WHITE + " к скорости";
+        return Messages.getMessage("suffix-item-speed").replace("%SPEED%", Formatters.round.format(speed * 100));
     }
 }
