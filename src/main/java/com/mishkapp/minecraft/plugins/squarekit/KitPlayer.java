@@ -69,11 +69,7 @@ public class KitPlayer {
         player.setScoreboard(scoreboard);
     }
 
-    private Text getManaScoreText() {
-        return Text.of("Мана: " + Formatters.hundredth.format(currentMana) + "/" + Formatters.hundredth.format(getMaxMana()));
-    }
-
-    public UUID getUuid(){
+   public UUID getUuid(){
         return player.getUniqueId();
     }
 
@@ -241,10 +237,25 @@ public class KitPlayer {
             statsObj.removeScore(t);
         }
 
+        statsObj.getOrCreateScore(getPhysicalResistText()).setScore(2);
+        statsObj.getOrCreateScore(getMagicResistText()).setScore(1);
         statsObj.getOrCreateScore(getManaScoreText()).setScore(0);
 
         scoreboard.updateDisplaySlot(statsObj, DisplaySlots.SIDEBAR);
     }
+
+    private Text getManaScoreText() {
+        return Text.of("Мана: " + Formatters.round.format(currentMana) + "/" + Formatters.round.format(getMaxMana()));
+    }
+
+    private Text getPhysicalResistText(){
+        return Text.of("P.Res: " + Formatters.tenth.format(getPhysicalResist() * 100) + "%");
+    }
+
+    private Text getMagicResistText(){
+        return Text.of("M.Res: " + Formatters.tenth.format(getMagicResist() * 100) + "%");
+    }
+
 
     public void updateStats(){
         player.offer(Keys.MAX_HEALTH, getMaxHealth());
