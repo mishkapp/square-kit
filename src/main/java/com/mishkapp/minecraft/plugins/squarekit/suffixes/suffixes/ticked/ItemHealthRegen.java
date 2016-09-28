@@ -1,15 +1,14 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.ticked;
 
+import com.mishkapp.minecraft.plugins.squarekit.Formatters;
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
+import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Ticked;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.text.format.TextColors;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.HashMap;
 
 /**
@@ -53,8 +52,7 @@ public class ItemHealthRegen extends Ticked {
 
     @Override
     public String getLoreEntry() {
-        NumberFormat formatter = new DecimalFormat("#0.0");
-        return TextColors.DARK_RED + "+" + formatter.format(healthRegen * 4) + TextColors.WHITE + " HP/сек";
+        return Messages.getMessage("suffix-health-regen").replace("%REGEN%", Formatters.tenth.format(healthRegen * 4));
     }
 
 }
