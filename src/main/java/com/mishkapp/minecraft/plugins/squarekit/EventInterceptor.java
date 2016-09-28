@@ -167,13 +167,14 @@ public class EventInterceptor {
     }
 
     @Listener
-    public void onLogin(ClientConnectionEvent.Join event){
-            SquareKit.getPlayersRegistry().registerPlayer(event.getTargetEntity());
+    public void onLogin(ClientConnectionEvent.Join event, @First Player player){
+            SquareKit.getPlayersRegistry().registerPlayer(player);
+        requestUpdate(player.getUniqueId());
     }
 
     @Listener
-    public void onLogout(ClientConnectionEvent.Disconnect event){
-        SquareKit.getPlayersRegistry().unregisterPlayer(event.getTargetEntity());
+    public void onLogout(ClientConnectionEvent.Disconnect event, @First Player player){
+        SquareKit.getPlayersRegistry().unregisterPlayer(player);
     }
 
     @Listener
