@@ -18,16 +18,16 @@ public abstract class Ticked extends Passive {
     @Override
     protected boolean isItemPresent(Player player) {
         if(ItemUtils.isArmor(itemStack)){
-            return itemStack.equalTo(player.getHelmet().orElse(null)) ||
-                    itemStack.equalTo(player.getChestplate().orElse(null)) ||
-                    itemStack.equalTo(player.getLeggings().orElse(null)) ||
-                    itemStack.equalTo(player.getBoots().orElse(null));
+            return isSimilar(itemStack, player.getHelmet().orElse(null)) ||
+                    isSimilar(itemStack, player.getChestplate().orElse(null)) ||
+                    isSimilar(itemStack, player.getLeggings().orElse(null)) ||
+                    isSimilar(itemStack, player.getBoots().orElse(null));
 
         } else if(ItemUtils.isWeapon(itemStack)) {
-            return itemStack.equalTo(player.getItemInHand(MAIN_HAND).orElse(null));
+            return isSimilar(itemStack, player.getItemInHand(MAIN_HAND).orElse(null));
         } else {
-            return itemStack.equalTo(player.getItemInHand(MAIN_HAND).orElse(null))
-                    || itemStack.equalTo(player.getItemInHand(OFF_HAND).orElse(null));
+            return isSimilar(itemStack, player.getItemInHand(MAIN_HAND).orElse(null))
+                    || isSimilar(itemStack, player.getItemInHand(OFF_HAND).orElse(null));
         }
     }
 }
