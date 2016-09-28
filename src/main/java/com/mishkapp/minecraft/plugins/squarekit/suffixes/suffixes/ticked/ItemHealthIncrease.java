@@ -28,27 +28,30 @@ public class ItemHealthIncrease extends Ticked {
     }
 
     @Override
-    public void register(KitPlayer player) {}
+    public void register(KitPlayer player) {
+        player.getMaxHealthAdds().put(this, 0.0);
+    }
 
     @Override
     public void handle(KitEvent event, KitPlayer kitPlayer) {
         if(event instanceof SuffixTickEvent){
             HashMap<Suffix, Double> adds = kitPlayer.getMaxHealthAdds();
+            double addition;
             if(isItemPresent(kitPlayer.getMcPlayer())){
-                if(!adds.containsKey(this)){
-                    adds.put(this, health);
-                }
+                addition = health;
             } else {
-                if(!adds.containsKey(this)){
-                    adds.put(this, 0.0);
-                }
+                addition = 0.0;
+            }
+            double lastValue = adds.get(this);
+            if(lastValue != addition){
+                adds.put(this, addition);
+                kitPlayer.updateStats();
             }
         }
-        kitPlayer.updateStats();
     }
 
     @Override
     public String getLoreEntry() {
-        return Messages.getMessage("suffix-health-increase").replace("%HEALTH%", Formatters.round.format(health));
+        return Messages.getMessage("suffix-item-health-increase").replace("%HEALTH%", Formatters.round.format(health));
     }
 }

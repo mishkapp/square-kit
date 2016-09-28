@@ -21,7 +21,7 @@ import java.util.UUID;
  */
 public class KitPlayer {
 
-    private List<Suffix> suffixes = new ArrayList<>();
+    private List<? extends Suffix> suffixes = new ArrayList<>();
 
     private final double ATTACK_DAMAGE = 1.0;
     private final double MAX_MANA = 10.0;
@@ -267,7 +267,7 @@ public class KitPlayer {
         suffixes.forEach(s -> s.handle(event, this));
     }
 
-    public List<Suffix> getSuffixes() {
+    public List<? extends Suffix> getSuffixes() {
         return suffixes;
     }
 
