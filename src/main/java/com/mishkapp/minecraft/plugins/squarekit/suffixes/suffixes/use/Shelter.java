@@ -1,8 +1,6 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.use;
 
-import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
-import com.mishkapp.minecraft.plugins.squarekit.SpongeUtils;
-import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
+import com.mishkapp.minecraft.plugins.squarekit.*;
 import com.mishkapp.minecraft.plugins.squarekit.events.ItemUsedEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
@@ -10,8 +8,6 @@ import com.mishkapp.minecraft.plugins.squarekit.suffixes.Use;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -46,19 +42,12 @@ public class Shelter extends Use {
             if(!isItemPresentInHand(player)){
                 return;
             }
-            //TODO: MANA
-//            float currentMana = player.getExp();
-//            if(currentMana < manaCost){
-//                kitPlayer.getMcPlayer().sendMessage(Messages.getMessage("nomana"));
-//                return;
-//            }
-//            if(!isCooldowned(kitPlayer)){
-//                return;
-//            }
-//
-//            lastUse = System.currentTimeMillis();
-//
-//            player.setExp(currentMana - (float)manaCost);
+
+            double currentMana = kitPlayer.getCurrentMana();
+            if(currentMana < manaCost){
+                return;
+            }
+            kitPlayer.setCurrentMana(currentMana - manaCost);
 
             HashMap<Suffix, Double> dmgAdds = kitPlayer.getAttackDamageAdds();
             HashMap<Suffix, Double> pResAdds = kitPlayer.getPhysicalResistAdds();
@@ -93,8 +82,8 @@ public class Shelter extends Use {
 
     @Override
     public String getLoreEntry() {
-        NumberFormat formatter = new DecimalFormat("#0.00");
-        return "Скорлупа: При использовании повышает \nPR на 80% и понижает ATK до 3 на 5с. §9" + formatter.format(manaCost)
-                + "MP §7" + formatter.format(cooldown/1000.0) + "c." ;
+        return Messages.getMessage("suffix-shelter")
+                .replace("%MANACOST%", Formatters.round.format(manaCost))
+                .replace("%COOLDOWN%", Formatters.round.format(cooldown/1000));
     }
 }
