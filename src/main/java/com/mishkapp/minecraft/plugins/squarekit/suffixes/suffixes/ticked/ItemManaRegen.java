@@ -45,6 +45,6 @@ public class ItemManaRegen extends Ticked {
 
     @Override
     public String getLoreEntry() {
-        return Messages.getMessage("suffix-item-mana-regen").replace("%MANA_REGEN%", Formatters.thousandth.format(manaRegen));
+        return Messages.getMessage("suffix-item-mana-regen").replace("%MANA_REGEN%", Formatters.thousandth.format(manaRegen * 4));
     }
 }
