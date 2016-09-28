@@ -3,6 +3,8 @@ package com.mishkapp.minecraft.plugins.squarekit;
 
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.type.CarriedInventory;
@@ -97,7 +99,9 @@ public class Kit {
 
     public void applyToPlayer(Player player){
         CarriedInventory inventory = player.getInventory();
+        KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player.getUniqueId());
         inventory.clear();
+        player.offer(Keys.POTION_EFFECTS, new ArrayList<>());
         player.setHelmet(helmet);
         player.setChestplate(chestplate);
         player.setLeggings(leggings);
@@ -106,5 +110,12 @@ public class Kit {
         items.forEach(o -> other.add(o.copy()));
         other.forEach(inventory::offer);
         SquareKit.getPlayersRegistry().updatePlayer(player.getUniqueId());
+
+        Sponge.getScheduler().createTaskBuilder().
+                delayTicks(6).
+                execute(() -> {
+                    player.offer(Keys.HEALTH, kitPlayer.getMaxHealth());
+                }).
+                submit(SquareKit.getInstance());
     }
 }
