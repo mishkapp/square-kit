@@ -69,7 +69,7 @@ public class KitPlayer {
         player.setScoreboard(scoreboard);
     }
 
-   public UUID getUuid(){
+    public UUID getUuid(){
         return player.getUniqueId();
     }
 
