@@ -88,6 +88,12 @@ public class SquareKit{
     private void initMessages(){
         Path messagesPath = getConfigDir().resolve("messages.conf");
 
+        try {
+            Files.createDirectories(getConfigDir());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         if(!messagesPath.toFile().exists()){
             Asset asset = game.getAssetManager().getAsset(plugin, "messages.conf").orElse(null);
             try {
