@@ -1,12 +1,13 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.ticked;
 
+import com.mishkapp.minecraft.plugins.squarekit.Formatters;
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
+import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Ticked;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.text.format.TextColors;
 
 import java.util.HashMap;
 
@@ -48,6 +49,6 @@ public class ItemHealthIncrease extends Ticked {
 
     @Override
     public String getLoreEntry() {
-        return TextColors.RED + "" + health + TextColors.WHITE + " к HP при ношении";
+        return Messages.getMessage("suffix-health-increase").replace("%HEALTH%", Formatters.round.format(health));
     }
 }
