@@ -51,7 +51,7 @@ public class ItemHealthRegen extends Ticked {
 
     @Override
     public String getLoreEntry() {
-        return Messages.getMessage("suffix-health-regen").replace("%REGEN%", Formatters.tenth.format(healthRegen * 4));
+        return Messages.getMessage("suffix-item-health-regen").replace("%REGEN%", Formatters.tenth.format(healthRegen * 4));
     }
 
 }

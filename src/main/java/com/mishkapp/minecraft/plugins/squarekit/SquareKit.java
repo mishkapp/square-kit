@@ -7,6 +7,8 @@ import com.mishkapp.minecraft.plugins.squarekit.commands.LoreCommand;
 import com.mishkapp.minecraft.plugins.squarekit.serializers.ItemStackSerializer;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.stat.Effect;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.stat.HealthIncrease;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.stat.HealthRegen;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.stat.ManaIncrease;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.ticked.*;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.toggle.HideShadow;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.use.Hook;
@@ -181,6 +183,8 @@ public class SquareKit{
         registry.registerSuffix(11, Hook.class);
         registry.registerSuffix(12, HideShadow.class);
         registry.registerSuffix(13, Effect.class);
+        registry.registerSuffix(14, ManaIncrease.class);
+        registry.registerSuffix(15, HealthRegen.class);
 //        registry.registerSuffix(12, ItemArrowRegen.class);
 //        registry.registerSuffix(13, ArrowEffect.class);
 //        registry.registerSuffix(14, ArrowDamage.class);

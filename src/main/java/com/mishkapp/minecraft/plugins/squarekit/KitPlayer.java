@@ -230,6 +230,7 @@ public class KitPlayer {
         magicResistAdds = new HashMap<>();
         cooldownRateAdds = new HashMap<>();
         maxHealthAdds = new HashMap<>();
+        maxManaAds = new HashMap<>();
     }
 
     private void updateScoreboard(){
