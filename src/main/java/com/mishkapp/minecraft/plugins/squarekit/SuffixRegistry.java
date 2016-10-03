@@ -23,6 +23,10 @@ public class SuffixRegistry {
         }
     }
 
+    public void registerSuffix(String id, Class<? extends Suffix> s){
+        registerSuffix(Utils.getBase64Value(id), s);
+    }
+
     public Class<? extends Suffix> getSuffix(int id){
         return suffixes.get(id);
     }

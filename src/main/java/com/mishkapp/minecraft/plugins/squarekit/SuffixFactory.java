@@ -34,13 +34,13 @@ public class SuffixFactory {
         List<Suffix> result = new ArrayList<>();
 
         while(true){
-            if(itemCode.length() < 4){
+            if(itemCode.length() < 3){
                 break;
             }
             int id = Utils.getBase64Value(itemCode.substring(0, 2));
             itemCode = itemCode.substring(2);
-            int level = Utils.getBase64Value(itemCode.substring(0, 2));
-            itemCode = itemCode.substring(2);
+            int level = Utils.getBase64Value(itemCode.substring(0, 1));
+            itemCode = itemCode.substring(1);
 
             Suffix suffix = Utils.instantiateSuffix(SuffixRegistry.getInstance().getSuffix(id), player, i, level);
             if(suffix == null){

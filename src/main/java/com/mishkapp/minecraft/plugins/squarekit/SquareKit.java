@@ -5,15 +5,13 @@ import com.google.inject.Inject;
 import com.mishkapp.minecraft.plugins.squarekit.commands.KitCommand;
 import com.mishkapp.minecraft.plugins.squarekit.commands.LoreCommand;
 import com.mishkapp.minecraft.plugins.squarekit.serializers.ItemStackSerializer;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.stat.Effect;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.stat.HealthIncrease;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.stat.HealthRegen;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.stat.ManaIncrease;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.ticked.*;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.toggle.HideShadow;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.use.Hook;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.use.Shelter;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.use.Thunderbolt;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.active.HideShadow;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.attack.ShadowCloud;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.Invisibility;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.HoldingInvisibility;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.HoldingNightVision;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.*;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.holding.*;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -169,25 +167,28 @@ public class SquareKit{
 
     private void registerSuffixes(){
         SuffixRegistry registry = getSuffixRegistry();
+        registry.registerSuffix("AA", HealthRegen.class);
+        registry.registerSuffix("AC", MaxHealth.class);
+        registry.registerSuffix("BA", ManaRegen.class);
+        registry.registerSuffix("BC", MaxMana.class);
 
-        registry.registerSuffix(1, ItemManaRegen.class);
-        registry.registerSuffix(2, Thunderbolt.class);
-        registry.registerSuffix(3, ItemHealthIncrease.class);
-        registry.registerSuffix(4, ItemPhysicalResist.class);
-        registry.registerSuffix(5, ItemSpeed.class);
-        registry.registerSuffix(6, ItemEffect.class);
-        registry.registerSuffix(7, ItemDamage.class);
-        registry.registerSuffix(8, HealthIncrease.class);
-        registry.registerSuffix(9, ItemHealthRegen.class);
-        registry.registerSuffix(10, Shelter.class);
-        registry.registerSuffix(11, Hook.class);
-        registry.registerSuffix(12, HideShadow.class);
-        registry.registerSuffix(13, Effect.class);
-        registry.registerSuffix(14, ManaIncrease.class);
-        registry.registerSuffix(15, HealthRegen.class);
-//        registry.registerSuffix(12, ItemArrowRegen.class);
-//        registry.registerSuffix(13, ArrowEffect.class);
-//        registry.registerSuffix(14, ArrowDamage.class);
+        registry.registerSuffix("Aa", HoldingHealthRegen.class);
+        registry.registerSuffix("Ac", HoldingMaxHealth.class);
+        registry.registerSuffix("Ba", HoldingManaRegen.class);
+        registry.registerSuffix("Bc", HoldingMaxMana.class);
+
+        registry.registerSuffix("CB", MagicResistance.class);
+
+        registry.registerSuffix("EA", Speed.class);
+        registry.registerSuffix("Ea", HoldingSpeed.class);
+
+        registry.registerSuffix("aN", Invisibility.class);
+        registry.registerSuffix("bN", HoldingInvisibility.class);
+        registry.registerSuffix("bP", HoldingNightVision.class);
+
+        registry.registerSuffix("1A", HideShadow.class);
+        registry.registerSuffix("1B", ShadowCloud.class);
+
     }
 
     private void registerListeners(){

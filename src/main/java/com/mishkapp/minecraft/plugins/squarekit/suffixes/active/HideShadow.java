@@ -1,4 +1,4 @@
-package com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.toggle;
+package com.mishkapp.minecraft.plugins.squarekit.suffixes.active;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.mishkapp.minecraft.plugins.squarekit.Formatters;
@@ -7,7 +7,7 @@ import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.ItemUsedEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.Toggle;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.item.EnchantmentData;
 import org.spongepowered.api.effect.particle.ParticleEffect;
@@ -22,7 +22,7 @@ import java.util.Random;
 /**
  * Created by mishkapp on 03.10.2016.
  */
-public class HideShadow extends Toggle {
+public class HideShadow extends Suffix {
     private boolean isActive = false;
     private double activationCost = 5;
     private double manaCost = 0.5;
@@ -40,21 +40,14 @@ public class HideShadow extends Toggle {
     }
 
     @Override
-    protected boolean isItemPresent() {
-        return false;
-    }
-
-    @Override
-    public void register() {
-
-    }
+    public void register() {}
 
     @Override
     public void handle(KitEvent event) {
         Player player = kitPlayer.getMcPlayer();
 
         if(event instanceof ItemUsedEvent) {
-            if(!isItemPresentInHand()){
+            if(!isItemInHand()){
                 return;
             }
 
@@ -73,7 +66,7 @@ public class HideShadow extends Toggle {
         if(event instanceof SuffixTickEvent){
             if(!isActive){
                 for(int i = 0; i < 4; i++){
-                    player.spawnParticles(
+                    player.getWorld().spawnParticles(
                             effect,
                             player.getLocation().getPosition().add(rnd.nextGaussian()/4, rnd.nextGaussian()/4, rnd.nextGaussian()/4),
                             25);
@@ -118,7 +111,7 @@ public class HideShadow extends Toggle {
 
     @Override
     public String getLoreEntry() {
-        return Messages.getMessage("suffix-hide-shadow")
+        return Messages.getMessage("hide-shadow-suffix")
                 .replace("%ACTIVATION_COST%", Formatters.round.format(activationCost))
                 .replace("%MANA_COST%", Formatters.tenth.format(manaCost * 4));
     }

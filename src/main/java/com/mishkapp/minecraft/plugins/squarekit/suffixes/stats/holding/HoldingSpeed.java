@@ -1,4 +1,4 @@
-package com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.ticked;
+package com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.holding;
 
 import com.mishkapp.minecraft.plugins.squarekit.Formatters;
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
@@ -6,41 +6,38 @@ import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.Ticked;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.HashMap;
 
 /**
- * Created by mishkapp on 29.06.2016.
+ * Created by mishkapp on 03.10.2016.
  */
-public class ItemSpeed extends Ticked {
-
+public class HoldingSpeed extends Suffix {
     private float speed;
 
-    public ItemSpeed(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
+    public HoldingSpeed(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
         super(kitPlayer, itemStack, level);
-        if(level > 2047){
-            speed = (float) (-1 * (level - 2047) * (100.0/2048.0));
+        if(level > 32){
+            speed = (float) (-1 * (level - 31) * (100.0/32));
         } else {
-            speed = (float) ((100.0/2047.0) * level);
+            speed = (float) ((100.0/31) * level);
         }
 
         speed /= 100;
     }
 
     @Override
-    public void register() {
-    }
+    public void register() {}
 
     @Override
     public void handle(KitEvent event) {
         if(event instanceof SuffixTickEvent){
             HashMap<Suffix, Float> adds = kitPlayer.getSpeedAdds();
-            if(isItemPresent()){
-                    adds.put(this, speed);
+            if(isItemHolding()){
+                adds.put(this, speed);
             } else {
-                    adds.put(this, 0.0f);
+                adds.put(this, 0.0f);
             }
         }
         kitPlayer.updateStats();
@@ -48,6 +45,6 @@ public class ItemSpeed extends Ticked {
 
     @Override
     public String getLoreEntry() {
-        return Messages.getMessage("suffix-item-speed").replace("%SPEED%", Formatters.round.format(speed * 100));
+        return Messages.getMessage("holding-speed-suffix").replace("%SPEED%", Formatters.round.format(speed * 100));
     }
 }

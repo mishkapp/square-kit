@@ -24,7 +24,7 @@ public class KitPlayer {
     private List<? extends Suffix> suffixes = new ArrayList<>();
 
     private final double ATTACK_DAMAGE = 1.0;
-    private final double MAX_MANA = 10.0;
+    private final double MAX_MANA = 100.0;
     private final double MANA_REGEN = 0.0;
     private final double HEALTH_REGEN = 0.10;
     private final float SPEED = 1.0f;

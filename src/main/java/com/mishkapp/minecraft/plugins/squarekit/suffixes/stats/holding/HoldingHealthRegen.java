@@ -1,4 +1,4 @@
-package com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.ticked;
+package com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.holding;
 
 import com.mishkapp.minecraft.plugins.squarekit.Formatters;
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
@@ -6,26 +6,23 @@ import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.Ticked;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.HashMap;
 
 /**
- * Created by mishkapp on 30.06.2016.
+ * Created by mishkapp on 03.10.2016.
  */
-public class ItemHealthRegen extends Ticked {
-
+public class HoldingHealthRegen extends Suffix{
     private double healthRegen;
 
-    public ItemHealthRegen(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
+    public HoldingHealthRegen(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
         super(kitPlayer, itemStack, level);
-        healthRegen = level/(4096.0*4.0);
 
-        if(level > 2047){
-            healthRegen = -1 * (level - 2047) * (1.0/40.0);
+        if(level > 32){
+            healthRegen = -1 * (level - 31) * 0.125;
         } else {
-            healthRegen = (1.0/40.0) * level;
+            healthRegen = 0.125 * level;
         }
     }
 
@@ -36,14 +33,10 @@ public class ItemHealthRegen extends Ticked {
     public void handle(KitEvent event) {
         if(event instanceof SuffixTickEvent){
             HashMap<Suffix, Double> adds = kitPlayer.getHealthRegenAdds();
-            if(isItemPresent()){
-                if(!adds.containsKey(this)){
-                    adds.put(this, healthRegen);
-                }
+            if(isItemHolding()){
+                adds.put(this, healthRegen);
             } else {
-                if(!adds.containsKey(this)){
-                    adds.put(this, 0.0);
-                }
+                adds.put(this, 0.0);
             }
         }
         kitPlayer.updateStats();
@@ -51,7 +44,6 @@ public class ItemHealthRegen extends Ticked {
 
     @Override
     public String getLoreEntry() {
-        return Messages.getMessage("suffix-item-health-regen").replace("%REGEN%", Formatters.tenth.format(healthRegen * 4));
+        return Messages.getMessage("holding-health-regen-suffix").replace("%REGEN%", Formatters.tenth.format(healthRegen * 4));
     }
-
 }
