@@ -21,15 +21,15 @@ public class ArrowEffect extends Triggered {
 
     PotionEffect effect;
 
-    public ArrowEffect(ItemStack itemStack, Integer level) {
+    public ArrowEffect(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
 
-        super(itemStack, level);
+        super(kitPlayer, itemStack, level);
         effect = Utils.getEffectByLevel(level, 400);
 
     }
 
     @Override
-    public void register(KitPlayer player) {}
+    public void register() {}
 
     private void handleLaunch(ArrowLaunchEvent event) {
 //
@@ -63,7 +63,7 @@ public class ArrowEffect extends Triggered {
     }
 
     @Override
-    public void handle(KitEvent event, KitPlayer player) {
+    public void handle(KitEvent event) {
 
         if (event instanceof ArrowLaunchEvent) {
             handleLaunch((ArrowLaunchEvent) event);

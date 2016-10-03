@@ -14,9 +14,9 @@ public class ArrowDamage extends Triggered {
 
     private int damage;
 
-    public ArrowDamage(ItemStack itemStack, Integer level) {
+    public ArrowDamage(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
 
-        super(itemStack, level);
+        super(kitPlayer, itemStack, level);
         if(level > 2047){
             damage = -1 * (level - 2047);
         } else {
@@ -26,10 +26,10 @@ public class ArrowDamage extends Triggered {
     }
 
     @Override
-    public void register(KitPlayer player) {}
+    public void register() {}
 
     @Override
-    public void handle(KitEvent event, KitPlayer player) {
+    public void handle(KitEvent event) {
         //TODO: stub
 //        if (event instanceof ArrowHitEntityEvent) {
 //            ((ArrowHitEntityEvent)event).getTarget().addPhysicalDamage(damage);

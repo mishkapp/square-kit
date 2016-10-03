@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.mishkapp.minecraft.plugins.squarekit.commands.KitCommand;
 import com.mishkapp.minecraft.plugins.squarekit.commands.LoreCommand;
 import com.mishkapp.minecraft.plugins.squarekit.serializers.ItemStackSerializer;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.stat.Effect;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.stat.HealthIncrease;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.ticked.*;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.toggle.HideShadow;
@@ -179,6 +180,7 @@ public class SquareKit{
         registry.registerSuffix(10, Shelter.class);
         registry.registerSuffix(11, Hook.class);
         registry.registerSuffix(12, HideShadow.class);
+        registry.registerSuffix(13, Effect.class);
 //        registry.registerSuffix(12, ItemArrowRegen.class);
 //        registry.registerSuffix(13, ArrowEffect.class);
 //        registry.registerSuffix(14, ArrowDamage.class);
