@@ -1,15 +1,19 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.suffixes.use;
 
+import com.flowpowered.math.vector.Vector3d;
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.events.ItemUsedEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Use;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.projectile.Snowball;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.world.World;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+
+import static java.lang.Math.*;
 
 /**
  * Created by mishkapp on 15.07.2016.
@@ -18,28 +22,28 @@ public class Hook extends Use {
 
     private double manaCost;
 
-    public Hook(ItemStack itemStack, Integer level) {
-        super(itemStack, level);
+    public Hook(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
+        super(kitPlayer, itemStack, level);
         cooldown = 45 * 1000;
         manaCost = (50.0 - (50.0/4096.0) * level) / 100;
     }
 
     @Override
-    protected boolean isItemPresent(Player player) {
+    protected boolean isItemPresent() {
         return false;
     }
 
     @Override
-    public void register(KitPlayer player) {
+    public void register() {
 
     }
 
     @Override
-    public void handle(KitEvent event, KitPlayer kitPlayer) {
+    public void handle(KitEvent event) {
         if(event instanceof ItemUsedEvent){
             Player player = kitPlayer.getMcPlayer();
 
-            if(!isItemPresentInHand(player)){
+            if(!isItemPresentInHand()){
                 return;
             }
             //TODO: MANA
@@ -56,6 +60,22 @@ public class Hook extends Use {
 
             World world = player.getWorld();
 
+            Vector3d spawnPos = player.getLocation().getPosition();
+            Vector3d lookVector = player.getHeadRotation();
+
+            spawnPos = spawnPos.add(
+                    -1 * sin(toRadians(lookVector.getY())),
+                    1.75,
+                    cos(toRadians(lookVector.getY()))
+            );
+
+            Snowball hook = player.launchProjectile(Snowball.class).orElse(null);
+
+//            hook.setVelocity(new Vector3d(
+//                    -1 * sin(toRadians(lookVector.getY())),
+//                    -1 * sin(toRadians(lookVector.getX())),
+//                    cos(toRadians(lookVector.getY()))
+//            ));
 
 
             addEffect(kitPlayer.getMcPlayer());

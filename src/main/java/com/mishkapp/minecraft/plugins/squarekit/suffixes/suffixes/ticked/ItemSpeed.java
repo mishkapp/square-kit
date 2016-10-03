@@ -18,8 +18,8 @@ public class ItemSpeed extends Ticked {
 
     private float speed;
 
-    public ItemSpeed(ItemStack itemStack, Integer level) {
-        super(itemStack, level);
+    public ItemSpeed(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
+        super(kitPlayer, itemStack, level);
         if(level > 2047){
             speed = (float) (-1 * (level - 2047) * (100.0/2048.0));
         } else {
@@ -30,14 +30,14 @@ public class ItemSpeed extends Ticked {
     }
 
     @Override
-    public void register(KitPlayer player) {
+    public void register() {
     }
 
     @Override
-    public void handle(KitEvent event, KitPlayer kitPlayer) {
+    public void handle(KitEvent event) {
         if(event instanceof SuffixTickEvent){
             HashMap<Suffix, Float> adds = kitPlayer.getSpeedAdds();
-            if(isItemPresent(kitPlayer.getMcPlayer())){
+            if(isItemPresent()){
                     adds.put(this, speed);
             } else {
                     adds.put(this, 0.0f);

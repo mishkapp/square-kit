@@ -31,8 +31,8 @@ public class Thunderbolt extends Use {
     private Set<BlockType> transparentBlocks = new HashSet<>();
     private double manaCost;
 
-    public Thunderbolt(ItemStack itemStack, Integer level) {
-        super(itemStack, level);
+    public Thunderbolt(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
+        super(kitPlayer, itemStack, level);
         manaCost = 1024 - (level * 0.25);
         Collections.addAll(transparentBlocks,
                 AIR, GRASS, LEAVES, LEAVES2
@@ -41,21 +41,21 @@ public class Thunderbolt extends Use {
     }
 
     @Override
-    protected boolean isItemPresent(Player player) {
+    protected boolean isItemPresent() {
         return false;
     }
 
     @Override
-    public void register(KitPlayer player) {
+    public void register() {
 
     }
 
     @Override
-    public void handle(KitEvent e, KitPlayer kitPlayer) {
+    public void handle(KitEvent e) {
         if(e instanceof ItemUsedEvent){
             Player player = kitPlayer.getMcPlayer();
 
-            if(!isItemPresentInHand(player)){
+            if(!isItemPresentInHand()){
                 return;
             }
 

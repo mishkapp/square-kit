@@ -18,28 +18,28 @@ public class Shelter extends Use {
 
     private double manaCost;
 
-    public Shelter(ItemStack itemStack, Integer level) {
-        super(itemStack, level);
+    public Shelter(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
+        super(kitPlayer, itemStack, level);
         cooldown = 45 * 1000;
         manaCost = (50.0 - (50.0/4096.0) * level) / 100;
     }
 
     @Override
-    protected boolean isItemPresent(Player player) {
+    protected boolean isItemPresent() {
         return false;
     }
 
     @Override
-    public void register(KitPlayer player) {
+    public void register() {
 
     }
 
     @Override
-    public void handle(KitEvent event, KitPlayer kitPlayer) {
+    public void handle(KitEvent event) {
         if(event instanceof ItemUsedEvent){
             Player player = kitPlayer.getMcPlayer();
 
-            if(!isItemPresentInHand(player)){
+            if(!isItemPresentInHand()){
                 return;
             }
 

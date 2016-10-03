@@ -5,7 +5,6 @@ import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Stat;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -17,8 +16,8 @@ public class HealthIncrease extends Stat {
 
     private double health;
 
-    public HealthIncrease(ItemStack itemStack, Integer level) {
-        super(itemStack, level);
+    public HealthIncrease(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
+        super(kitPlayer, itemStack, level);
         if(level > 2047){
             health = -1 * (level - 2047);
         } else {
@@ -27,20 +26,20 @@ public class HealthIncrease extends Stat {
     }
 
     @Override
-    protected boolean isItemPresent(Player player) {
+    protected boolean isItemPresent() {
         return false;
     }
 
     @Override
-    public void register(KitPlayer player) {
-        HashMap<Suffix, Double> adds = player.getMaxHealthAdds();
+    public void register() {
+        HashMap<Suffix, Double> adds = kitPlayer.getMaxHealthAdds();
         if(!adds.containsKey(this)){
             adds.put(this, health);
         }
     }
 
     @Override
-    public void handle(KitEvent event, KitPlayer kitPlayer) {
+    public void handle(KitEvent event) {
 
     }
 

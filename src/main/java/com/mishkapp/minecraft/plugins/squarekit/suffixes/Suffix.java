@@ -3,7 +3,6 @@ package com.mishkapp.minecraft.plugins.squarekit.suffixes;
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 /**
@@ -13,16 +12,19 @@ public abstract class Suffix {
 
     protected ItemStack itemStack;
     protected int level;
+    protected KitPlayer kitPlayer;
 
-    public Suffix(ItemStack itemStack, int level) {
+    public Suffix(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
+        this.kitPlayer = kitPlayer;
         this.itemStack = itemStack;
         this.level = level;
     }
 
-    protected abstract boolean isItemPresent(Player player);
+    protected abstract boolean isItemPresent();
 
-    public abstract void register(KitPlayer player);
-    public abstract void handle(KitEvent event, KitPlayer kitPlayer);
+    public abstract void register();
+
+    public abstract void handle(KitEvent event);
 
     public ItemStack getItemStack() {
         return itemStack;

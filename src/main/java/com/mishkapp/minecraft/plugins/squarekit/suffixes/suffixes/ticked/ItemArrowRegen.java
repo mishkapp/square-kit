@@ -15,22 +15,21 @@ import java.text.NumberFormat;
  */
 public class ItemArrowRegen extends Ticked {
 
-
     private int regenCooldown;
     private int tickTimer;
     private final int itemLimit = 60;
 
-    public ItemArrowRegen(ItemStack itemStack, Integer level) {
-        super(itemStack, level);
+    public ItemArrowRegen(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
+        super(kitPlayer, itemStack, level);
         regenCooldown = 2047 - level;
         tickTimer = 0;
     }
 
     @Override
-    public void register(KitPlayer player) {}
+    public void register() {}
 
     @Override
-    public void handle(KitEvent event, KitPlayer kitPlayer) {
+    public void handle(KitEvent event) {
         if(event instanceof SuffixTickEvent){
             //TODO: need to rework it
 //            if (tickTimer >= regenCooldown) {

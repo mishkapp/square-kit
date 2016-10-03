@@ -18,8 +18,8 @@ public class ItemHealthIncrease extends Ticked {
 
     private double health;
 
-    public ItemHealthIncrease(ItemStack itemStack, Integer level) {
-        super(itemStack, level);
+    public ItemHealthIncrease(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
+        super(kitPlayer, itemStack, level);
         if(level > 2047){
             health = -1 * (level - 2047);
         } else {
@@ -28,16 +28,16 @@ public class ItemHealthIncrease extends Ticked {
     }
 
     @Override
-    public void register(KitPlayer player) {
-        player.getMaxHealthAdds().put(this, 0.0);
+    public void register() {
+        kitPlayer.getMaxHealthAdds().put(this, 0.0);
     }
 
     @Override
-    public void handle(KitEvent event, KitPlayer kitPlayer) {
+    public void handle(KitEvent event) {
         if(event instanceof SuffixTickEvent){
             HashMap<Suffix, Double> adds = kitPlayer.getMaxHealthAdds();
             double addition;
-            if(isItemPresent(kitPlayer.getMcPlayer())){
+            if(isItemPresent()){
                 addition = health;
             } else {
                 addition = 0.0;

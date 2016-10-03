@@ -22,22 +22,22 @@ public class ItemEffect extends Ticked {
 
     private PotionEffect effect;
 
-    public ItemEffect(ItemStack itemStack, Integer level) {
-        super(itemStack, level);
+    public ItemEffect(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
+        super(kitPlayer, itemStack, level);
         effect = Utils.getEffectByLevel(level, 1200);
     }
 
     @Override
-    public void register(KitPlayer player) {
+    public void register() {
 
     }
 
     @Override
-    public void handle(KitEvent event, KitPlayer kitPlayer) {
+    public void handle(KitEvent event) {
         if(event instanceof SuffixTickEvent){
             Player player = event.getPlayer().getMcPlayer();
             List<PotionEffect> effects = player.get(Keys.POTION_EFFECTS).orElse(new ArrayList<>());
-            if(isItemPresent(player)){
+            if(isItemPresent()){
                 for (PotionEffect e : effects) {
                     if(e.getType().equals(effect.getType()) && (e.getAmplifier() <= effect.getAmplifier())){
                         effects.remove(e);

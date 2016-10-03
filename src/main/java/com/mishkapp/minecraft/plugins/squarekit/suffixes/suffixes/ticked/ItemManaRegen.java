@@ -18,19 +18,19 @@ public class ItemManaRegen extends Ticked {
 
     private double manaRegen;
 
-    public ItemManaRegen(ItemStack itemStack, Integer level) {
-        super(itemStack, level);
+    public ItemManaRegen(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
+        super(kitPlayer, itemStack, level);
         manaRegen = level * 0.01;
     }
 
     @Override
-    public void register(KitPlayer player) {}
+    public void register() {}
 
     @Override
-    public void handle(KitEvent event, KitPlayer kitPlayer) {
+    public void handle(KitEvent event) {
         if(event instanceof SuffixTickEvent){
             HashMap<Suffix, Double> adds = kitPlayer.getManaRegenAdds();
-            if(isItemPresent(kitPlayer.getMcPlayer())){
+            if(isItemPresent()){
                 if(!adds.containsKey(this)){
                     adds.put(this, manaRegen);
                 }

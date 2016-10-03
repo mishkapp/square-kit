@@ -2,7 +2,6 @@ package com.mishkapp.minecraft.plugins.squarekit.suffixes;
 
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 
@@ -22,11 +21,11 @@ public abstract class Use extends Active{
 
     private NumberFormat cooldownFormatter = new DecimalFormat("#0.00");
 
-    public Use(ItemStack itemStack, int level) {
-        super(itemStack, level);
+    public Use(KitPlayer kitPlayer, ItemStack itemStack, int level) {
+        super(kitPlayer, itemStack, level);
     }
 
-    protected boolean isCooldowned(KitPlayer kitPlayer){
+    protected boolean isCooldowned(){
         long delta = System.currentTimeMillis() - lastUse;
         if(delta < (cooldown * kitPlayer.getCooldownRate())){
             double time = ((cooldown * kitPlayer.getCooldownRate()) - delta)/1000.0;
@@ -35,13 +34,11 @@ public abstract class Use extends Active{
         } else {
             return true;
         }
-
-
     }
 
-    protected boolean isItemPresentInHand(Player player) {
-        return itemStack.equalTo(player.getItemInHand(MAIN_HAND).orElse(null))
-                || itemStack.equalTo(player.getItemInHand(OFF_HAND).orElse(null));
+    protected boolean isItemPresentInHand() {
+        return itemStack.equalTo(kitPlayer.getMcPlayer().getItemInHand(MAIN_HAND).orElse(null))
+                || itemStack.equalTo(kitPlayer.getMcPlayer().getItemInHand(OFF_HAND).orElse(null));
     }
 
 }

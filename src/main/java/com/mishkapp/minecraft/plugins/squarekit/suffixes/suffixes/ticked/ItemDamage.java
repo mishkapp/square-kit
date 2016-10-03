@@ -17,8 +17,8 @@ public class ItemDamage extends Ticked {
 
     private int damage;
 
-    public ItemDamage(ItemStack itemStack, Integer level) {
-        super(itemStack, level);
+    public ItemDamage(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
+        super(kitPlayer, itemStack, level);
         if(level > 2047){
             damage = -1 * (level - 2047);
         } else {
@@ -27,15 +27,15 @@ public class ItemDamage extends Ticked {
     }
 
     @Override
-    public void register(KitPlayer player) {
+    public void register() {
 
     }
 
     @Override
-    public void handle(KitEvent event, KitPlayer kitPlayer) {
+    public void handle(KitEvent event) {
         if(event instanceof SuffixTickEvent){
             HashMap<Suffix, Double> adds = kitPlayer.getAttackDamageAdds();
-            if(isItemPresent(kitPlayer.getMcPlayer())){
+            if(isItemPresent()){
                 if(!adds.containsKey(this)){
                     adds.put(this, (double)damage);
                 }

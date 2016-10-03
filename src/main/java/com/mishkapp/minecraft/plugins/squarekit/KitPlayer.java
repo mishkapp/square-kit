@@ -217,7 +217,7 @@ public class KitPlayer {
         System.out.println("UPDATE");
         purgeAdditions();
         suffixes = SuffixFactory.getSuffixes(player);
-        suffixes.forEach(s -> s.register(this));
+        suffixes.forEach(Suffix::register);
         updateStats();
     }
 
@@ -264,7 +264,7 @@ public class KitPlayer {
     }
 
     public void handleEvent(KitEvent event){
-        suffixes.forEach(s -> s.handle(event, this));
+        suffixes.forEach(s -> s.handle(event));
     }
 
     public List<? extends Suffix> getSuffixes() {

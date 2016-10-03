@@ -16,11 +16,10 @@ import java.util.HashMap;
  */
 public class ItemHealthRegen extends Ticked {
 
-
     private double healthRegen;
 
-    public ItemHealthRegen(ItemStack itemStack, Integer level) {
-        super(itemStack, level);
+    public ItemHealthRegen(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
+        super(kitPlayer, itemStack, level);
         healthRegen = level/(4096.0*4.0);
 
         if(level > 2047){
@@ -31,13 +30,13 @@ public class ItemHealthRegen extends Ticked {
     }
 
     @Override
-    public void register(KitPlayer player) {}
+    public void register() {}
 
     @Override
-    public void handle(KitEvent event, KitPlayer kitPlayer) {
+    public void handle(KitEvent event) {
         if(event instanceof SuffixTickEvent){
             HashMap<Suffix, Double> adds = kitPlayer.getHealthRegenAdds();
-            if(isItemPresent(kitPlayer.getMcPlayer())){
+            if(isItemPresent()){
                 if(!adds.containsKey(this)){
                     adds.put(this, healthRegen);
                 }

@@ -21,14 +21,14 @@ public class SuffixFactory {
             Slot slot = (Slot)o;
             ItemStack i = slot.peek().orElse(null);
             if(i != null && Utils.isKitItem(i)){
-                result.addAll(getSuffixes(i));
+                result.addAll(getSuffixes(player, i));
                 slot.set(i);
             }
         }
         return result;
     }
 
-    public static List<Suffix> getSuffixes(ItemStack i){
+    public static List<Suffix> getSuffixes(Player player, ItemStack i){
         String itemCode = Utils.getItemCode(i);
         ItemUtils.setLore(i, Utils.CODE_PREFIX + itemCode);
         List<Suffix> result = new ArrayList<>();
@@ -42,7 +42,7 @@ public class SuffixFactory {
             int level = Utils.getBase64Value(itemCode.substring(0, 2));
             itemCode = itemCode.substring(2);
 
-            Suffix suffix = Utils.instantiateSuffix(SuffixRegistry.getInstance().getSuffix(id), i, level);
+            Suffix suffix = Utils.instantiateSuffix(SuffixRegistry.getInstance().getSuffix(id), player, i, level);
             if(suffix == null){
                 continue;
             }
