@@ -3,12 +3,14 @@ package com.mishkapp.minecraft.plugins.squarekit;
 import com.mishkapp.minecraft.plugins.squarekit.events.*;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.projectile.arrow.Arrow;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.event.entity.AttackEntityEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
+import org.spongepowered.api.event.entity.projectile.LaunchProjectileEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.filter.type.Exclude;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
@@ -193,6 +195,16 @@ public class EventInterceptor {
     }
 
     //TODO: arrow events
+    @Listener
+    public void onArrowLaunch(LaunchProjectileEvent event, @First Player player){
+        if(event.getTargetEntity() instanceof Arrow){
+            Arrow arrow = (Arrow) event.getTargetEntity();
+            Sponge.getEventManager().post(new ArrowLaunchEvent(
+                    SquareKit.getPlayersRegistry().getPlayer(player.getUniqueId()),
+                    arrow
+            ));
+        }
+    }
 //    @Listener
 //    public void onArrowLaunch(EntityShootBowEvent event) {
 //        if (event.getEntity() instanceof Player && event.getProjectile() instanceof Arrow) {
