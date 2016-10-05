@@ -5,11 +5,12 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.InteractBlockEvent;
+import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
+import org.spongepowered.api.event.entity.AttackEntityEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.filter.type.Exclude;
-import org.spongepowered.api.event.impl.AbstractAttackEntityEvent;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
@@ -178,12 +179,17 @@ public class EventInterceptor {
     }
 
     @Listener
-    public void onHit(AbstractAttackEntityEvent event){
-        if(event.getTargetEntity() instanceof Player){
-            KitPlayer kPlayer = SquareKit.getPlayersRegistry().getPlayer(event.getTargetEntity().getUniqueId());
-            event.setBaseOutputDamage(event.getBaseOutputDamage() * (1.0 - kPlayer.getPhysicalResist()));
+    public void onHit(AttackEntityEvent event, @First EntityDamageSource damageSource){
+        if(event.getTargetEntity() instanceof Player &&
+                damageSource.getSource() instanceof Player){
+            KitPlayer damaged = SquareKit.getPlayersRegistry().getPlayer(event.getTargetEntity().getUniqueId());
+            KitPlayer damager = SquareKit.getPlayersRegistry().getPlayer(damageSource.getSource().getUniqueId());
+            event.setBaseOutputDamage(event.getBaseOutputDamage() * (1.0 - damaged.getPhysicalResist()));
+            Sponge.getEventManager().post(new PlayerAttackPlayerEvent(
+                    damager,
+                    damaged
+            ));
         }
-
     }
 
     //TODO: arrow events

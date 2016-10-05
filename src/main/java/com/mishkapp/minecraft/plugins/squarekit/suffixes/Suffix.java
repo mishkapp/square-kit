@@ -39,6 +39,10 @@ public abstract class Suffix {
         }
     }
 
+    protected boolean isWeaponInHand() {
+        return isSimilar(itemStack, kitPlayer.getMcPlayer().getItemInHand(MAIN_HAND).orElse(null));
+    }
+
     protected boolean isItemInHand() {
         return isSimilar(itemStack, kitPlayer.getMcPlayer().getItemInHand(MAIN_HAND).orElse(null))
                 || isSimilar(itemStack, kitPlayer.getMcPlayer().getItemInHand(OFF_HAND).orElse(null));

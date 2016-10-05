@@ -4,8 +4,8 @@ import com.flowpowered.math.vector.Vector3d;
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
-import com.mishkapp.minecraft.plugins.squarekit.events.AttackEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
+import com.mishkapp.minecraft.plugins.squarekit.events.PlayerAttackPlayerEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
@@ -52,11 +52,13 @@ public class ShadowCloud extends Suffix {
 
     @Override
     public void handle(KitEvent event) {
-        if(event instanceof AttackEvent){
-            AttackEvent attackEvent = (AttackEvent)event;
-            Player attacked = attackEvent.getPlayer().getMcPlayer();
-            if(rnd.nextDouble() > 0.025){
-
+        if(event instanceof PlayerAttackPlayerEvent){
+            PlayerAttackPlayerEvent attackEvent = (PlayerAttackPlayerEvent)event;
+            if(!isWeaponInHand()){
+                return;
+            }
+            Player attacked = attackEvent.getAttacked().getMcPlayer();
+            if(rnd.nextDouble() < 0.025){
                 List<PotionEffect> list = attacked.get(Keys.POTION_EFFECTS).orElse(new ArrayList<>());
                 list.add(potionEffect);
                 attacked.offer(Keys.POTION_EFFECTS, list);
