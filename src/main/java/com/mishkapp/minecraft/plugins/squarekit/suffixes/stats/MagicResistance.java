@@ -18,9 +18,9 @@ public class MagicResistance extends Suffix {
     public MagicResistance(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
         super(kitPlayer, itemStack, level);
         if(level > 32){
-            magicResistance = (-1 * (level - 31) * (100.0/32));
+            magicResistance = -1 * (level - 31);
         } else {
-            magicResistance = ((100.0/31) * level);
+            magicResistance = level;
         }
 
         magicResistance /= 100;
