@@ -11,10 +11,8 @@ import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.Map;
 
-import static com.mishkapp.minecraft.plugins.squarekit.ItemUtils.setColor;
-import static com.mishkapp.minecraft.plugins.squarekit.ItemUtils.setLore;
-import static com.mishkapp.minecraft.plugins.squarekit.ItemUtils.setName;
-import static org.spongepowered.api.data.key.Keys.ITEM_DURABILITY;
+import static com.mishkapp.minecraft.plugins.squarekit.ItemUtils.*;
+import static org.spongepowered.api.data.key.Keys.*;
 
 /**
  * Created by mishkapp on 19.09.2016.
@@ -56,6 +54,14 @@ public class ItemStackSerializer implements TypeSerializer<ItemStack> {
                 }
                 case "name": {
                     setName(result, cn.getNode(s).getString());
+                    break;
+                }
+                case "unbreakable": {
+                    result.offer(UNBREAKABLE, cn.getNode(s).getBoolean());
+                    break;
+                }
+                case "dye-color": {
+                    result.offer(DYE_COLOR, Utils.getDyeColor(cn.getNode(s).getString()));
                     break;
                 }
             }
