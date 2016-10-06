@@ -8,6 +8,7 @@ import com.mishkapp.minecraft.plugins.squarekit.serializers.ItemStackSerializer;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.active.HideShadow;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.attack.ShadowCloud;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.bow.ArrowDamage;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.bow.EntanglingArrow;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.Invisibility;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.HoldingInvisibility;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.HoldingNightVision;
@@ -187,6 +188,7 @@ public class SquareKit{
         registry.registerSuffix("Ea", HoldingSpeed.class);
 
         registry.registerSuffix("MA", ArrowDamage.class);
+        registry.registerSuffix("MB", EntanglingArrow.class);
 
         registry.registerSuffix("aN", Invisibility.class);
         registry.registerSuffix("bN", HoldingInvisibility.class);
