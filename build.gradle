@@ -23,7 +23,7 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
 
-    compile 'org.spongepowered:spongeapi:5.0.0-20160925.193150-129'
+    compile 'org.spongepowered:spongeapi:5.0.0-20161003.175748-144'
 
     compile fileTree(dir: 'libs', include: '*.jar')
 }
