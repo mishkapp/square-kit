@@ -62,7 +62,7 @@ public abstract class HoldingEffectSuffix extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.getMessage("holding-effect-suffix")
+        return Messages.get("holding-effect-suffix")
                 .replace("%EFFECT%", effect.getType().getTranslation().get(Locale.ENGLISH) + " " + (level + 1));
     }
 }

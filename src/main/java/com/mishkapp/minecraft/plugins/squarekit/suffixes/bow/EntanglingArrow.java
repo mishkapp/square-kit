@@ -52,7 +52,7 @@ public class EntanglingArrow extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.getMessage("entangling-arrow-suffix")
+        return Messages.get("entangling-arrow-suffix")
                 .replace("%TIME%", Formatters.tenth.format(time/20.0));
     }
 }

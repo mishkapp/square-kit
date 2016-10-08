@@ -44,6 +44,6 @@ public class HoldingHealthRegen extends Suffix{
 
     @Override
     public String getLoreEntry() {
-        return Messages.getMessage("holding-health-regen-suffix").replace("%REGEN%", Formatters.tenth.format(healthRegen * 4));
+        return Messages.get("holding-health-regen-suffix").replace("%REGEN%", Formatters.tenth.format(healthRegen * 4));
     }
 }

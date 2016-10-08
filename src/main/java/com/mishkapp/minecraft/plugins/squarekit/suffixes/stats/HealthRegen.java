@@ -38,6 +38,6 @@ public class HealthRegen extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.getMessage("health-regen-suffix").replace("%REGEN%", Formatters.tenth.format(healthRegen * 4));
+        return Messages.get("health-regen-suffix").replace("%REGEN%", Formatters.tenth.format(healthRegen * 4));
     }
 }

@@ -12,7 +12,7 @@ public class Messages {
 
     private static HashMap<String, String> messages;
 
-    public static String getMessage(String key){
+    public static String get(String key){
         if(messages.containsKey(key)){
             return messages.get(key);
         } else {

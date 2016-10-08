@@ -111,7 +111,7 @@ public class HideShadow extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.getMessage("hide-shadow-suffix")
+        return Messages.get("hide-shadow-suffix")
                 .replace("%ACTIVATION_COST%", Formatters.round.format(activationCost))
                 .replace("%MANA_COST%", Formatters.tenth.format(manaCost * 4));
     }

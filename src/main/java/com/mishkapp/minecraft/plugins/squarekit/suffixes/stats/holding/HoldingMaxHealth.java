@@ -43,7 +43,7 @@ public class HoldingMaxHealth extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.getMessage("holding-max-health-suffix").replace("%HEALTH%", Formatters.round.format(health));
+        return Messages.get("holding-max-health-suffix").replace("%HEALTH%", Formatters.round.format(health));
     }
 
 }

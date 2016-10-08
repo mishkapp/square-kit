@@ -39,6 +39,6 @@ public class PhysicalResistance extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.getMessage("physical-resistance-suffix").replace("%PRES%", Formatters.round.format(resistance * 100));
+        return Messages.get("physical-resistance-suffix").replace("%PRES%", Formatters.round.format(resistance * 100));
     }
 }
