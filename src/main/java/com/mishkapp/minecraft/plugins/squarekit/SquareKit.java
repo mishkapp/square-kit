@@ -11,6 +11,7 @@ import com.mishkapp.minecraft.plugins.squarekit.suffixes.bow.ArrowDamage;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.bow.EntanglingArrow;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.Invisibility;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.HoldingInvisibility;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.HoldingJumpBoost;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.HoldingNightVision;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.*;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.holding.*;
@@ -191,6 +192,7 @@ public class SquareKit{
         registry.registerSuffix("MB", EntanglingArrow.class);
 
         registry.registerSuffix("aN", Invisibility.class);
+        registry.registerSuffix("bH", HoldingJumpBoost.class);
         registry.registerSuffix("bN", HoldingInvisibility.class);
         registry.registerSuffix("bP", HoldingNightVision.class);
 
