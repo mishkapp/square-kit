@@ -184,8 +184,10 @@ public class SquareKit{
 
         registry.registerSuffix("CA", PhysicalResistance.class);
         registry.registerSuffix("CB", MagicResistance.class);
+        registry.registerSuffix("CE", KnockbackResistance.class);
         registry.registerSuffix("Ca", HoldingPhysicalResistance.class);
         registry.registerSuffix("Cb", HoldingMagicResistance.class);
+        registry.registerSuffix("Ce", HoldingKnockbackResistance.class);
 
         registry.registerSuffix("DA", PhysicalDamage.class);
         registry.registerSuffix("Da", HoldingPhysicalDamage.class);

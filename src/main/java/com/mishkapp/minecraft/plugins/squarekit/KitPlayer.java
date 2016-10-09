@@ -32,6 +32,7 @@ public class KitPlayer {
     private final double PHYSICAL_RESIST = 0.0;
     private final double MAGIC_RESIST = 0.0;
     private final double MAX_HEALTH = 100.0;
+    private final double KNOCKBACK_RESIST = 0.0;
 
     private HashMap<Suffix, Double> attackDamageAdds = new HashMap<>();
     private HashMap<Suffix, Double> maxManaAds = new HashMap<>();
@@ -42,6 +43,7 @@ public class KitPlayer {
     private HashMap<Suffix, Double> magicResistAdds = new HashMap<>();
     private HashMap<Suffix, Double> cooldownRateAdds = new HashMap<>();
     private HashMap<Suffix, Double> maxHealthAdds = new HashMap<>();
+    private HashMap<Suffix, Double> knockbackResistsAdds = new HashMap<>();
 
     private double currentMana = 0.0;
 
@@ -145,6 +147,14 @@ public class KitPlayer {
         return Math.max(1, result);
     }
 
+    public double getKnockbackResist() {
+        double result = KNOCKBACK_RESIST;
+        for(double i : knockbackResistsAdds.values()){
+            result += i;
+        }
+        return result;
+    }
+
     public HashMap<Suffix, Double> getAttackDamageAdds() {
         return attackDamageAdds;
     }
@@ -179,6 +189,10 @@ public class KitPlayer {
 
     public HashMap<Suffix, Double> getMaxHealthAdds() {
         return maxHealthAdds;
+    }
+
+    public HashMap<Suffix, Double> getKnockbackResistsAdds() {
+        return knockbackResistsAdds;
     }
 
     public double getCurrentMana() {
@@ -231,6 +245,7 @@ public class KitPlayer {
         cooldownRateAdds = new HashMap<>();
         maxHealthAdds = new HashMap<>();
         maxManaAds = new HashMap<>();
+        knockbackResistsAdds = new HashMap<>();
     }
 
     private void updateScoreboard(){

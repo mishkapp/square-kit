@@ -187,6 +187,7 @@ public class EventInterceptor {
                 damageSource.getSource() instanceof Player){
             KitPlayer damaged = SquareKit.getPlayersRegistry().getPlayer(event.getTargetEntity().getUniqueId());
             KitPlayer damager = SquareKit.getPlayersRegistry().getPlayer(damageSource.getSource().getUniqueId());
+            event.setKnockbackModifier((int)(event.getKnockbackModifier() * (1.0 - damaged.getKnockbackResist())));
             event.setBaseOutputDamage(event.getBaseOutputDamage() * (1.0 - damaged.getPhysicalResist()));
             Sponge.getEventManager().post(new PlayerAttackPlayerEvent(
                     damager,
