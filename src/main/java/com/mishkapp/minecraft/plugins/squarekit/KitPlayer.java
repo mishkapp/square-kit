@@ -78,7 +78,7 @@ public class KitPlayer {
         for(double i : attackDamageAdds.values()){
             result += i;
         }
-        return result;
+        return Math.max(1, result);
     }
 
     public float getSpeed(){
@@ -102,7 +102,7 @@ public class KitPlayer {
         for(double i : maxManaAds.values()){
             result += i;
         }
-        return result;
+        return Math.max(0, result);
     }
 
     public double getManaRegen() {
@@ -142,7 +142,7 @@ public class KitPlayer {
         for(double i : maxHealthAdds.values()){
             result += i;
         }
-        return result;
+        return Math.max(1, result);
     }
 
     public HashMap<Suffix, Double> getAttackDamageAdds() {
