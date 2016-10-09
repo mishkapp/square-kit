@@ -13,6 +13,7 @@ import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.Invisibility;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.HoldingInvisibility;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.HoldingJumpBoost;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.HoldingNightVision;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.passive.ArrowGenerator;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.*;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.holding.*;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.use.Shelter;
@@ -204,6 +205,8 @@ public class SquareKit{
         registry.registerSuffix("1B", ShadowCloud.class);
 
         registry.registerSuffix("3A", Shelter.class);
+
+        registry.registerSuffix("6A", ArrowGenerator.class);
 
     }
 

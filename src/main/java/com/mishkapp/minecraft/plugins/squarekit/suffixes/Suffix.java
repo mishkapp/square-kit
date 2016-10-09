@@ -48,7 +48,7 @@ public abstract class Suffix {
                 || isSimilar(itemStack, kitPlayer.getMcPlayer().getItemInHand(OFF_HAND).orElse(null));
     }
 
-    public abstract void register();
+    public void register() {}
 
     public abstract void handle(KitEvent event);
 
