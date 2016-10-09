@@ -26,7 +26,7 @@ public class KitPlayer {
     private final double ATTACK_DAMAGE = 1.0;
     private final double MAX_MANA = 100.0;
     private final double MANA_REGEN = 0.0;
-    private final double HEALTH_REGEN = 0.10;
+    private final double HEALTH_REGEN = 0.125;
     private final float SPEED = 1.0f;
     private final double COOLDOWN_RATE = 1.0;
     private final double PHYSICAL_RESIST = 0.0;
