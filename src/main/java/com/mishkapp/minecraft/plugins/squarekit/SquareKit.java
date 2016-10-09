@@ -15,6 +15,7 @@ import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.Holding
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.HoldingNightVision;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.*;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.holding.*;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.use.Shelter;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -201,6 +202,8 @@ public class SquareKit{
 
         registry.registerSuffix("1A", HideShadow.class);
         registry.registerSuffix("1B", ShadowCloud.class);
+
+        registry.registerSuffix("3A", Shelter.class);
 
     }
 
