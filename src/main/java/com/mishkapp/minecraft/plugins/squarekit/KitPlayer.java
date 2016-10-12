@@ -296,11 +296,11 @@ public class KitPlayer {
     }
 
     private Text getPhysicalResistText(){
-        return Text.of("P.Res: " + Formatters.tenth.format(getPhysicalResist() * 100) + "%");
+        return Text.of("Ф.Сопр: " + Formatters.tenth.format(getPhysicalResist() * 100) + "%");
     }
 
     private Text getMagicResistText(){
-        return Text.of("M.Res: " + Formatters.tenth.format(getMagicResist() * 100) + "%");
+        return Text.of("М.Сопр: " + Formatters.tenth.format(getMagicResist() * 100) + "%");
     }
 
 
