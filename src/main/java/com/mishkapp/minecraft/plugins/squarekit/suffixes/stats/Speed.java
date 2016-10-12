@@ -13,22 +13,22 @@ import java.util.HashMap;
  * Created by mishkapp on 03.10.2016.
  */
 public class Speed extends Suffix {
-    private float speed;
+    private double speed;
 
     public Speed(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
         super(kitPlayer, itemStack, level);
         if(level > 32){
-            speed = (float) (-1 * (level - 31) * (100.0/32));
+            speed = -1 * (level - 31) * (100.0/32);
         } else {
-            speed = (float) ((100.0/31) * level);
+            speed = (100.0/31) * level;
         }
 
-        speed /= 100;
+        speed /= 100.0;
     }
 
     @Override
     public void register() {
-        HashMap<Suffix, Float> adds = kitPlayer.getSpeedAdds();
+        HashMap<Suffix, Double> adds = kitPlayer.getSpeedAdds();
         if(!adds.containsKey(this)){
             adds.put(this, speed);
         }
