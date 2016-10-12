@@ -39,10 +39,6 @@ public class KitPlayer {
     private Scoreboard scoreboard;
     private Objective statsObj;
 
-    //Stats
-    private Stats base = new Stats();
-
-
     public KitPlayer(Player player) {
         this.player = player;
         initScoreboard();
