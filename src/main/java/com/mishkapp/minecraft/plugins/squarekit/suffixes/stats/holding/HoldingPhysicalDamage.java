@@ -31,7 +31,7 @@ public class HoldingPhysicalDamage extends Suffix {
     @Override
     public void handle(KitEvent event) {
         if(event instanceof SuffixTickEvent){
-            HashMap<Suffix, Double> adds = kitPlayer.getAttackDamageAdds();
+            HashMap<Suffix, Double> adds = kitPlayer.getPhysicalDamageAdds();
             if(isItemHolding()){
                 adds.put(this, damage);
             } else {

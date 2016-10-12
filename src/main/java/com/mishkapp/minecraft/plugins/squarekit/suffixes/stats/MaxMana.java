@@ -26,7 +26,7 @@ public class MaxMana extends Suffix {
 
     @Override
     public void register() {
-        HashMap<Suffix, Double> adds = kitPlayer.getMaxManaAds();
+        HashMap<Suffix, Double> adds = kitPlayer.getMaxManaAdds();
         if(!adds.containsKey(this)){
             adds.put(this, mana);
         }

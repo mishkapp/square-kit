@@ -31,7 +31,7 @@ public class HoldingMaxMana extends Suffix{
     @Override
     public void handle(KitEvent event) {
         if(event instanceof SuffixTickEvent){
-            HashMap<Suffix, Double> adds = kitPlayer.getMaxManaAds();
+            HashMap<Suffix, Double> adds = kitPlayer.getMaxManaAdds();
             if(isItemHolding()){
                 adds.put(this, mana);
             } else {

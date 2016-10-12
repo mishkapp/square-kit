@@ -80,7 +80,7 @@ public class Shelter extends UseSuffix {
 
             isActive = true;
 
-            HashMap<Suffix, Double> dmgAdds = kitPlayer.getAttackDamageAdds();
+            HashMap<Suffix, Double> dmgAdds = kitPlayer.getPhysicalDamageAdds();
             HashMap<Suffix, Double> pResAdds = kitPlayer.getPhysicalResistAdds();
 
             double damage = kitPlayer.getAttackDamage();

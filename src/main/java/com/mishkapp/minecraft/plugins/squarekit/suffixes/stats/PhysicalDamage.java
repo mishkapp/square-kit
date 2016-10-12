@@ -26,7 +26,7 @@ public class PhysicalDamage extends Suffix {
 
     @Override
     public void register() {
-        HashMap<Suffix, Double> adds = kitPlayer.getAttackDamageAdds();
+        HashMap<Suffix, Double> adds = kitPlayer.getPhysicalDamageAdds();
         if(!adds.containsKey(this)){
             adds.put(this, damage);
         }

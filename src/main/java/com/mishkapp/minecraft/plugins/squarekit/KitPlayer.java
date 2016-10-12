@@ -11,19 +11,16 @@ import org.spongepowered.api.scoreboard.displayslot.DisplaySlots;
 import org.spongepowered.api.scoreboard.objective.Objective;
 import org.spongepowered.api.text.Text;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by mishkapp on 27.04.2016.
  */
 public class KitPlayer {
 
-    private List<? extends Suffix> suffixes = new ArrayList<>();
+    private List<? extends Suffix> suffices = new ArrayList<>();
 
-    private final double ATTACK_DAMAGE = 1.0;
+    private final double PHYSICAL_DAMAGE = 1.0;
     private final double MAX_MANA = 100.0;
     private final double MANA_REGEN = 0.0;
     private final double HEALTH_REGEN = 0.125;
@@ -34,16 +31,7 @@ public class KitPlayer {
     private final double MAX_HEALTH = 100.0;
     private final double KNOCKBACK_RESIST = 0.0;
 
-    private HashMap<Suffix, Double> attackDamageAdds = new HashMap<>();
-    private HashMap<Suffix, Double> maxManaAds = new HashMap<>();
-    private HashMap<Suffix, Double> manaRegenAdds = new HashMap<>();
-    private HashMap<Suffix, Double> healthRegenAdds = new HashMap<>();
-    private HashMap<Suffix, Float> speedAdds = new HashMap<>();
-    private HashMap<Suffix, Double> physicalResistAdds = new HashMap<>();
-    private HashMap<Suffix, Double> magicResistAdds = new HashMap<>();
-    private HashMap<Suffix, Double> cooldownRateAdds = new HashMap<>();
-    private HashMap<Suffix, Double> maxHealthAdds = new HashMap<>();
-    private HashMap<Suffix, Double> knockbackResistsAdds = new HashMap<>();
+    private HashMap<String, HashMap<Suffix, Double>> additions = new HashMap();
 
     private double currentMana = 0.0;
 
@@ -57,7 +45,10 @@ public class KitPlayer {
 
     public KitPlayer(Player player) {
         this.player = player;
+        initScoreboard();
+    }
 
+    private void initScoreboard(){
         scoreboard = Scoreboard.builder()
                 .build();
 
@@ -76,24 +67,24 @@ public class KitPlayer {
     }
 
     public double getAttackDamage(){
-        double result = ATTACK_DAMAGE;
-        for(double i : attackDamageAdds.values()){
+        double result = PHYSICAL_DAMAGE;
+        for(double i : getPhysicalDamageAdds().values()){
             result += i;
         }
         return Math.max(1, result);
     }
 
     public float getSpeed(){
-        float result = SPEED;
-        for(float i : speedAdds.values()){
+        double result = SPEED;
+        for(double i : getSpeedAdds().values()){
             result += i;
         }
-        return result;
+        return (float)result;
     }
 
     public double getCooldownRate(){
         double result = COOLDOWN_RATE;
-        for(double i : cooldownRateAdds.values()){
+        for(double i : getCooldownRateAdds().values()){
             result += i;
         }
         return result;
@@ -101,7 +92,7 @@ public class KitPlayer {
 
     public double getMaxMana(){
         double result = MAX_MANA;
-        for(double i : maxManaAds.values()){
+        for(double i : getMaxManaAdds().values()){
             result += i;
         }
         return Math.max(0, result);
@@ -109,7 +100,7 @@ public class KitPlayer {
 
     public double getManaRegen() {
         double result = MANA_REGEN;
-        for(double i : manaRegenAdds.values()){
+        for(double i : getManaRegenAdds().values()){
             result += i;
         }
         return result;
@@ -117,7 +108,7 @@ public class KitPlayer {
 
     public double getHealthRegen() {
         double result = HEALTH_REGEN;
-        for(double i : healthRegenAdds.values()){
+        for(double i : getHealthRegenAdds().values()){
             result += i;
         }
         return result;
@@ -125,7 +116,7 @@ public class KitPlayer {
 
     public double getPhysicalResist() {
         double result = PHYSICAL_RESIST;
-        for(double i : physicalResistAdds.values()){
+        for(double i : getPhysicalResistAdds().values()){
             result += i;
         }
         return result;
@@ -133,7 +124,7 @@ public class KitPlayer {
 
     public double getMagicResist() {
         double result = MAGIC_RESIST;
-        for(double i : magicResistAdds.values()){
+        for(double i : getMagicResistAdds().values()){
             result += i;
         }
         return result;
@@ -141,7 +132,7 @@ public class KitPlayer {
 
     public double getMaxHealth() {
         double result = MAX_HEALTH;
-        for(double i : maxHealthAdds.values()){
+        for(double i : getMaxHealthAdds().values()){
             result += i;
         }
         return Math.max(1, result);
@@ -149,50 +140,57 @@ public class KitPlayer {
 
     public double getKnockbackResist() {
         double result = KNOCKBACK_RESIST;
-        for(double i : knockbackResistsAdds.values()){
+        for(double i : getKnockbackResistsAdds().values()){
             result += i;
         }
         return result;
     }
 
-    public HashMap<Suffix, Double> getAttackDamageAdds() {
-        return attackDamageAdds;
+    public HashMap<Suffix, Double> getAdditions(String s){
+        if(!additions.containsKey(s)){
+            additions.put(s, new HashMap<>());
+        }
+        return additions.get(s);
     }
 
-    public HashMap<Suffix, Double> getMaxManaAds() {
-        return maxManaAds;
+    public HashMap<Suffix, Double> getPhysicalDamageAdds() {
+        return getAdditions("physical-damage");
+    }
+
+    public HashMap<Suffix, Double> getMaxManaAdds() {
+        return getAdditions("max-mana");
     }
 
     public HashMap<Suffix, Double> getManaRegenAdds() {
-        return manaRegenAdds;
+        return getAdditions("mana-regen");
     }
 
     public HashMap<Suffix, Double> getHealthRegenAdds() {
-        return healthRegenAdds;
+        return getAdditions("health-regen");
     }
 
-    public HashMap<Suffix, Float> getSpeedAdds() {
-        return speedAdds;
+    public HashMap<Suffix, Double> getSpeedAdds() {
+        return getAdditions("speed");
     }
 
     public HashMap<Suffix, Double> getPhysicalResistAdds() {
-        return physicalResistAdds;
+        return getAdditions("physical-resist");
     }
 
     public HashMap<Suffix, Double> getMagicResistAdds() {
-        return magicResistAdds;
+        return getAdditions("magic-resist");
     }
 
     public HashMap<Suffix, Double> getCooldownRateAdds() {
-        return cooldownRateAdds;
+        return getAdditions("cooldown-rate");
     }
 
     public HashMap<Suffix, Double> getMaxHealthAdds() {
-        return maxHealthAdds;
+        return getAdditions("max-health");
     }
 
     public HashMap<Suffix, Double> getKnockbackResistsAdds() {
-        return knockbackResistsAdds;
+        return getAdditions("knockback-resistance");
     }
 
     public double getCurrentMana() {
@@ -230,22 +228,13 @@ public class KitPlayer {
     public void update(){
         System.out.println("UPDATE");
         purgeAdditions();
-        suffixes = SuffixFactory.getSuffixes(player);
-        suffixes.forEach(Suffix::register);
+        suffices = SuffixFactory.getSuffixes(player);
+        suffices.forEach(Suffix::register);
         updateStats();
     }
 
     private void purgeAdditions() {
-        attackDamageAdds = new HashMap<>();
-        manaRegenAdds = new HashMap<>();
-        healthRegenAdds = new HashMap<>();
-        speedAdds = new HashMap<>();
-        physicalResistAdds = new HashMap<>();
-        magicResistAdds = new HashMap<>();
-        cooldownRateAdds = new HashMap<>();
-        maxHealthAdds = new HashMap<>();
-        maxManaAds = new HashMap<>();
-        knockbackResistsAdds = new HashMap<>();
+        additions.values().forEach(HashMap::clear);
     }
 
     private void updateScoreboard(){
@@ -280,11 +269,11 @@ public class KitPlayer {
     }
 
     public void handleEvent(KitEvent event){
-        suffixes.forEach(s -> s.handle(event));
+        suffices.forEach(s -> s.handle(event));
     }
 
-    public List<? extends Suffix> getSuffixes() {
-        return suffixes;
+    public List<? extends Suffix> getSuffices() {
+        return suffices;
     }
 
     private void tickRegens(){
