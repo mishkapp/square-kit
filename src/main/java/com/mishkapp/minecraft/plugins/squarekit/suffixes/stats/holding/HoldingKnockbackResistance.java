@@ -24,6 +24,8 @@ public class HoldingKnockbackResistance extends Suffix {
         } else {
             resistance = level * 2;
         }
+
+        resistance /= 100.0;
     }
 
     @Override
@@ -44,6 +46,6 @@ public class HoldingKnockbackResistance extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("holding-knockback-resistance-suffix").replace("%RES%", Formatters.round.format(resistance));
+        return Messages.get("holding-knockback-resistance-suffix").replace("%RES%", Formatters.round.format(resistance * 100));
     }
 }

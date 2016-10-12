@@ -24,6 +24,8 @@ public class HoldingPhysicalResistance extends Suffix{
         } else {
             resistance = level;
         }
+
+        resistance /= 100.0;
     }
 
     @Override
@@ -44,6 +46,6 @@ public class HoldingPhysicalResistance extends Suffix{
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("holding-physical-resistance-suffix").replace("%PRES%", Formatters.round.format(resistance));
+        return Messages.get("holding-physical-resistance-suffix").replace("%PRES%", Formatters.round.format(resistance * 100));
     }
 }
