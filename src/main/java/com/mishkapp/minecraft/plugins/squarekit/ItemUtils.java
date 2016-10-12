@@ -40,6 +40,13 @@ public class ItemUtils {
         i.offer(Keys.ITEM_LORE, lore);
     }
 
+    public static boolean isSimilar(ItemStack a, ItemStack b){
+        return a != null
+                && b != null
+                && a.getItem() == b.getItem()
+                && a.get(Keys.ITEM_LORE).equals(b.get(Keys.ITEM_LORE));
+    }
+
     public static boolean isArmor(ItemStack i){
         return (i.getItem() == ItemTypes.LEATHER_BOOTS
                 || i.getItem() == ItemTypes.LEATHER_CHESTPLATE

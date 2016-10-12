@@ -3,7 +3,6 @@ package com.mishkapp.minecraft.plugins.squarekit;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColor;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.text.Text;
@@ -72,10 +71,10 @@ public class Utils {
         return -1;
     }
 
-    public static Suffix instantiateSuffix(Class<? extends Suffix> clazz, Player player, ItemStack i, int level){
+    public static Suffix instantiateSuffix(Class<? extends Suffix> clazz, KitPlayer kitPlayer, ItemStack i, int level){
         try{
             return clazz.getConstructor(KitPlayer.class, ItemStack.class, Integer.class).newInstance(
-                    PlayersRegistry.getInstance().getPlayer(player.getUniqueId()),
+                    kitPlayer,
                     i,
                     level
             );

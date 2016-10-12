@@ -18,7 +18,7 @@ import java.util.*;
  */
 public class KitPlayer {
 
-    private List<? extends Suffix> suffices = new ArrayList<>();
+    private List<KitItem> kitItems = new ArrayList<>();
 
     private final double PHYSICAL_DAMAGE = 1.0;
     private final double MAX_MANA = 100.0;
@@ -223,10 +223,56 @@ public class KitPlayer {
 
     public void update(){
         System.out.println("UPDATE");
-        purgeAdditions();
-        suffices = SuffixFactory.getSuffixes(player);
-        suffices.forEach(Suffix::register);
+
+        List<KitItem> items = SuffixFactory.getKitItems(this);
+
+        List<KitItem> newItems = new ArrayList<>();
+        List<KitItem> oldItems = new ArrayList<>();
+        newItems.addAll(items);
+        oldItems.addAll(kitItems);
+
+        kitItems.iterator().forEachRemaining(o -> {
+            if(newItems.contains(o)){
+                newItems.remove(o);
+                oldItems.remove(o);
+            }
+        });
+
+        newItems.forEach(
+                o -> o.getSuffices().forEach(Suffix::register)
+        );
+        oldItems.forEach(
+                o -> o.getSuffices().forEach(Suffix::unregister)
+        );
+
+        kitItems.removeAll(oldItems);
+        kitItems.addAll(newItems);
+
         updateStats();
+    }
+
+    public void forceUpdate(){
+        System.out.println("FORCE UPDATE");
+        purgeAdditions();
+        kitItems = SuffixFactory.getKitItems(this);
+        kitItems.forEach(
+                o -> o.getSuffices().forEach(Suffix::register)
+        );
+        updateStats();
+    }
+
+    public void unregister(Suffix s) {
+        additions.values().forEach(
+                o -> {
+                    Iterator<Map.Entry<Suffix,Double>> it = o.entrySet().iterator();
+                    while (it.hasNext()) {
+                        Map.Entry<Suffix,Double> k = it.next();
+                        //I use '==' instead of 'equals' because we need to find SAME object
+                        if (k.getKey() == s) {
+                            it.remove();
+                        }
+                    }
+                });
     }
 
     private void purgeAdditions() {
@@ -265,11 +311,15 @@ public class KitPlayer {
     }
 
     public void handleEvent(KitEvent event){
-        suffices.forEach(s -> s.handle(event));
+        kitItems.forEach(
+                o -> o.getSuffices().forEach(
+                        s -> s.handle(event)
+                )
+        );
     }
 
-    public List<? extends Suffix> getSuffices() {
-        return suffices;
+    public List<KitItem> getKitItems() {
+        return kitItems;
     }
 
     private void tickRegens(){

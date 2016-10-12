@@ -172,7 +172,7 @@ public class EventInterceptor {
 
     @Listener
     public void onLogin(ClientConnectionEvent.Join event, @First Player player){
-            SquareKit.getPlayersRegistry().registerPlayer(player);
+        SquareKit.getPlayersRegistry().registerPlayer(player);
         requestUpdate(player.getUniqueId());
     }
 

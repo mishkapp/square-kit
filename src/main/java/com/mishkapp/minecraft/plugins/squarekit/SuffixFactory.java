@@ -14,24 +14,26 @@ import java.util.List;
  */
 public class SuffixFactory {
 
-    public static List<Suffix> getSuffixes(Player player){
-        List<Suffix> result = new ArrayList<>();
+    public static List<KitItem> getKitItems(KitPlayer kitPlayer){
+        List<KitItem> result = new ArrayList<>();
+        Player player = kitPlayer.getMcPlayer();
         CarriedInventory inventory = player.getInventory();
         for(Object o : inventory.slots()){
             Slot slot = (Slot)o;
             ItemStack i = slot.peek().orElse(null);
             if(i != null && Utils.isKitItem(i)){
-                result.addAll(getSuffixes(player, i));
+                result.add(getKitItem(kitPlayer, i));
                 slot.set(i);
             }
         }
         return result;
     }
 
-    public static List<Suffix> getSuffixes(Player player, ItemStack i){
+    public static KitItem getKitItem(KitPlayer kitPlayer, ItemStack i){
         String itemCode = Utils.getItemCode(i);
         ItemUtils.setLore(i, Utils.CODE_PREFIX + itemCode);
-        List<Suffix> result = new ArrayList<>();
+        KitItem result = new KitItem(kitPlayer, i, itemCode);
+        List<Suffix> suffices = new ArrayList<>();
 
         while(true){
             if(itemCode.length() < 3){
@@ -42,13 +44,14 @@ public class SuffixFactory {
             int level = Utils.getBase64Value(itemCode.substring(0, 1));
             itemCode = itemCode.substring(1);
 
-            Suffix suffix = Utils.instantiateSuffix(SuffixRegistry.getInstance().getSuffix(id), player, i, level);
+            Suffix suffix = Utils.instantiateSuffix(SuffixRegistry.getInstance().getSuffix(id), kitPlayer, i, level);
             if(suffix == null){
                 continue;
             }
-            result.add(suffix);
+            suffices.add(suffix);
             ItemUtils.addLore(i, suffix.getLoreEntry());
         }
+        result.setSuffices(suffices);
         return result;
     }
 }

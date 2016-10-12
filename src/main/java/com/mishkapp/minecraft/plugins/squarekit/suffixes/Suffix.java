@@ -50,6 +50,10 @@ public abstract class Suffix {
 
     public void register() {}
 
+    public void unregister() {
+        kitPlayer.unregister(this);
+    }
+
     public abstract void handle(KitEvent event);
 
     public ItemStack getItemStack() {
