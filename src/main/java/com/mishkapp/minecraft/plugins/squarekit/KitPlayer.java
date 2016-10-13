@@ -20,16 +20,16 @@ public class KitPlayer {
 
     private List<KitItem> kitItems = new ArrayList<>();
 
-    private final double PHYSICAL_DAMAGE = 1.0;
-    private final double MAX_MANA = 100.0;
-    private final double MANA_REGEN = 0.0;
-    private final double HEALTH_REGEN = 0.125;
-    private final float SPEED = 1.0f;
-    private final double COOLDOWN_RATE = 1.0;
-    private final double PHYSICAL_RESIST = 0.0;
-    private final double MAGIC_RESIST = 0.0;
-    private final double MAX_HEALTH = 100.0;
-    private final double KNOCKBACK_RESIST = 0.0;
+    private final double PHYSICAL_DAMAGE = 1.0;     // [1, ∞)
+    private final double MAX_MANA = 100.0;          // [0, ∞)
+    private final double MANA_REGEN = 0.0;          // (-∞, ∞)
+    private final double HEALTH_REGEN = 0.125;      // (-∞, ∞)
+    private final double SPEED = 1.0;               // (0, ∞)
+    private final double COOLDOWN_RATE = 1.0;       // (0, ∞)
+    private final double PHYSICAL_RESIST = 0.0;     // (-∞, 100]
+    private final double MAGIC_RESIST = 0.0;        // (-∞, 100]
+    private final double MAX_HEALTH = 100.0;        // [1, ∞)
+    private final double KNOCKBACK_RESIST = 0.0;    // (-∞, ∞)
 
     private HashMap<String, HashMap<Suffix, Double>> additions = new HashMap();
 

@@ -17,6 +17,7 @@ import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.Holding
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.passive.ArrowGenerator;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.*;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.holding.*;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.use.IceGrowth;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.use.Shelter;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.ConfigurationOptions;
@@ -209,6 +210,7 @@ public class SquareKit{
         registry.registerSuffix("1C", MagicImbueWeapon.class);
 
         registry.registerSuffix("3A", Shelter.class);
+        registry.registerSuffix("3B", IceGrowth.class);
 
         registry.registerSuffix("6A", ArrowGenerator.class);
 
