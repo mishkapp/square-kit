@@ -42,6 +42,7 @@ public class KitPlayer {
     public KitPlayer(Player player) {
         this.player = player;
         initScoreboard();
+        currentMana = getMaxMana();
     }
 
     private void initScoreboard(){
