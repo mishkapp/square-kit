@@ -2,13 +2,17 @@ package com.mishkapp.minecraft.plugins.squarekit;
 
 import com.mishkapp.minecraft.plugins.squarekit.events.*;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.projectile.Projectile;
 import org.spongepowered.api.entity.projectile.arrow.Arrow;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.block.CollideBlockEvent;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.event.cause.entity.damage.source.IndirectEntityDamageSource;
 import org.spongepowered.api.event.entity.AttackEntityEvent;
+import org.spongepowered.api.event.entity.CollideEntityEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
 import org.spongepowered.api.event.entity.projectile.LaunchProjectileEvent;
@@ -19,6 +23,7 @@ import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.spongepowered.api.data.type.HandTypes.MAIN_HAND;
@@ -150,6 +155,26 @@ public class EventInterceptor {
         }
     }
 
+    @Listener
+    public void onProjectileCollideEntity(CollideEntityEvent.Impact event, @First final Projectile projectile){
+        KitPlayer tempPlayer = SquareKit.getPlayersRegistry().getPlayer(projectile.getCreator().orElse(null));
+
+        if(tempPlayer == null){
+            return;
+        }
+
+        final KitPlayer kitPlayer = tempPlayer;
+        List<Entity> entities = event.getEntities();
+        if(entities.contains(kitPlayer.getMcPlayer())){
+            return;
+        }
+        entities.forEach(entity -> Sponge.getEventManager().post(new EntityCollideEntityEvent(kitPlayer, projectile, entity)));
+    }
+
+    @Listener
+    public void onEntityCollideBlock(CollideBlockEvent event){
+
+    }
 
     @Listener
     @Exclude({ChangeInventoryEvent.Held.class, ChangeInventoryEvent.Transfer.class})

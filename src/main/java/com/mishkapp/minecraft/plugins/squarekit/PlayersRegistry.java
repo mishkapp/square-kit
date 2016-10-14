@@ -62,7 +62,11 @@ public class PlayersRegistry {
     }
 
     public KitPlayer getPlayer(UUID uuid) {
-        return players.get(uuid);
+        if(players.containsKey(uuid)){
+            return players.get(uuid);
+        } else {
+            return null;
+        }
     }
 
     private class Ticker implements Runnable {
