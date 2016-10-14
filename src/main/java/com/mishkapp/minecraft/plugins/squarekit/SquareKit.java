@@ -3,7 +3,6 @@ package com.mishkapp.minecraft.plugins.squarekit;
 import com.google.common.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.mishkapp.minecraft.plugins.squarekit.commands.KitCommand;
-import com.mishkapp.minecraft.plugins.squarekit.commands.LoreCommand;
 import com.mishkapp.minecraft.plugins.squarekit.serializers.ItemStackSerializer;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.active.HideShadow;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.attack.MagicImbueWeapon;
@@ -130,17 +129,6 @@ public class SquareKit{
     }
 
     private void initCmds(){
-        // /lore
-        CommandSpec loreCmd = CommandSpec.builder()
-                .permission("squarekit.admin")
-                .description(Text.of("Set first line of lore for item in hand"))
-                .executor(new LoreCommand())
-                .arguments(
-                        GenericArguments.string(Text.of("lore"))
-                )
-                .build();
-        Sponge.getCommandManager().register(this, loreCmd, "lore");
-
         // /kit
         CommandSpec kitCmd = CommandSpec.builder()
                 .description(Text.of("Get specified kit"))
