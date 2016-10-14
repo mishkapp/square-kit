@@ -32,6 +32,7 @@ import static java.lang.StrictMath.sin;
  */
 public class IceRock extends UseSuffix {
     private int duration;
+    private double damage = 30;
     private ParticleEffect particleEffect;
     private PotionEffect potionEffect;
     private Random random = new Random();
@@ -78,7 +79,7 @@ public class IceRock extends UseSuffix {
                 return;
             }
             KitPlayer affectedPlayer = SquareKit.getPlayersRegistry().getPlayer(affected.getUniqueId());
-            affectedPlayer.addMagicDamage(30);
+            affectedPlayer.addMagicDamage(damage);
             lastEntity.remove();
         }
         if(event instanceof ItemUsedEvent){
@@ -162,8 +163,8 @@ public class IceRock extends UseSuffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("ice-growth-suffix")
-                .replace("%DURATION%", Formatters.tenth.format(duration/20))
+        return Messages.get("ice-rock-suffix")
+                .replace("%DAMAGE%", Formatters.tenth.format(damage))
                 .replace("%COOLDOWN%", Formatters.tenth.format(cooldown/1000))
                 .replace("%MANACOST%", Formatters.round.format(manaCost));
     }
