@@ -41,7 +41,7 @@ public class Shelter extends UseSuffix {
 
         particleEffect = ParticleEffect.builder()
                 .type(ParticleTypes.SLIME)
-                .count(5)
+                .count(2)
                 .offset(new Vector3d(0, 1, 0))
                 .build();
     }
@@ -102,10 +102,10 @@ public class Shelter extends UseSuffix {
     private void addEffect(){
         Player player = kitPlayer.getMcPlayer();
         World world = player.getWorld();
-        for (int i = 0; i < 5; i++){
+        for (int i = 0; i < 16; i++){
             world.spawnParticles(
                     particleEffect,
-                    player.getLocation().getPosition().add(random.nextGaussian()/4, random.nextGaussian()/4, random.nextGaussian()/4)
+                    player.getLocation().getPosition().add(random.nextGaussian()/3 + 0.1, random.nextGaussian(), random.nextGaussian()/3 + 0.1)
             );
         }
     }
