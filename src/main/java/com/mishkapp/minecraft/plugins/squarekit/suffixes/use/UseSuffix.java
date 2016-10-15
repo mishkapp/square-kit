@@ -5,7 +5,7 @@ import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 /**
  * Created by mishkapp on 08.10.2016.
@@ -24,8 +24,10 @@ public abstract class UseSuffix extends Suffix {
         if(delta < (cooldown * kitPlayer.getCooldownRate())){
             double time = ((cooldown * kitPlayer.getCooldownRate()) - delta)/1000.0;
             kitPlayer.getMcPlayer().sendMessage(
-                    Text.of(Messages.get("cooldown")
-                    .replace("%TIME%", Formatters.tenth.format(time))));
+                    TextSerializers.FORMATTING_CODE.deserialize(
+                            Messages.get("cooldown")
+                                    .replace("%TIME%", Formatters.tenth.format(time)))
+            );
             return false;
         } else {
             return true;

@@ -13,7 +13,7 @@ import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.world.World;
 
 import java.util.HashMap;
@@ -67,7 +67,7 @@ public class Shelter extends UseSuffix {
             double currentMana = kitPlayer.getCurrentMana();
 
             if(currentMana < manaCost){
-                player.sendMessage(Text.of(Messages.get("nomana")));
+                player.sendMessage(TextSerializers.FORMATTING_CODE.deserialize("nomana"));
                 return;
             }
             if(!isCooldowned(kitPlayer)){

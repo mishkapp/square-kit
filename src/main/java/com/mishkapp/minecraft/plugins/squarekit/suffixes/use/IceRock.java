@@ -16,7 +16,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.scheduler.Task;
-import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.world.World;
 
 import java.util.ArrayList;
@@ -92,7 +92,7 @@ public class IceRock extends UseSuffix {
             double currentMana = kitPlayer.getCurrentMana();
 
             if(currentMana < manaCost){
-                player.sendMessage(Text.of(Messages.get("nomana")));
+                player.sendMessage(TextSerializers.FORMATTING_CODE.deserialize(Messages.get("nomana")));
                 return;
             }
             if(!isCooldowned(kitPlayer)){

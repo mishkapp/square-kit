@@ -13,7 +13,7 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.util.AABB;
 import org.spongepowered.api.world.World;
 
@@ -72,7 +72,7 @@ public class IceGrowth extends UseSuffix {
             double currentMana = kitPlayer.getCurrentMana();
 
             if(currentMana < manaCost){
-                player.sendMessage(Text.of(Messages.get("nomana")));
+                player.sendMessage(TextSerializers.FORMATTING_CODE.deserialize(Messages.get("nomana")));
                 return;
             }
             if(!isCooldowned(kitPlayer)){
