@@ -58,9 +58,6 @@ public class IceGrowth extends UseSuffix {
     }
 
     @Override
-    public void register() {}
-
-    @Override
     public void handle(KitEvent event) {
         if(event instanceof ItemUsedEvent){
             Player player = kitPlayer.getMcPlayer();
@@ -130,7 +127,6 @@ public class IceGrowth extends UseSuffix {
     public String getLoreEntry() {
         return Messages.get("ice-growth-suffix")
                 .replace("%DURATION%", Formatters.tenth.format(duration/20))
-                .replace("%COOLDOWN%", Formatters.tenth.format(cooldown/1000))
-                .replace("%MANACOST%", Formatters.round.format(manaCost));
+                + super.getLoreEntry();
     }
 }

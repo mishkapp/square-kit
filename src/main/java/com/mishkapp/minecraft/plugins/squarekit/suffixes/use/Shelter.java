@@ -47,9 +47,6 @@ public class Shelter extends UseSuffix {
     }
 
     @Override
-    public void register() {}
-
-    @Override
     public void handle(KitEvent event) {
         if(event instanceof SuffixTickEvent){
             if(isActive){
@@ -116,7 +113,6 @@ public class Shelter extends UseSuffix {
                 .replace("%PRES%", Formatters.round.format(pRes * 100))
                 .replace("%ATTACK%", Formatters.round.format(fallDamage))
                 .replace("%TIME%", Formatters.tenth.format(duration/20))
-                .replace("%COOLDOWN%", Formatters.tenth.format(cooldown/1000))
-                .replace("%MANACOST%", Formatters.round.format(manaCost));
+                + super.getLoreEntry();
     }
 }

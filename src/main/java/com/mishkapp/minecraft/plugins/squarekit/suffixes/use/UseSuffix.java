@@ -32,7 +32,12 @@ public abstract class UseSuffix extends Suffix {
         } else {
             return true;
         }
+    }
 
-
+    @Override
+    public String getLoreEntry() {
+        return Messages.get("use-suffix-trail")
+                .replace("%COOLDOWN%", Formatters.tenth.format(cooldown/1000))
+                .replace("%MANACOST%", Formatters.round.format(manaCost));
     }
 }
