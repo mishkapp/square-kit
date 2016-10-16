@@ -11,10 +11,8 @@ import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.projectile.Projectile;
-import org.spongepowered.api.entity.projectile.Snowball;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.serializer.TextSerializers;
@@ -37,13 +35,13 @@ public abstract class LaunchProjectileSuffix extends UseSuffix {
     protected ParticleEffect trailEffect;
     protected Entity lastEntity = null;
 
-    protected EntityType entityType;
+    protected Class<? extends Projectile> projectileClass;
 
     private Random random = new Random();
 
-    public LaunchProjectileSuffix(KitPlayer kitPlayer, ItemStack itemStack, Integer level, EntityType entityType) {
+    public LaunchProjectileSuffix(KitPlayer kitPlayer, ItemStack itemStack, Integer level, Class<? extends Projectile> projectileClass) {
         super(kitPlayer, itemStack, level);
-        this.entityType = entityType;
+        this.projectileClass = projectileClass;
 
         cooldown = 4 * 1000;
         manaCost = 40 - (level * 64.0/40);
@@ -102,9 +100,8 @@ public abstract class LaunchProjectileSuffix extends UseSuffix {
                     hSpeed * cos(toRadians(lookVec.getY()))
             );
 
-            final Projectile projectile = player.launchProjectile(Snowball.class, thrustVec).orElse(null);
+            final Projectile projectile = player.launchProjectile(projectileClass, thrustVec).orElse(null);
             if(projectile == null){
-                System.out.println("!!!");
                 return;
             }
 //            projectile.setVelocity(thrustVec);
