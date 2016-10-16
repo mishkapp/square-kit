@@ -9,6 +9,10 @@ import org.spongepowered.api.entity.projectile.arrow.Arrow;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.CollideBlockEvent;
 import org.spongepowered.api.event.block.InteractBlockEvent;
+import org.spongepowered.api.event.cause.entity.damage.DamageModifier;
+import org.spongepowered.api.event.cause.entity.damage.DamageModifierTypes;
+import org.spongepowered.api.event.cause.entity.damage.DamageTypes;
+import org.spongepowered.api.event.cause.entity.damage.source.DamageSource;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.event.cause.entity.damage.source.IndirectEntityDamageSource;
 import org.spongepowered.api.event.entity.AttackEntityEvent;
@@ -22,12 +26,15 @@ import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.util.Tuple;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 
 import static org.spongepowered.api.data.type.HandTypes.MAIN_HAND;
 import static org.spongepowered.api.data.type.HandTypes.OFF_HAND;
+import static org.spongepowered.api.event.cause.entity.damage.DamageTypes.SWEEPING_ATTACK;
 
 /**
  * Created by mishkapp on 27.04.2016.
@@ -52,29 +59,53 @@ public class EventInterceptor {
     }
 
     @Listener
-    public void onEntityDamage(DamageEntityEvent event){
-        //TODO: rework this
-//        int damageMultiplier = 5;
-//        switch (event.getCause()){
-//            case CONTACT:
-//            case SUFFOCATION:
-//            case FALL:
-//            case FIRE:
-//            case FIRE_TICK:
-//            case MELTING:
-//            case LAVA:
-//            case DROWNING:
-//            case LIGHTNING:
-//            case ENTITY_EXPLOSION:
-//            case BLOCK_EXPLOSION:
-//            case STARVATION:
-//            case WITHER:
-//            case MAGIC:
-//            case FALLING_BLOCK:
-//            case THORNS:
-//            case FLY_INTO_WALL:
-//                event.setDamage(event.getDamage() * damageMultiplier);
-//        }
+    public void onHit(AttackEntityEvent event, @First EntityDamageSource damageSource){
+        if(damageSource.getSource() instanceof Player){
+            KitPlayer damager = SquareKit.getPlayersRegistry().getPlayer(damageSource.getSource().getUniqueId());
+
+            event.setBaseOutputDamage(damager.getAttackDamage());
+
+            for (Tuple<DamageModifier, Function<? super Double, Double>> t : event.getModifiers()) {
+                if(t.getFirst().getType().equals(DamageModifierTypes.CRITICAL_HIT)){
+                    event.setOutputDamage(t.getFirst(), d -> 0.0);
+                }
+            }
+
+            event.getTargetEntity().damage(event.getFinalOutputDamage(), DamageSource.builder().type(SWEEPING_ATTACK).bypassesArmor().build());
+            event.setBaseOutputDamage(0);
+            Sponge.getEventManager().post(new PlayerAttackEntityEvent(
+                    damager,
+                    event.getTargetEntity()
+            ));
+        }
+    }
+
+    @Listener
+    public void onEntityDamage(DamageEntityEvent event, @First DamageSource damageSource){
+        int damageMultiplier = 5;
+        if(damageSource.getType() == DamageTypes.CONTACT
+                || damageSource.getType() == DamageTypes.SUFFOCATE
+                || damageSource.getType() == DamageTypes.FALL
+                || damageSource.getType() == DamageTypes.FIRE
+                || damageSource.getType() == DamageTypes.DROWN
+                || damageSource.getType() == DamageTypes.EXPLOSIVE
+                || damageSource.getType() == DamageTypes.HUNGER
+                || damageSource.getType() == DamageTypes.VOID
+                ){
+            event.setBaseDamage(event.getBaseDamage() * damageMultiplier);
+        }
+
+        if(event.getTargetEntity() instanceof Player){
+            KitPlayer kitPlayer = SquareKit.getPlayersRegistry().getPlayer(event.getTargetEntity().getUniqueId());
+            if(damageSource.isMagic()){
+                kitPlayer.addMagicDamage(event.getBaseDamage());
+            } else if (damageSource.isAbsolute()){
+                kitPlayer.addPureDamage(event.getBaseDamage());
+            } else {
+                kitPlayer.addPhysicalDamage(event.getBaseDamage());
+            }
+            event.setBaseDamage(0);
+        }
     }
 
     @Listener
@@ -204,21 +235,6 @@ public class EventInterceptor {
     @Listener
     public void onLogout(ClientConnectionEvent.Disconnect event, @First Player player){
         SquareKit.getPlayersRegistry().unregisterPlayer(player);
-    }
-
-    @Listener
-    public void onHit(AttackEntityEvent event, @First EntityDamageSource damageSource){
-        if(event.getTargetEntity() instanceof Player &&
-                damageSource.getSource() instanceof Player){
-            KitPlayer damaged = SquareKit.getPlayersRegistry().getPlayer(event.getTargetEntity().getUniqueId());
-            KitPlayer damager = SquareKit.getPlayersRegistry().getPlayer(damageSource.getSource().getUniqueId());
-            event.setKnockbackModifier((int)(event.getKnockbackModifier() * (1.0 - damaged.getKnockbackResist())));
-            event.setBaseOutputDamage(event.getBaseOutputDamage() * (1.0 - damaged.getPhysicalResist()));
-            Sponge.getEventManager().post(new PlayerAttackPlayerEvent(
-                    damager,
-                    damaged
-            ));
-        }
     }
 
     //TODO: event not implemented

@@ -13,7 +13,8 @@ import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.entity.projectile.Projectile;
+import org.spongepowered.api.entity.projectile.Snowball;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.serializer.TextSerializers;
@@ -59,7 +60,7 @@ public abstract class LaunchProjectileSuffix extends UseSuffix {
             if(playersEntity != lastEntity){
                 return;
             }
-            onCollide(playersEntity);
+            onCollide(entityCollideEntityEvent.getAffectedEntity());
             lastEntity.remove();
         }
         if(event instanceof ItemUsedEvent){
@@ -101,16 +102,20 @@ public abstract class LaunchProjectileSuffix extends UseSuffix {
                     hSpeed * cos(toRadians(lookVec.getY()))
             );
 
-            final Entity projectile = world.createEntity(entityType, spawnLoc);
-            projectile.setVelocity(thrustVec);
+            final Projectile projectile = player.launchProjectile(Snowball.class, thrustVec).orElse(null);
+            if(projectile == null){
+                System.out.println("!!!");
+                return;
+            }
+//            projectile.setVelocity(thrustVec);
             projectile.offer(Keys.HAS_GRAVITY, false);
             projectile.setCreator(player.getUniqueId());
             lastEntity = projectile;
 
-            world.spawnEntity(projectile,
-                    Cause.builder()
-                            .owner(SquareKit.getInstance())
-                            .build());
+//            world.spawnEntity(projectile,
+//                    Cause.builder()
+//                            .owner(SquareKit.getInstance())
+//                            .build());
 
             final Task effectTask = SpongeUtils.getTaskBuilder()
                     .intervalTicks(1)
