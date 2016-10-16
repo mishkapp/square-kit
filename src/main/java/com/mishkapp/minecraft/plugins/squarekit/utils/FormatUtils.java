@@ -13,21 +13,20 @@ public class FormatUtils {
     private static NumberFormat thousandth = new DecimalFormat("#0.000");
 
     public static String unsignedRound(double d){
-        return d > 0 ? "+" + round.format(d) : round.format(d);
+        return round.format(d);
     }
 
     public static String unsignedTenth(double d){
-        return d > 0 ? "+" + tenth.format(d) : tenth.format(d);
+        return tenth.format(d);
     }
 
     public static String unsignedHundredth(double d){
-        return d > 0 ? "+" + hundredth.format(d) : hundredth.format(d);
+        return hundredth.format(d);
     }
 
     public static String unsignedThousandth(double d){
-        return d > 0 ? "+" + thousandth.format(d) : thousandth.format(d);
+        return thousandth.format(d);
     }
-
 
     public static String round(double d){
         return d > 0 ? "+" + round.format(d) : round.format(d);
