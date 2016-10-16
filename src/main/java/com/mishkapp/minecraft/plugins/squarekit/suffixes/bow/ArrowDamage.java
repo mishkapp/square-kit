@@ -6,6 +6,8 @@ import com.mishkapp.minecraft.plugins.squarekit.events.ArrowHitEntityEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
+import org.spongepowered.api.event.cause.entity.damage.DamageTypes;
+import org.spongepowered.api.event.cause.entity.damage.source.DamageSource;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 /**
@@ -29,7 +31,8 @@ public class ArrowDamage extends Suffix {
             if(!isWeaponInHand()){
                 return;
             }
-            ((ArrowHitEntityEvent) event).getTarget().addPhysicalDamage(damage);
+            ArrowHitEntityEvent arrowHitEntityEvent = (ArrowHitEntityEvent) event;
+            arrowHitEntityEvent.getTarget().damage(arrowHitEntityEvent.getDamageMultiplier() * damage, DamageSource.builder().bypassesArmor().type(DamageTypes.PROJECTILE).build());
         }
     }
 

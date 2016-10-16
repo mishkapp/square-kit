@@ -121,6 +121,9 @@ public class EventInterceptor {
 
     @Listener
     public void onEntityDamage(DamageEntityEvent event, @First DamageSource damageSource){
+        if(damageSource instanceof IndirectEntityDamageSource){
+            return;
+        }
         int damageMultiplier = 5;
         if(damageSource.getType() == DamageTypes.CONTACT
                 || damageSource.getType() == DamageTypes.SUFFOCATE
@@ -143,6 +146,25 @@ public class EventInterceptor {
             } else {
                 kitPlayer.addPhysicalDamage(event.getBaseDamage());
             }
+            event.setBaseDamage(0);
+        }
+    }
+
+    @Listener
+    public void onArrowHit(DamageEntityEvent event, @First IndirectEntityDamageSource source){
+        if (!(source.getSource() instanceof Arrow)) {
+            return;
+        }
+
+        Arrow arrow = (Arrow)source.getSource();
+        if (source.getIndirectSource() instanceof Player) {
+            Player player = (Player) source.getIndirectSource();
+            KitPlayer kitPlayer = SquareKit.getPlayersRegistry().getPlayer(player.getUniqueId());
+            Sponge.getEventManager().post(new ArrowHitEntityEvent(
+                    kitPlayer,
+                    arrow,
+                    event.getTargetEntity(),
+                    event.getBaseDamage() / 10.0));
             event.setBaseDamage(0);
         }
     }
@@ -280,23 +302,7 @@ public class EventInterceptor {
     @Listener
     public void onArrowLaunch(LaunchProjectileEvent event) {}
 
-    @Listener
-    public void onArrowHit(DamageEntityEvent event, @First IndirectEntityDamageSource source){
-        if (!(source.getSource() instanceof Arrow)) {
-            return;
-        }
 
-        Arrow arrow = (Arrow)source.getSource();
-        if (source.getIndirectSource() instanceof Player) {
-            Player player = (Player) source.getIndirectSource();
-            KitPlayer kitPlayer = SquareKit.getPlayersRegistry().getPlayer(player.getUniqueId());
-            Sponge.getEventManager().post(new ArrowHitEntityEvent(kitPlayer, arrow,
-                    SquareKit.getPlayersRegistry().getPlayer((event.getTargetEntity()).getUniqueId())));
-
-//            SquareKit.getPlayersRegistry().getPlayer(event.getTargetEntity().getUniqueId()).addPhysicalDamage(event.getFinalDamage());
-            event.setBaseDamage(0);
-        }
-    }
 
     private void requestUpdate(UUID uuid) {
         Sponge.getScheduler().createTaskBuilder().

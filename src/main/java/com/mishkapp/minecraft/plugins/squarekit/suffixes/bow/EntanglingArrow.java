@@ -9,7 +9,7 @@ import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.effect.potion.PotionEffectTypes;
-import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -42,11 +42,11 @@ public class EntanglingArrow extends Suffix {
             if(!isWeaponInHand()){
                 return;
             }
-            Player player = ((ArrowHitEntityEvent) event).getTarget().getMcPlayer();
+            Entity entity = ((ArrowHitEntityEvent) event).getTarget();
 
-            List<PotionEffect> list = player.get(Keys.POTION_EFFECTS).orElse(new ArrayList<>());
+            List<PotionEffect> list = entity.get(Keys.POTION_EFFECTS).orElse(new ArrayList<>());
             list.add(effect);
-            player.offer(Keys.POTION_EFFECTS, list);
+            entity.offer(Keys.POTION_EFFECTS, list);
         }
     }
 
