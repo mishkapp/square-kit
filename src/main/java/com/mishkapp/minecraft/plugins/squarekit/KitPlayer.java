@@ -65,6 +65,10 @@ public class KitPlayer {
         return player.getUniqueId();
     }
 
+    public double getHealth(){
+        return player.health().get();
+    }
+
     public double getAttackDamage(){
         double result = PHYSICAL_DAMAGE;
         for(double i : getPhysicalDamageAdds().values()){

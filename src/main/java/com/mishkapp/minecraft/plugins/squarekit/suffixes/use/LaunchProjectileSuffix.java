@@ -11,8 +11,9 @@ import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.entity.projectile.Projectile;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.serializer.TextSerializers;
@@ -35,13 +36,13 @@ public abstract class LaunchProjectileSuffix extends UseSuffix {
     protected ParticleEffect trailEffect;
     protected Entity lastEntity = null;
 
-    protected Class<? extends Projectile> projectileClass;
+    protected EntityType entityType;
 
     private Random random = new Random();
 
-    public LaunchProjectileSuffix(KitPlayer kitPlayer, ItemStack itemStack, Integer level, Class<? extends Projectile> projectileClass) {
+    public LaunchProjectileSuffix(KitPlayer kitPlayer, ItemStack itemStack, Integer level, EntityType entityType) {
         super(kitPlayer, itemStack, level);
-        this.projectileClass = projectileClass;
+        this.entityType = entityType;
 
         cooldown = 4 * 1000;
         manaCost = 40 - (level * 64.0/40);
@@ -100,33 +101,32 @@ public abstract class LaunchProjectileSuffix extends UseSuffix {
                     hSpeed * cos(toRadians(lookVec.getY()))
             );
 
-            final Projectile projectile = player.launchProjectile(projectileClass, thrustVec).orElse(null);
-            if(projectile == null){
-                return;
-            }
-//            projectile.setVelocity(thrustVec);
-            projectile.offer(Keys.HAS_GRAVITY, false);
-            projectile.setCreator(player.getUniqueId());
-            lastEntity = projectile;
+            final Entity entity = player.getWorld().createEntity(entityType, spawnLoc);
 
-//            world.spawnEntity(projectile,
-//                    Cause.builder()
-//                            .owner(SquareKit.getInstance())
-//                            .build());
+            entity.setVelocity(thrustVec);
+
+            entity.offer(Keys.HAS_GRAVITY, false);
+            entity.setCreator(player.getUniqueId());
+            lastEntity = entity;
+
+            world.spawnEntity(entity,
+                    Cause.builder()
+                            .owner(SquareKit.getInstance())
+                            .build());
 
             final Task effectTask = SpongeUtils.getTaskBuilder()
                     .intervalTicks(1)
-                    .execute(o -> addTrailEffect(projectile))
+                    .execute(o -> addTrailEffect(entity))
                     .submit(SquareKit.getInstance());
 
             SpongeUtils.getTaskBuilder()
                     .delayTicks(liveTime)
                     .execute(o -> {
                         effectTask.cancel();
-                        if(projectile == null || projectile.isRemoved()){
+                        if(entity == null || entity.isRemoved()){
                             return;
                         }
-                        projectile.remove();
+                        entity.remove();
                     })
                     .submit(SquareKit.getInstance());
         }

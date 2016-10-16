@@ -7,7 +7,6 @@ import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.entity.projectile.Projectile;
 import org.spongepowered.api.entity.projectile.arrow.Arrow;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.CollideBlockEvent;
@@ -226,8 +225,8 @@ public class EventInterceptor {
     }
 
     @Listener
-    public void onProjectileCollideEntity(CollideEntityEvent.Impact event, @First final Projectile projectile){
-        KitPlayer tempPlayer = SquareKit.getPlayersRegistry().getPlayer(projectile.getCreator().orElse(null));
+    public void onEntityCollideEntity(CollideEntityEvent.Impact event, @First final Entity entity){
+        KitPlayer tempPlayer = SquareKit.getPlayersRegistry().getPlayer(entity.getCreator().orElse(null));
 
         if(tempPlayer == null){
             return;
@@ -238,7 +237,7 @@ public class EventInterceptor {
         if(entities.contains(kitPlayer.getMcPlayer())){
             return;
         }
-        entities.forEach(entity -> Sponge.getEventManager().post(new EntityCollideEntityEvent(kitPlayer, projectile, entity)));
+        entities.forEach(e -> Sponge.getEventManager().post(new EntityCollideEntityEvent(kitPlayer, entity, e)));
     }
 
     @Listener
