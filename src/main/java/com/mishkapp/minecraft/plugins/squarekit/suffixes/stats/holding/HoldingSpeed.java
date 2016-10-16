@@ -19,9 +19,9 @@ public class HoldingSpeed extends Suffix {
     public HoldingSpeed(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
         super(kitPlayer, itemStack, level);
         if(level > 32){
-            speed = -1 * (level - 31) * 0.03;
+            speed = -1 * (level - 31) * 3;
         } else {
-            speed = 0.03 * level;
+            speed = 3 * level;
         }
 
         speed /= 100.0;
