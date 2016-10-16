@@ -3,6 +3,7 @@ package com.mishkapp.minecraft.plugins.squarekit;
 import com.google.common.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.mishkapp.minecraft.plugins.squarekit.commands.KitCommand;
+import com.mishkapp.minecraft.plugins.squarekit.commands.KitsCommand;
 import com.mishkapp.minecraft.plugins.squarekit.serializers.ItemStackSerializer;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.active.HideShadow;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.attack.MagicImbueWeapon;
@@ -140,6 +141,14 @@ public class SquareKit{
                 .build();
 
         Sponge.getCommandManager().register(this, kitCmd, "kit");
+
+        // /kits
+        CommandSpec kitsCmd = CommandSpec.builder()
+                .description(Text.of("List all kits"))
+                .executor(new KitsCommand())
+                .build();
+
+        Sponge.getCommandManager().register(this, kitsCmd, "kits");
 
 
     }
