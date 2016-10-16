@@ -26,10 +26,12 @@ public class KitPlayer {
     private final double HEALTH_REGEN = 0.125;      // (-∞, ∞)
     private final double SPEED = 1.0;               // (0, ∞)
     private final double COOLDOWN_RATE = 1.0;       // (0, ∞)
-    private final double PHYSICAL_RESIST = 0.0;     // (-∞, 100]
-    private final double MAGIC_RESIST = 0.0;        // (-∞, 100]
+    private final double PHYSICAL_RESIST = 0.0;     // (-∞, 1]
+    private final double MAGIC_RESIST = 0.0;        // (-∞, 1]
     private final double MAX_HEALTH = 100.0;        // [1, ∞)
     private final double KNOCKBACK_RESIST = 0.0;    // (-∞, ∞)
+    private final double CRITICAL_CHANCE = 0.0;     // [0, 1]
+    private final double CRITICAL_POWER = 0.0;      // [0, ∞)
 
     private HashMap<String, HashMap<Suffix, Double>> additions = new HashMap();
 
@@ -76,7 +78,7 @@ public class KitPlayer {
         for(double i : getSpeedAdds().values()){
             result += i;
         }
-        return (float)result;
+        return (float)Math.max(Double.MIN_VALUE, result);
     }
 
     public double getCooldownRate(){
@@ -84,7 +86,7 @@ public class KitPlayer {
         for(double i : getCooldownRateAdds().values()){
             result += i;
         }
-        return result;
+        return Math.max(Double.MIN_VALUE, result);
     }
 
     public double getMaxMana(){
@@ -116,7 +118,7 @@ public class KitPlayer {
         for(double i : getPhysicalResistAdds().values()){
             result += i;
         }
-        return result;
+        return Math.min(1, result);
     }
 
     public double getMagicResist() {
@@ -124,7 +126,7 @@ public class KitPlayer {
         for(double i : getMagicResistAdds().values()){
             result += i;
         }
-        return result;
+        return Math.min(1, result);
     }
 
     public double getMaxHealth() {
@@ -141,6 +143,26 @@ public class KitPlayer {
             result += i;
         }
         return result;
+    }
+
+    public double getCriticalChance() {
+        double result = CRITICAL_CHANCE;
+        for(double i : getCriticalChanceAdds().values()){
+            result += i;
+        }
+        if(result > 0){
+            return Math.min(1, result);
+        } else {
+            return Math.max(0, result);
+        }
+    }
+
+    public double getCriticalPower() {
+        double result = CRITICAL_POWER;
+        for(double i : getCriticalPowerAdds().values()){
+            result += i;
+        }
+        return Math.max(0, result);
     }
 
     public HashMap<Suffix, Double> getAdditions(String s){
@@ -188,6 +210,14 @@ public class KitPlayer {
 
     public HashMap<Suffix, Double> getKnockbackResistsAdds() {
         return getAdditions("knockback-resistance");
+    }
+
+    public HashMap<Suffix, Double> getCriticalChanceAdds() {
+        return getAdditions("critical-chance");
+    }
+
+    public HashMap<Suffix, Double> getCriticalPowerAdds() {
+        return getAdditions("critical-power");
     }
 
     public double getCurrentMana() {

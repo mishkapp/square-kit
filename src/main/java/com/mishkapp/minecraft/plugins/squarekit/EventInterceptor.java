@@ -1,7 +1,10 @@
 package com.mishkapp.minecraft.plugins.squarekit;
 
+import com.flowpowered.math.vector.Vector3d;
 import com.mishkapp.minecraft.plugins.squarekit.events.*;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.effect.particle.ParticleEffect;
+import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.projectile.Projectile;
@@ -29,6 +32,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.util.Tuple;
 
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -40,6 +44,13 @@ import static org.spongepowered.api.event.cause.entity.damage.DamageTypes.SWEEPI
  * Created by mishkapp on 27.04.2016.
  */
 public class EventInterceptor {
+
+    private Random random = new Random();
+    private ParticleEffect criticalEffect = ParticleEffect.builder()
+            .type(ParticleTypes.CRIT)
+            .count(6)
+            .offset(new Vector3d(0, 1, 0))
+            .build();
 
     public EventInterceptor(){
         Sponge.getGame().getServer().getOnlinePlayers().
@@ -62,20 +73,48 @@ public class EventInterceptor {
     public void onHit(AttackEntityEvent event, @First EntityDamageSource damageSource){
         if(damageSource.getSource() instanceof Player){
             KitPlayer damager = SquareKit.getPlayersRegistry().getPlayer(damageSource.getSource().getUniqueId());
+            Entity damaged = event.getTargetEntity();
 
             event.setBaseOutputDamage(damager.getAttackDamage());
 
+            DamageModifier critModifier = null;
             for (Tuple<DamageModifier, Function<? super Double, Double>> t : event.getModifiers()) {
                 if(t.getFirst().getType().equals(DamageModifierTypes.CRITICAL_HIT)){
-                    event.setOutputDamage(t.getFirst(), d -> 0.0);
+                    critModifier = t.getFirst();
+                }
+            }
+            if(critModifier == null){
+                critModifier = DamageModifier.builder()
+                        .type(DamageModifierTypes.CRITICAL_HIT)
+                        .cause(event.getCause())
+                        .build();
+            }
+            boolean isHitCritical = random.nextDouble() <= damager.getCriticalChance();
+
+            event.setOutputDamage(critModifier, d -> {
+                if(isHitCritical){
+                    return d * damager.getCriticalPower();
+                } else {
+                    return 0.0;
+                }
+            });
+
+            if(isHitCritical){
+                for(int i = 0; i < 5; i++){
+                    damaged.getWorld().spawnParticles(
+                            criticalEffect,
+                            damaged.getLocation().getPosition().add(
+                                    random.nextGaussian()/4 + 0.1,
+                                    random.nextGaussian()/4 + 0.1,
+                                    random.nextGaussian()/4 + 0.1));
                 }
             }
 
-            event.getTargetEntity().damage(event.getFinalOutputDamage(), DamageSource.builder().type(SWEEPING_ATTACK).bypassesArmor().build());
+            damaged.damage(event.getFinalOutputDamage(), DamageSource.builder().type(SWEEPING_ATTACK).bypassesArmor().build());
             event.setBaseOutputDamage(0);
             Sponge.getEventManager().post(new PlayerAttackEntityEvent(
                     damager,
-                    event.getTargetEntity()
+                    damaged
             ));
         }
     }
