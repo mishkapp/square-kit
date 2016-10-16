@@ -1,4 +1,4 @@
-package com.mishkapp.minecraft.plugins.squarekit;
+package com.mishkapp.minecraft.plugins.squarekit.utils;
 
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.scheduler.Task;

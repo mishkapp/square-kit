@@ -1,6 +1,8 @@
 package com.mishkapp.minecraft.plugins.squarekit;
 
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
+import com.mishkapp.minecraft.plugins.squarekit.utils.ItemUtils;
+import com.mishkapp.minecraft.plugins.squarekit.utils.Utils;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.Slot;

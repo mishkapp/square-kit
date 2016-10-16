@@ -1,6 +1,7 @@
 package com.mishkapp.minecraft.plugins.squarekit;
 
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
+import com.mishkapp.minecraft.plugins.squarekit.utils.ItemUtils;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.List;

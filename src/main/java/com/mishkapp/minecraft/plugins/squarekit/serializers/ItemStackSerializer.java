@@ -1,7 +1,7 @@
 package com.mishkapp.minecraft.plugins.squarekit.serializers;
 
 import com.google.common.reflect.TypeToken;
-import com.mishkapp.minecraft.plugins.squarekit.Utils;
+import com.mishkapp.minecraft.plugins.squarekit.utils.Utils;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
@@ -11,7 +11,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.Map;
 
-import static com.mishkapp.minecraft.plugins.squarekit.ItemUtils.*;
+import static com.mishkapp.minecraft.plugins.squarekit.utils.ItemUtils.*;
 import static org.spongepowered.api.data.key.Keys.*;
 
 /**

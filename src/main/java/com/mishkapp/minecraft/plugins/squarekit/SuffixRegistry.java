@@ -1,6 +1,7 @@
 package com.mishkapp.minecraft.plugins.squarekit;
 
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
+import com.mishkapp.minecraft.plugins.squarekit.utils.Utils;
 
 import java.util.HashMap;
 

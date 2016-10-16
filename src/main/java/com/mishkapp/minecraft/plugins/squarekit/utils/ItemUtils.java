@@ -1,4 +1,4 @@
-package com.mishkapp.minecraft.plugins.squarekit;
+package com.mishkapp.minecraft.plugins.squarekit.utils;
 
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.item.ItemTypes;

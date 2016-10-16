@@ -19,7 +19,7 @@ import org.spongepowered.api.world.World;
 import java.util.HashMap;
 import java.util.Random;
 
-import static com.mishkapp.minecraft.plugins.squarekit.SpongeUtils.getTaskBuilder;
+import static com.mishkapp.minecraft.plugins.squarekit.utils.SpongeUtils.getTaskBuilder;
 
 /**
  * Created by mishkapp on 08.10.2016.

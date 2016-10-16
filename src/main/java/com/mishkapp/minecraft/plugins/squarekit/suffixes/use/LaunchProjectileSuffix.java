@@ -3,7 +3,7 @@ package com.mishkapp.minecraft.plugins.squarekit.suffixes.use;
 import com.flowpowered.math.vector.Vector3d;
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
-import com.mishkapp.minecraft.plugins.squarekit.SpongeUtils;
+import com.mishkapp.minecraft.plugins.squarekit.utils.SpongeUtils;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.events.EntityCollideEntityEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.ItemUsedEvent;
