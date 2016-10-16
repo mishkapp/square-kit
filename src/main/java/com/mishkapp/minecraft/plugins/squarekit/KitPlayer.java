@@ -328,15 +328,15 @@ public class KitPlayer {
     }
 
     private Text getManaScoreText() {
-        return Text.of("Мана: " + FormatUtils.round(currentMana) + "/" + FormatUtils.round(getMaxMana()));
+        return Text.of("Мана: " + FormatUtils.unsignedRound(currentMana) + "/" + FormatUtils.unsignedRound(getMaxMana()));
     }
 
     private Text getPhysicalResistText(){
-        return Text.of("Ф.Сопр: " + FormatUtils.tenth(getPhysicalResist() * 100) + "%");
+        return Text.of("Ф.Сопр: " + FormatUtils.unsignedTenth(getPhysicalResist() * 100) + "%");
     }
 
     private Text getMagicResistText(){
-        return Text.of("М.Сопр: " + FormatUtils.tenth(getMagicResist() * 100) + "%");
+        return Text.of("М.Сопр: " + FormatUtils.unsignedTenth(getMagicResist() * 100) + "%");
     }
 
 

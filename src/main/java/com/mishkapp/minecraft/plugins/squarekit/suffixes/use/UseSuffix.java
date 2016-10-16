@@ -26,7 +26,7 @@ public abstract class UseSuffix extends Suffix {
             kitPlayer.getMcPlayer().sendMessage(
                     TextSerializers.FORMATTING_CODE.deserialize(
                             Messages.get("cooldown")
-                                    .replace("%TIME%", FormatUtils.tenth(time)))
+                                    .replace("%TIME%", FormatUtils.unsignedTenth(time)))
             );
             return false;
         } else {
