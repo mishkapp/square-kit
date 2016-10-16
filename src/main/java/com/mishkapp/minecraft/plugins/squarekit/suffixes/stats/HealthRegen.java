@@ -19,9 +19,9 @@ public class HealthRegen extends Suffix {
         super(kitPlayer, itemStack, level);
 
         if(level > 32){
-            healthRegen = -1 * (level - 31) * 0.125;
+            healthRegen = -1 * (level - 31) * 0.025;
         } else {
-            healthRegen = 0.125 * level;
+            healthRegen = 0.025 * level;
         }
     }
 

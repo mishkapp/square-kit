@@ -20,9 +20,9 @@ public class HoldingManaRegen extends Suffix{
         super(kitPlayer, itemStack, level);
 
         if(level > 32){
-            manaRegen = -1 * (level - 31) * 0.125;
+            manaRegen = -1 * (level - 31) * 0.025;
         } else {
-            manaRegen = 0.125 * level;
+            manaRegen = 0.025 * level;
         }
     }
 
