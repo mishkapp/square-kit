@@ -2,6 +2,7 @@ package com.mishkapp.minecraft.plugins.squarekit;
 
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
+import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.entity.HealthData;
 import org.spongepowered.api.entity.living.player.Player;
@@ -327,15 +328,15 @@ public class KitPlayer {
     }
 
     private Text getManaScoreText() {
-        return Text.of("Мана: " + Formatters.round.format(currentMana) + "/" + Formatters.round.format(getMaxMana()));
+        return Text.of("Мана: " + FormatUtils.round(currentMana) + "/" + FormatUtils.round(getMaxMana()));
     }
 
     private Text getPhysicalResistText(){
-        return Text.of("Ф.Сопр: " + Formatters.tenth.format(getPhysicalResist() * 100) + "%");
+        return Text.of("Ф.Сопр: " + FormatUtils.tenth(getPhysicalResist() * 100) + "%");
     }
 
     private Text getMagicResistText(){
-        return Text.of("М.Сопр: " + Formatters.tenth.format(getMagicResist() * 100) + "%");
+        return Text.of("М.Сопр: " + FormatUtils.tenth(getMagicResist() * 100) + "%");
     }
 
 

@@ -1,10 +1,10 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.stats;
 
-import com.mishkapp.minecraft.plugins.squarekit.Formatters;
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
+import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -38,6 +38,6 @@ public class ManaRegen extends Suffix{
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("mana-regen-suffix").replace("%REGEN%", Formatters.tenth.format(manaRegen * 4));
+        return Messages.get("mana-regen-suffix").replace("%REGEN%", FormatUtils.tenth(manaRegen * 4));
     }
 }

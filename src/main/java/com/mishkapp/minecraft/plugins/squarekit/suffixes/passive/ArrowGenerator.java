@@ -1,11 +1,11 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.passive;
 
-import com.mishkapp.minecraft.plugins.squarekit.Formatters;
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
+import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.Slot;
@@ -63,6 +63,6 @@ public class ArrowGenerator extends Suffix {
     public String getLoreEntry() {
         NumberFormat formatter = new DecimalFormat("#0.0");
         return Messages.get("arrow-generator-suffix")
-                .replace("%TIME%", Formatters.round.format(regenCooldown / 4));
+                .replace("%TIME%", FormatUtils.round(regenCooldown / 4));
     }
 }

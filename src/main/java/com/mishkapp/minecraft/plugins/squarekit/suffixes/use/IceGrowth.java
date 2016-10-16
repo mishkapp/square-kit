@@ -4,6 +4,7 @@ import com.flowpowered.math.vector.Vector3d;
 import com.mishkapp.minecraft.plugins.squarekit.*;
 import com.mishkapp.minecraft.plugins.squarekit.events.ItemUsedEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
+import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
@@ -126,7 +127,7 @@ public class IceGrowth extends UseSuffix {
     @Override
     public String getLoreEntry() {
         return Messages.get("ice-growth-suffix")
-                .replace("%DURATION%", Formatters.tenth.format(duration/20))
+                .replace("%DURATION%", FormatUtils.tenth(duration/20))
                 + super.getLoreEntry();
     }
 }

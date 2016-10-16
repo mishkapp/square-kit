@@ -1,10 +1,10 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.use;
 
 import com.flowpowered.math.vector.Vector3d;
-import com.mishkapp.minecraft.plugins.squarekit.Formatters;
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
+import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
@@ -71,7 +71,7 @@ public class Hook extends LaunchProjectileSuffix {
     @Override
     public String getLoreEntry() {
         return Messages.get("hook-suffix")
-                .replace("%DAMAGE%", Formatters.round.format(damage * 100))
+                .replace("%DAMAGE%", FormatUtils.round(damage * 100))
                 + super.getLoreEntry();
     }
 }

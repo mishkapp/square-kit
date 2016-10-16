@@ -1,11 +1,11 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.holding;
 
-import com.mishkapp.minecraft.plugins.squarekit.Formatters;
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
+import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -43,7 +43,7 @@ public class HoldingMaxHealth extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("holding-max-health-suffix").replace("%HEALTH%", Formatters.round.format(health));
+        return Messages.get("holding-max-health-suffix").replace("%HEALTH%", FormatUtils.round(health));
     }
 
 }

@@ -1,11 +1,11 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.bow;
 
-import com.mishkapp.minecraft.plugins.squarekit.Formatters;
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.ArrowHitEntityEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
+import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 /**
@@ -36,7 +36,7 @@ public class ArrowDamage extends Suffix {
     @Override
     public String getLoreEntry() {
         return Messages.get("arrow-damage-suffix")
-                .replace("%DAMAGE%", Formatters.round.format(damage));
+                .replace("%DAMAGE%", FormatUtils.round(damage));
     }
 
 }

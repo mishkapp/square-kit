@@ -1,11 +1,11 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.bow;
 
-import com.mishkapp.minecraft.plugins.squarekit.Formatters;
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.ArrowHitEntityEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
+import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.effect.potion.PotionEffectTypes;
@@ -53,6 +53,6 @@ public class EntanglingArrow extends Suffix {
     @Override
     public String getLoreEntry() {
         return Messages.get("entangling-arrow-suffix")
-                .replace("%TIME%", Formatters.tenth.format(time/20.0));
+                .replace("%TIME%", FormatUtils.tenth(time/20.0));
     }
 }

@@ -1,7 +1,6 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.use;
 
 import com.flowpowered.math.vector.Vector3d;
-import com.mishkapp.minecraft.plugins.squarekit.Formatters;
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
@@ -9,6 +8,7 @@ import com.mishkapp.minecraft.plugins.squarekit.events.ItemUsedEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
+import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.entity.living.player.Player;
@@ -110,9 +110,9 @@ public class Shelter extends UseSuffix {
     @Override
     public String getLoreEntry() {
         return Messages.get("shelter-suffix")
-                .replace("%PRES%", Formatters.round.format(pRes * 100))
-                .replace("%ATTACK%", Formatters.round.format(fallDamage))
-                .replace("%TIME%", Formatters.tenth.format(duration/20))
+                .replace("%PRES%", FormatUtils.round(pRes * 100))
+                .replace("%ATTACK%", FormatUtils.round(fallDamage))
+                .replace("%TIME%", FormatUtils.tenth(duration/20))
                 + super.getLoreEntry();
     }
 }

@@ -1,13 +1,13 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.active;
 
 import com.flowpowered.math.vector.Vector3d;
-import com.mishkapp.minecraft.plugins.squarekit.Formatters;
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.ItemUsedEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
+import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.item.EnchantmentData;
 import org.spongepowered.api.effect.particle.ParticleEffect;
@@ -112,7 +112,7 @@ public class HideShadow extends Suffix {
     @Override
     public String getLoreEntry() {
         return Messages.get("hide-shadow-suffix")
-                .replace("%ACTIVATION_COST%", Formatters.round.format(activationCost))
-                .replace("%MANA_COST%", Formatters.tenth.format(manaCost * 4));
+                .replace("%ACTIVATION_COST%", FormatUtils.round(activationCost))
+                .replace("%MANA_COST%", FormatUtils.tenth(manaCost * 4));
     }
 }

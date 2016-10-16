@@ -1,11 +1,11 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.holding;
 
-import com.mishkapp.minecraft.plugins.squarekit.Formatters;
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
+import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -43,6 +43,6 @@ public class HoldingMaxMana extends Suffix{
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("holding-max-mana-suffix").replace("%MANA%", Formatters.round.format(mana));
+        return Messages.get("holding-max-mana-suffix").replace("%MANA%", FormatUtils.round(mana));
     }
 }

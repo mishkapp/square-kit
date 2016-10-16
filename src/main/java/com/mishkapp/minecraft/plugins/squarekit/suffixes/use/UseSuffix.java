@@ -1,9 +1,9 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.use;
 
-import com.mishkapp.minecraft.plugins.squarekit.Formatters;
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
+import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
@@ -26,7 +26,7 @@ public abstract class UseSuffix extends Suffix {
             kitPlayer.getMcPlayer().sendMessage(
                     TextSerializers.FORMATTING_CODE.deserialize(
                             Messages.get("cooldown")
-                                    .replace("%TIME%", Formatters.tenth.format(time)))
+                                    .replace("%TIME%", FormatUtils.tenth(time)))
             );
             return false;
         } else {
@@ -37,7 +37,7 @@ public abstract class UseSuffix extends Suffix {
     @Override
     public String getLoreEntry() {
         return Messages.get("use-suffix-trail")
-                .replace("%COOLDOWN%", Formatters.tenth.format(cooldown/1000))
-                .replace("%MANACOST%", Formatters.round.format(manaCost));
+                .replace("%COOLDOWN%", FormatUtils.tenth(cooldown/1000))
+                .replace("%MANACOST%", FormatUtils.round(manaCost));
     }
 }

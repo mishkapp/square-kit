@@ -1,12 +1,12 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.attack;
 
 import com.flowpowered.math.vector.Vector3d;
-import com.mishkapp.minecraft.plugins.squarekit.Formatters;
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.PlayerAttackEntityEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
+import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.entity.Entity;
@@ -67,6 +67,6 @@ public class MagicImbueWeapon extends Suffix{
     @Override
     public String getLoreEntry() {
         return Messages.get("magic-imbue-weapon-suffix")
-                .replace("%DAMAGE%", Formatters.round.format(damage));
+                .replace("%DAMAGE%", FormatUtils.round(damage));
     }
 }
