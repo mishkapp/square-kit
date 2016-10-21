@@ -64,7 +64,7 @@ public class Hook extends LaunchProjectileSuffix {
                 .div(2.5);
         entity.setVelocity(velocity);
 
-        DamageSource source = DamageSource.builder().type(DamageTypes.PROJECTILE).magical().bypassesArmor().build();
+        DamageSource source = DamageSource.builder().type(DamageTypes.PROJECTILE).bypassesArmor().build();
         entity.damage(kitPlayer.getHealth() * damage, source);
     }
 
