@@ -17,6 +17,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.Slot;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -24,7 +25,8 @@ import java.util.Random;
  */
 public class HideShadow extends Suffix {
     private boolean isActive = false;
-    private double activationCost = 5;
+    private double activationCost = 10;
+    private double regenerationBonus = 0.175;
     private double manaCost = 0.5;
     private ParticleEffect effect;
     private Random rnd = new Random();
@@ -84,12 +86,16 @@ public class HideShadow extends Suffix {
     private void activateItem(){
         isActive = true;
         itemStack.offer(Keys.ITEM_ENCHANTMENTS, Collections.EMPTY_LIST);
+        HashMap<Suffix, Double> adds = kitPlayer.getHealthRegenAdds();
+        adds.put(this, regenerationBonus);
         updateSlot();
     }
 
     private void deactivateItem(){
         isActive = false;
         itemStack.remove(EnchantmentData.class);
+        HashMap<Suffix, Double> adds = kitPlayer.getHealthRegenAdds();
+        adds.remove(this);
         updateSlot();
     }
 
@@ -112,7 +118,7 @@ public class HideShadow extends Suffix {
     @Override
     public String getLoreEntry() {
         return Messages.get("hide-shadow-suffix")
-                .replace("%ACTIVATION_COST%", FormatUtils.round(activationCost))
-                .replace("%MANA_COST%", FormatUtils.tenth(manaCost * 4));
+                .replace("%ACTIVATION_COST%", FormatUtils.unsignedRound(activationCost))
+                .replace("%MANA_COST%", FormatUtils.unsignedTenth(manaCost * 4));
     }
 }

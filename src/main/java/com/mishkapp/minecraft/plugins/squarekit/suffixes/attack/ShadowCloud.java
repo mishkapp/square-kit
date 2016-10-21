@@ -58,7 +58,7 @@ public class ShadowCloud extends Suffix {
                 return;
             }
             Entity attacked = attackEvent.getAttacked();
-            if(rnd.nextDouble() < 0.025){
+            if(rnd.nextDouble() < 0.05){
                 List<PotionEffect> list = attacked.get(Keys.POTION_EFFECTS).orElse(new ArrayList<>());
                 list.add(potionEffect);
                 attacked.offer(Keys.POTION_EFFECTS, list);
