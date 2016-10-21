@@ -4,6 +4,7 @@ import com.flowpowered.math.vector.Vector3d;
 import com.mishkapp.minecraft.plugins.squarekit.events.*;
 import com.mishkapp.minecraft.plugins.squarekit.utils.Utils;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.property.item.FoodRestorationProperty;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.entity.Entity;
@@ -18,10 +19,8 @@ import org.spongepowered.api.event.cause.entity.damage.DamageTypes;
 import org.spongepowered.api.event.cause.entity.damage.source.DamageSource;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.event.cause.entity.damage.source.IndirectEntityDamageSource;
-import org.spongepowered.api.event.entity.AttackEntityEvent;
-import org.spongepowered.api.event.entity.CollideEntityEvent;
-import org.spongepowered.api.event.entity.DamageEntityEvent;
-import org.spongepowered.api.event.entity.InteractEntityEvent;
+import org.spongepowered.api.event.entity.*;
+import org.spongepowered.api.event.entity.living.humanoid.player.RespawnPlayerEvent;
 import org.spongepowered.api.event.entity.projectile.LaunchProjectileEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.filter.type.Exclude;
@@ -67,6 +66,12 @@ public class EventInterceptor {
     @Listener
     public void onKitEvent(KitEvent event){
         event.getPlayer().handleEvent(event);
+    }
+
+    @Listener
+    public void onPlayerRespawn(RespawnPlayerEvent event){
+        KitPlayer kitPlayer = SquareKit.getPlayersRegistry().getPlayer(event.getTargetEntity().getUniqueId());
+        kitPlayer.forceUpdate();
     }
 
     @Listener
