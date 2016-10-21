@@ -34,6 +34,7 @@ public class Hook extends LaunchProjectileSuffix {
         manaCost = 40 - (level * 64.0/40);
         hSpeed = 3.0;
         vSpeed = 3.0;
+        liveTime = (int)(0.5 * 20);
 
         potionEffect = PotionEffect.builder()
                 .potionType(PotionEffectTypes.SLOWNESS)
