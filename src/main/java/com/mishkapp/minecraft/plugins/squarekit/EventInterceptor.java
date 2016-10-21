@@ -171,8 +171,6 @@ public class EventInterceptor {
                     event.getTargetEntity(),
                     event.getBaseDamage() / 10.0));
             event.setBaseDamage(0);
-            //TODO: REMOVE THIS SHIT
-            event.setCancelled(true);
         }
     }
 
