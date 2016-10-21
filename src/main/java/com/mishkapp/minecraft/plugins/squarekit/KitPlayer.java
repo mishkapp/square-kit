@@ -342,7 +342,7 @@ public class KitPlayer {
 
     public void updateStats(){
         player.offer(Keys.MAX_HEALTH, getMaxHealth());
-        player.offer(Keys.WALKING_SPEED, (getSpeed() * 0.2));
+        player.offer(Keys.WALKING_SPEED, (getSpeed() * 0.1));
         player.offer(Keys.ATTACK_DAMAGE, getAttackDamage());
     }
 
