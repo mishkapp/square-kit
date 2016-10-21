@@ -35,8 +35,8 @@ public class Shelter extends UseSuffix {
 
     public Shelter(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
         super(kitPlayer, itemStack, level);
-        duration = 5 * 20;
-        cooldown = 45 * 1000;
+        duration = 7 * 20;
+        cooldown = 35 * 1000;
         manaCost = 100 - (level * 64.0/100);
 
         particleEffect = ParticleEffect.builder()
