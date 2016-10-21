@@ -171,6 +171,8 @@ public class EventInterceptor {
                     event.getTargetEntity(),
                     event.getBaseDamage() / 10.0));
             event.setBaseDamage(0);
+            //TODO: REMOVE THIS SHIT
+            event.setCancelled(true);
         }
     }
 
@@ -279,11 +281,21 @@ public class EventInterceptor {
         requestUpdate(player.getUniqueId());
     }
 
-    //TODO: not working
     @Listener
-    public void onDrop(DropItemEvent event, @First Player player){
-        requestUpdate(player.getUniqueId());
+    public void onItemDrop(DropItemEvent.Destruct event){
+        event.setCancelled(true);
     }
+
+    @Listener
+    public void onItemDrop(DropItemEvent.Dispense event){
+        event.setCancelled(true);
+    }
+
+    @Listener
+    private void onItemPickup(ChangeInventoryEvent.Pickup event){
+        event.setCancelled(true);
+    }
+
 
     @Listener
     public void onPlayerUpdateRequest(PlayerUpdateRequestEvent event){
