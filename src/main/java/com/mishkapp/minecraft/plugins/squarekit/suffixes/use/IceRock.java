@@ -24,7 +24,8 @@ import java.util.List;
  */
 public class IceRock extends LaunchProjectileSuffix {
     private int duration;
-    private double damage = 30;
+    private double pDamage = 15;
+    private double mDamage = 15;
     private PotionEffect potionEffect;
 
     public IceRock(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
@@ -59,13 +60,16 @@ public class IceRock extends LaunchProjectileSuffix {
         effects.add(potionEffect);
         entity.offer(Keys.POTION_EFFECTS, effects);
         DamageSource source = DamageSource.builder().type(DamageTypes.PROJECTILE).magical().bypassesArmor().build();
-        entity.damage(damage, source);
+        entity.damage(mDamage, source);
+        source = DamageSource.builder().type(DamageTypes.PROJECTILE).bypassesArmor().build();
+        entity.damage(pDamage, source);
     }
 
     @Override
     public String getLoreEntry() {
         return Messages.get("ice-rock-suffix")
-                .replace("%DAMAGE%", FormatUtils.tenth(damage))
+                .replace("%MDAMAGE%", FormatUtils.unsignedRound(mDamage))
+                .replace("%PDAMAGE%", FormatUtils.unsignedRound(pDamage))
                 + super.getLoreEntry();
     }
 }
