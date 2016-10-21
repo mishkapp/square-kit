@@ -24,16 +24,16 @@ import java.util.List;
  */
 public class Hook extends LaunchProjectileSuffix {
     private int duration;
-    private double damage = 0.15;
+    private double damage = 0.1;
     private PotionEffect potionEffect;
 
     public Hook(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
         super(kitPlayer, itemStack, level, EntityTypes.ENDER_PEARL);
         duration = 4 * 20;
-        cooldown = 35 * 1000;
-        manaCost = 70 - (level * 64.0/70);
-        hSpeed = 1.5;
-        vSpeed = 1.5;
+        cooldown = 15 * 1000;
+        manaCost = 40 - (level * 64.0/40);
+        hSpeed = 3.0;
+        vSpeed = 3.0;
 
         potionEffect = PotionEffect.builder()
                 .potionType(PotionEffectTypes.SLOWNESS)
