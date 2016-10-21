@@ -26,7 +26,7 @@ public class KitsCommand implements CommandExecutor {
                 Kit kit = SquareKit.getKitRegistry().getKit(k);
                 builder.append(Text.of(
                         TextActions.showText(TextSerializers.FORMATTING_CODE.deserialize(kit.getDescription())),
-                        TextActions.runCommand("/kit " + k), TextSerializers.FORMATTING_CODE.deserialize(kit.getName() + " ")));
+                        TextActions.runCommand("/sqkit " + k), TextSerializers.FORMATTING_CODE.deserialize(kit.getName() + " ")));
             }
             player.sendMessage(builder.build());
         }

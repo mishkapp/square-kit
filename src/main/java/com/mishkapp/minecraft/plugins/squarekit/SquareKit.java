@@ -140,7 +140,7 @@ public class SquareKit{
                 )
                 .build();
 
-        Sponge.getCommandManager().register(this, kitCmd, "kit");
+        Sponge.getCommandManager().register(this, kitCmd, "sqkit");
 
         // /kits
         CommandSpec kitsCmd = CommandSpec.builder()
@@ -148,7 +148,7 @@ public class SquareKit{
                 .executor(new KitsCommand())
                 .build();
 
-        Sponge.getCommandManager().register(this, kitsCmd, "kits");
+        Sponge.getCommandManager().register(this, kitsCmd, "sqkits");
 
 
     }
