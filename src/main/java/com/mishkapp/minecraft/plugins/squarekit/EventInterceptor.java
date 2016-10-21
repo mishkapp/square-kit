@@ -171,6 +171,8 @@ public class EventInterceptor {
                     event.getTargetEntity(),
                     event.getBaseDamage() / 10.0));
             event.setBaseDamage(0);
+            //TODO: REMOVE THIS SHIT
+            event.setCancelled(true);
         }
     }
 
@@ -184,15 +186,15 @@ public class EventInterceptor {
             return;
         }
 
-        if(offHand == null && event instanceof InteractBlockEvent.Secondary.OffHand){
+        if(offHand == null && event instanceof InteractEntityEvent.Secondary.OffHand){
             return;
         }
 
-        if(mainHand == null && event instanceof InteractBlockEvent.Secondary.MainHand){
+        if(mainHand == null && event instanceof InteractEntityEvent.Secondary.MainHand){
             return;
         }
 
-        if(mainHand != null && offHand != null && event instanceof InteractBlockEvent.Secondary.MainHand){
+        if(mainHand != null && offHand != null && event instanceof InteractEntityEvent.Secondary.MainHand){
             return;
         }
 
