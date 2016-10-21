@@ -72,4 +72,25 @@ public abstract class Suffix {
     }
 
     public abstract String getLoreEntry();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Suffix)) return false;
+
+        Suffix suffix = (Suffix) o;
+
+        if (level != suffix.level) return false;
+        if (!itemStack.equals(suffix.itemStack)) return false;
+        return kitPlayer.equals(suffix.kitPlayer);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = itemStack.hashCode();
+        result = 31 * result + level;
+        result = 31 * result + kitPlayer.hashCode();
+        return result;
+    }
 }

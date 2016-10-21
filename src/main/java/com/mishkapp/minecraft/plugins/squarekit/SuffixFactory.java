@@ -4,11 +4,13 @@ import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import com.mishkapp.minecraft.plugins.squarekit.utils.ItemUtils;
 import com.mishkapp.minecraft.plugins.squarekit.utils.Utils;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.item.inventory.type.CarriedInventory;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -20,8 +22,14 @@ public class SuffixFactory {
         List<KitItem> result = new ArrayList<>();
         Player player = kitPlayer.getMcPlayer();
         CarriedInventory inventory = player.getInventory();
-        for(Object o : inventory.slots()){
-            Slot slot = (Slot)o;
+        //TODO: this hook smells bad, exclude last slot due to bug
+        Iterator<Inventory> slotIterator = inventory.slots().iterator();
+        List<Slot> slots = new ArrayList<>();
+        while (slotIterator.hasNext()){
+            slots.add((Slot)slotIterator.next());
+        }
+        slots.remove(slots.size() - 1);
+        for(Slot slot : slots){
             ItemStack i = slot.peek().orElse(null);
             if(i != null && Utils.isKitItem(i)){
                 result.add(getKitItem(kitPlayer, i));

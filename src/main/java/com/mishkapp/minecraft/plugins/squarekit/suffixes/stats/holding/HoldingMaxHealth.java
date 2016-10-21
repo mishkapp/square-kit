@@ -35,7 +35,7 @@ public class HoldingMaxHealth extends Suffix {
             if(isItemHolding()){
                 adds.put(this, health);
             } else {
-                adds.put(this, 0.0);
+                adds.remove(this);
             }
         }
         kitPlayer.updateStats();

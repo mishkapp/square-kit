@@ -35,7 +35,7 @@ public class HoldingMaxMana extends Suffix{
             if(isItemHolding()){
                 adds.put(this, mana);
             } else {
-                adds.put(this, 0.0);
+                adds.remove(this);
             }
         }
         kitPlayer.updateStats();

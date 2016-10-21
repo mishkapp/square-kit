@@ -389,5 +389,21 @@ public class KitPlayer {
     public Player getMcPlayer() {
         return player;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof KitPlayer)) return false;
+
+        KitPlayer kitPlayer = (KitPlayer) o;
+
+        return player.equals(kitPlayer.player);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return player.hashCode();
+    }
 }
 

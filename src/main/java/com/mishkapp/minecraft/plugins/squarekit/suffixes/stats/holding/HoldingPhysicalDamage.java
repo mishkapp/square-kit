@@ -35,7 +35,7 @@ public class HoldingPhysicalDamage extends Suffix {
             if(isItemHolding()){
                 adds.put(this, damage);
             } else {
-                adds.put(this, 0.0);
+                adds.remove(this);
             }
         }
         kitPlayer.updateStats();

@@ -36,7 +36,7 @@ public class HoldingManaRegen extends Suffix{
             if(isItemHolding()){
                 adds.put(this, manaRegen);
             } else {
-                adds.put(this, 0.0);
+                adds.remove(this);
             }
         }
         kitPlayer.updateStats();
