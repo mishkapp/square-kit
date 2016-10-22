@@ -28,6 +28,7 @@ import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.util.Tuple;
 
 import java.util.List;
@@ -305,7 +306,15 @@ public class EventInterceptor {
     }
 
     @Listener
-    public void onLogin(ClientConnectionEvent.Join event, @First Player player){
+    public void onLogin(ClientConnectionEvent.Login event, @First Player player){
+        if(!player.hasPermission("squarekit.tester")){
+            event.setMessage(TextSerializers.FORMATTING_CODE.deserialize("&6Эх, как жаль, что вы не тестер :("));
+            event.setCancelled(true);
+        }
+    }
+
+    @Listener
+    public void onJoin(ClientConnectionEvent.Join event, @First Player player){
         SquareKit.getPlayersRegistry().registerPlayer(player);
         requestUpdate(player.getUniqueId());
     }
