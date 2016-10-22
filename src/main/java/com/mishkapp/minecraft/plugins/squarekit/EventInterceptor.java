@@ -69,7 +69,7 @@ public class EventInterceptor {
     @Listener
     public void onTick(TickEvent event){
         Sponge.getEventManager().post(new SuffixTickEvent(event.getPlayer()));
-        SquareKit.getPlayersRegistry().tickAllPlayers();
+        event.getPlayer().tick();
     }
 
     @Listener
