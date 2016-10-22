@@ -11,6 +11,7 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.projectile.arrow.Arrow;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.CollideBlockEvent;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.entity.damage.DamageModifier;
@@ -56,6 +57,13 @@ public class EventInterceptor {
         Sponge.getGame().getServer().getOnlinePlayers().
                 forEach((p -> SquareKit.getPlayersRegistry().registerPlayer(p)));
 
+    }
+
+    @Listener
+    public void onBlockPlace(ChangeBlockEvent.Place event, @First Player player){
+        if (!player.hasPermission("squarekit.build")) {
+            event.setCancelled(true);
+        }
     }
 
     @Listener
