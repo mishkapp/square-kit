@@ -109,13 +109,6 @@ public class Kit {
         List<ItemStack> other = new ArrayList<>();
         items.forEach(o -> other.add(o.copy()));
         other.forEach(inventory::offer);
-        SquareKit.getPlayersRegistry().updatePlayer(player.getUniqueId());
-
-        Sponge.getScheduler().createTaskBuilder().
-                delayTicks(6).
-                execute(() -> {
-                    player.offer(Keys.HEALTH, kitPlayer.getMaxHealth());
-                }).
-                submit(SquareKit.getInstance());
+        kitPlayer.forceUpdate();
     }
 }

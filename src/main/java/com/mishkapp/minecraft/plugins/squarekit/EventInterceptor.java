@@ -8,6 +8,7 @@ import org.spongepowered.api.data.property.item.FoodRestorationProperty;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.projectile.arrow.Arrow;
 import org.spongepowered.api.event.Listener;
@@ -20,10 +21,12 @@ import org.spongepowered.api.event.cause.entity.damage.DamageTypes;
 import org.spongepowered.api.event.cause.entity.damage.source.DamageSource;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.event.cause.entity.damage.source.IndirectEntityDamageSource;
+import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
 import org.spongepowered.api.event.entity.*;
 import org.spongepowered.api.event.entity.living.humanoid.player.RespawnPlayerEvent;
 import org.spongepowered.api.event.entity.projectile.LaunchProjectileEvent;
 import org.spongepowered.api.event.filter.cause.First;
+import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.filter.type.Exclude;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
@@ -291,20 +294,16 @@ public class EventInterceptor {
     }
 
     @Listener
-    public void onItemDrop(DropItemEvent.Destruct event){
-        event.setCancelled(true);
-    }
-
-    @Listener
-    public void onItemDrop(DropItemEvent.Dispense event){
-        event.setCancelled(true);
-    }
-
-    @Listener
     private void onItemPickup(ChangeInventoryEvent.Pickup event){
         event.setCancelled(true);
     }
 
+    @Listener
+    public void onItemDrop(DropItemEvent event, @Root EntitySpawnCause escause) {
+        if (escause.getEntity() instanceof Player) {
+            event.setCancelled(true);
+        }
+    }
 
     @Listener
     public void onPlayerUpdateRequest(PlayerUpdateRequestEvent event){
