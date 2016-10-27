@@ -11,8 +11,11 @@ import org.spongepowered.api.scoreboard.critieria.Criteria;
 import org.spongepowered.api.scoreboard.displayslot.DisplaySlots;
 import org.spongepowered.api.scoreboard.objective.Objective;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.chat.ChatTypes;
 
 import java.util.*;
+
+import static org.spongepowered.api.text.format.TextColors.DARK_BLUE;
 
 /**
  * Created by mishkapp on 27.04.2016.
@@ -320,15 +323,19 @@ public class KitPlayer {
             statsObj.removeScore(t);
         }
 
-        statsObj.getOrCreateScore(getPhysicalResistText()).setScore(2);
-        statsObj.getOrCreateScore(getMagicResistText()).setScore(1);
-        statsObj.getOrCreateScore(getManaScoreText()).setScore(0);
+        statsObj.getOrCreateScore(getPhysicalResistText()).setScore(1);
+        statsObj.getOrCreateScore(getMagicResistText()).setScore(0);
+//        statsObj.getOrCreateScore(getManaScoreText()).setScore(0);
 
         scoreboard.updateDisplaySlot(statsObj, DisplaySlots.SIDEBAR);
+
+        player.sendMessage(ChatTypes.ACTION_BAR, getManaScoreText());
     }
 
     private Text getManaScoreText() {
-        return Text.of("Мана: " + FormatUtils.unsignedRound(currentMana) + "/" + FormatUtils.unsignedRound(getMaxMana()));
+        return Text.builder("Мана: " + FormatUtils.unsignedRound(currentMana) + "/" + FormatUtils.unsignedRound(getMaxMana()))
+                .color(DARK_BLUE)
+                .build();
     }
 
     private Text getPhysicalResistText(){
