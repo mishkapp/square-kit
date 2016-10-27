@@ -11,7 +11,6 @@ import org.spongepowered.api.scoreboard.critieria.Criteria;
 import org.spongepowered.api.scoreboard.displayslot.DisplaySlots;
 import org.spongepowered.api.scoreboard.objective.Objective;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.chat.ChatTypes;
 
 import java.util.*;
 
@@ -323,12 +322,11 @@ public class KitPlayer {
             statsObj.removeScore(t);
         }
 
-        statsObj.getOrCreateScore(getPhysicalResistText()).setScore(1);
-        statsObj.getOrCreateScore(getMagicResistText()).setScore(0);
+        statsObj.getOrCreateScore(getPhysicalResistText()).setScore(2);
+        statsObj.getOrCreateScore(getMagicResistText()).setScore(1);
+        statsObj.getOrCreateScore(getManaScoreText()).setScore(0);
 
         scoreboard.updateDisplaySlot(statsObj, DisplaySlots.SIDEBAR);
-
-        player.sendMessage(ChatTypes.ACTION_BAR, getManaScoreText());
     }
 
     private Text getManaScoreText() {
