@@ -2,9 +2,16 @@ package com.mishkapp.minecraft.plugins.squarekit.suffixes.use;
 
 import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
+import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
+import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.chat.ChatTypes;
+import org.spongepowered.api.text.format.TextColor;
+import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
 /**
@@ -13,7 +20,7 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 public abstract class UseSuffix extends Suffix {
     protected double manaCost;
     protected double cooldown;
-    protected long lastUse;
+    protected long lastUse = 0;
 
     public UseSuffix(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
         super(kitPlayer, itemStack, level);
@@ -31,6 +38,37 @@ public abstract class UseSuffix extends Suffix {
             return false;
         } else {
             return true;
+        }
+    }
+
+    @Override
+    public void handle(KitEvent event){
+        if(event instanceof SuffixTickEvent){
+            if(!isItemInHand()){
+                return;
+            }
+            int barSize = 50;
+            long delta = System.currentTimeMillis() - lastUse;
+            double time = ((cooldown * kitPlayer.getCooldownRate()) - delta)/1000.0;
+            double ratio = time/(cooldown/1000);
+            ratio = Math.max(0.0, ratio);
+            time = Math.max(0.0, time);
+            int barChars = (int) (ratio * barSize);
+            String cooldownBar = "[";
+            cooldownBar += StringUtils.repeat('|', barSize - barChars);
+            cooldownBar += StringUtils.repeat('.', barChars);
+            cooldownBar += "] ";
+            cooldownBar += "(" + FormatUtils.unsignedTenth(time) + "c.)";
+
+            TextColor barColor;
+            if(ratio <= 0.0){
+                barColor = TextColors.DARK_GREEN;
+            } else {
+                barColor = TextColors.GOLD;
+            }
+
+            kitPlayer.getMcPlayer().sendMessage(ChatTypes.ACTION_BAR,
+                    Text.builder(cooldownBar).color(barColor).build());
         }
     }
 

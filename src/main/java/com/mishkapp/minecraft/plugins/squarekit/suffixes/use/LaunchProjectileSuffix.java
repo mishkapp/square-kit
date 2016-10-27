@@ -54,6 +54,7 @@ public abstract class LaunchProjectileSuffix extends UseSuffix {
 
     @Override
     public void handle(KitEvent event) {
+        super.handle(event);
         if(event instanceof EntityCollideEntityEvent){
             EntityCollideEntityEvent entityCollideEntityEvent = (EntityCollideEntityEvent)event;
             Entity playersEntity = entityCollideEntityEvent.getPlayersEntity();

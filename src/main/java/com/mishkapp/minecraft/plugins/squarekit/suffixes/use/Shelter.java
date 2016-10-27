@@ -48,6 +48,7 @@ public class Shelter extends UseSuffix {
 
     @Override
     public void handle(KitEvent event) {
+        super.handle(event);
         if(event instanceof SuffixTickEvent){
             if(isActive){
                 addEffect();

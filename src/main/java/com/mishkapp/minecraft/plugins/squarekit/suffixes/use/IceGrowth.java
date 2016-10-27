@@ -61,6 +61,7 @@ public class IceGrowth extends UseSuffix {
 
     @Override
     public void handle(KitEvent event) {
+        super.handle(event);
         if(event instanceof ItemUsedEvent){
             Player player = kitPlayer.getMcPlayer();
 
