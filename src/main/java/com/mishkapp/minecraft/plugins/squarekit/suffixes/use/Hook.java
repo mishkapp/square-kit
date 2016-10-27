@@ -60,8 +60,12 @@ public class Hook extends LaunchProjectileSuffix {
         effects.add(potionEffect);
         entity.offer(Keys.POTION_EFFECTS, effects);
 
-        Vector3d velocity = kitPlayer.getMcPlayer().getLocation().getPosition()
-                .sub(entity.getLocation().getPosition())
+        Vector3d a = kitPlayer.getMcPlayer().getLocation().getPosition();
+        Vector3d b = entity.getLocation().getPosition();
+
+        Vector3d velocity = a
+                .sub(b)
+                .add(0, b.distance(a) * 0.1, 0)
                 .div(2.5);
         entity.setVelocity(velocity);
 
