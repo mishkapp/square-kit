@@ -11,9 +11,6 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.item.inventory.type.CarriedInventory;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-
 import static org.spongepowered.api.item.ItemTypes.ARROW;
 
 /**
@@ -62,6 +59,6 @@ public class ArrowGenerator extends Suffix {
     @Override
     public String getLoreEntry() {
         return Messages.get("arrow-generator-suffix")
-                .replace("%TIME%", FormatUtils.round(regenCooldown / 4));
+                .replace("%TIME%", FormatUtils.unsignedRound(regenCooldown / 4));
     }
 }

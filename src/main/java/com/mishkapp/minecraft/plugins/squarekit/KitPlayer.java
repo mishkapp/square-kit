@@ -325,7 +325,6 @@ public class KitPlayer {
 
         statsObj.getOrCreateScore(getPhysicalResistText()).setScore(1);
         statsObj.getOrCreateScore(getMagicResistText()).setScore(0);
-//        statsObj.getOrCreateScore(getManaScoreText()).setScore(0);
 
         scoreboard.updateDisplaySlot(statsObj, DisplaySlots.SIDEBAR);
 

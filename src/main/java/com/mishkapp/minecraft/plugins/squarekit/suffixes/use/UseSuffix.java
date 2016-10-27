@@ -37,7 +37,7 @@ public abstract class UseSuffix extends Suffix {
     @Override
     public String getLoreEntry() {
         return Messages.get("use-suffix-trail")
-                .replace("%COOLDOWN%", FormatUtils.tenth(cooldown/1000))
-                .replace("%MANACOST%", FormatUtils.round(manaCost));
+                .replace("%COOLDOWN%", FormatUtils.unsignedTenth(cooldown/1000))
+                .replace("%MANACOST%", FormatUtils.unsignedRound(manaCost));
     }
 }
