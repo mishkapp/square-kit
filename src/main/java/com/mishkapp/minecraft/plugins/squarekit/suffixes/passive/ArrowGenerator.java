@@ -61,7 +61,6 @@ public class ArrowGenerator extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        NumberFormat formatter = new DecimalFormat("#0.0");
         return Messages.get("arrow-generator-suffix")
                 .replace("%TIME%", FormatUtils.round(regenCooldown / 4));
     }

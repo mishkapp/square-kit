@@ -123,7 +123,7 @@ public abstract class LaunchProjectileSuffix extends UseSuffix {
                     .delayTicks(liveTime)
                     .execute(o -> {
                         effectTask.cancel();
-                        if(entity == null || entity.isRemoved()){
+                        if(entity.isRemoved()){
                             return;
                         }
                         entity.remove();
