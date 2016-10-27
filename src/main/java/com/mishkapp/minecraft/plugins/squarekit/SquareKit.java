@@ -105,13 +105,14 @@ public class SquareKit{
             e.printStackTrace();
         }
 
-        if(!messagesPath.toFile().exists()){
-            Asset asset = game.getAssetManager().getAsset(plugin, "messages.conf").orElse(null);
-            try {
-                asset.copyToFile(messagesPath);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if(messagesPath.toFile().exists()){
+            messagesPath.toFile().delete();
+        }
+        Asset asset = game.getAssetManager().getAsset(plugin, "messages.conf").orElse(null);
+        try {
+            asset.copyToFile(messagesPath);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         ConfigurationNode cn = null;
@@ -252,10 +253,9 @@ public class SquareKit{
             Files.createDirectories(kitsPath);
 
             for(String s : kitNames){
-                if(!Files.exists(kitsPath.resolve(s))){
-                    Asset a = game.getAssetManager().getAsset(plugin, "kits/" + s).orElse(null);
-                    a.copyToDirectory(kitsPath);
-                }
+                kitsPath.resolve(s).toFile().delete();
+                Asset a = game.getAssetManager().getAsset(plugin, "kits/" + s).orElse(null);
+                a.copyToDirectory(kitsPath);
             }
 
             File[] kitFiles = configDir.resolve("kits").toFile().listFiles((dir, name) -> name.endsWith(".conf"));
