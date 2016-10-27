@@ -290,7 +290,8 @@ public class EventInterceptor {
     @Listener
     @Exclude({ChangeInventoryEvent.Held.class, ChangeInventoryEvent.Transfer.class})
     public void onInventoryChange(ChangeInventoryEvent event, @First Player player){
-        requestUpdate(player.getUniqueId());
+        //TODO: Temporary disabled this update hook
+//        requestUpdate(player.getUniqueId());
     }
 
     @Listener
