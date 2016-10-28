@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.mishkapp.minecraft.plugins.squarekit.commands.KitCommand;
 import com.mishkapp.minecraft.plugins.squarekit.commands.KitsCommand;
+import com.mishkapp.minecraft.plugins.squarekit.commands.UpdateCommand;
 import com.mishkapp.minecraft.plugins.squarekit.serializers.ItemStackSerializer;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.active.HideShadow;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.attack.MagicImbueWeapon;
@@ -147,6 +148,15 @@ public class SquareKit{
                 .build();
 
         Sponge.getCommandManager().register(this, kitsCmd, "sqkits");
+
+        // /kits
+        CommandSpec updateCmd = CommandSpec.builder()
+                .description(Text.of("Update player"))
+                .permission("squarekit.update")
+                .executor(new UpdateCommand())
+                .build();
+
+        Sponge.getCommandManager().register(this, updateCmd, "squpdate");
 
 
     }
