@@ -18,8 +18,8 @@ import org.spongepowered.api.text.serializer.TextSerializers;
  * Created by mishkapp on 08.10.2016.
  */
 public abstract class UseSuffix extends Suffix {
-    protected double manaCost;
-    protected double cooldown;
+    protected double manaCost = 0;
+    protected double cooldown = 0;
     protected long lastUse = 0;
 
     public UseSuffix(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {

@@ -17,10 +17,7 @@ import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.Holding
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.passive.ArrowGenerator;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.*;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.holding.*;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.use.Hook;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.use.IceGrowth;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.use.IceRock;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.use.Shelter;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.use.*;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -213,6 +210,7 @@ public class SquareKit{
         registry.registerSuffix("3B", IceGrowth.class);
         registry.registerSuffix("3C", IceRock.class);
         registry.registerSuffix("3D", Hook.class);
+        registry.registerSuffix("3E", Rebound.class);
 
         registry.registerSuffix("6A", ArrowGenerator.class);
 
