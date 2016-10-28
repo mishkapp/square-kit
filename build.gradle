@@ -20,8 +20,22 @@ repositories {
     }
 }
 
+configurations {
+    provided
+    compile.extendsFrom provided
+}
+
+task fatJar(type: Jar) {
+    baseName = project.name + '-all'
+    from { (configurations.provided).collect
+            { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
+
+    provided 'org.mongodb:mongodb-driver:3.0.4'
 
     compile 'org.spongepowered:spongeapi:5.0.0-20161003.175748-144'
 
