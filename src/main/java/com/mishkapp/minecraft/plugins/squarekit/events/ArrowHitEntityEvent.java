@@ -1,6 +1,6 @@
 package com.mishkapp.minecraft.plugins.squarekit.events;
 
-import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
+import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.projectile.arrow.Arrow;
 

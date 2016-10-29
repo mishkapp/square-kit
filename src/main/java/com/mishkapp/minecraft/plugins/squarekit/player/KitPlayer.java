@@ -1,8 +1,15 @@
-package com.mishkapp.minecraft.plugins.squarekit;
+package com.mishkapp.minecraft.plugins.squarekit.player;
 
+import com.mishkapp.minecraft.plugins.squarekit.KitItem;
+import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
+import com.mishkapp.minecraft.plugins.squarekit.SuffixFactory;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.entity.HealthData;
 import org.spongepowered.api.entity.living.player.Player;
@@ -14,6 +21,7 @@ import org.spongepowered.api.text.Text;
 
 import java.util.*;
 
+import static com.mongodb.client.model.Filters.eq;
 import static org.spongepowered.api.text.format.TextColors.DARK_BLUE;
 
 /**
@@ -44,8 +52,17 @@ public class KitPlayer {
     private Scoreboard scoreboard;
     private Objective statsObj;
 
-    public KitPlayer(Player player) {
+    //here comes the model
+    private UUID uuid;
+    private String lastKit = "soldier";
+    private int money = 0;
+    private int experience = 0;
+    private PlayerStats playerStats = new PlayerStats();
+    private KitsStats kitsStats = new KitsStats();
+
+    private KitPlayer(Player player) {
         this.player = player;
+        this.uuid = player.getUniqueId();
         initScoreboard();
         currentMana = getMaxMana();
     }
@@ -408,6 +425,44 @@ public class KitPlayer {
     @Override
     public int hashCode() {
         return player.hashCode();
+    }
+
+    public static KitPlayer getKitPlayer(MongoDatabase mongoDatabase, Player player){
+        MongoCollection collection = mongoDatabase.getCollection("players");
+        UUID uuid = player.getUniqueId();
+        Document document = (Document) collection.find(eq("uuid", uuid.toString())).first();
+        KitPlayer result = new KitPlayer(player);
+        if(document != null){
+            result.fromDocument(document);
+        }
+        return result;
+    }
+
+    public void saveKitPlayer(MongoDatabase mongoDatabase){
+        MongoCollection collection = mongoDatabase.getCollection("players");
+        Document document = (Document) collection.find(eq("uuid", uuid.toString())).first();
+        if(document != null){
+            collection.findOneAndReplace(eq("uuid", uuid.toString()), toDocument());
+        } else {
+            collection.insertOne(toDocument());
+        }
+    }
+
+    private void fromDocument(Document document){
+        lastKit = document.getString("lastKit");
+        money = document.getInteger("money");
+        experience = document.getInteger("experience");
+        playerStats = PlayerStats.fromDBObject(document.get("stats", BasicDBObject.class));
+        kitsStats = KitsStats.fromDBObject(document.get("kitsStats", BasicDBObject.class));
+    }
+
+    private Document toDocument(){
+        return new Document("uuid", uuid.toString())
+                .append("lastKit", lastKit)
+                .append("money", money)
+                .append("experience", experience)
+                .append("playerStats", playerStats.toDBObject())
+                .append("kitsStats", kitsStats.toDBOject());
     }
 }
 

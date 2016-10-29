@@ -4,6 +4,7 @@ import com.flowpowered.math.vector.Vector3d;
 import com.mishkapp.minecraft.plugins.squarekit.*;
 import com.mishkapp.minecraft.plugins.squarekit.events.ItemUsedEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
+import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import com.mishkapp.minecraft.plugins.squarekit.utils.SpongeUtils;
 import org.spongepowered.api.data.key.Keys;

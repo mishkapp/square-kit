@@ -1,6 +1,7 @@
 package com.mishkapp.minecraft.plugins.squarekit;
 
 
+import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 import org.spongepowered.api.data.key.Keys;

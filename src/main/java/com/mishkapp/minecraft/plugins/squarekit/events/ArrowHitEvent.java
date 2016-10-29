@@ -1,6 +1,6 @@
 package com.mishkapp.minecraft.plugins.squarekit.events;
 
-import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
+import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 
 /**
  * Created by Xpech on 07.08.2016.

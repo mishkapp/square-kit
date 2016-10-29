@@ -2,6 +2,7 @@ package com.mishkapp.minecraft.plugins.squarekit;
 
 import com.mishkapp.minecraft.plugins.squarekit.events.PlayerUpdateRequestEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.TickEvent;
+import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.utils.SpongeUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;

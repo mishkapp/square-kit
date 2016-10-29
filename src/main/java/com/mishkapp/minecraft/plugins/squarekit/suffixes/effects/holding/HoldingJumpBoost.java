@@ -1,6 +1,6 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding;
 
-import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
+import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 import static org.spongepowered.api.effect.potion.PotionEffectTypes.JUMP_BOOST;

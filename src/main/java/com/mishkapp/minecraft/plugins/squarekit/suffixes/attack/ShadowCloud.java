@@ -1,7 +1,7 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.attack;
 
 import com.flowpowered.math.vector.Vector3d;
-import com.mishkapp.minecraft.plugins.squarekit.KitPlayer;
+import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
