@@ -65,7 +65,7 @@ public class Shelter extends UseSuffix {
             double currentMana = kitPlayer.getCurrentMana();
 
             if(currentMana < manaCost){
-                player.sendMessage(TextSerializers.FORMATTING_CODE.deserialize("nomana"));
+                player.sendMessage(TextSerializers.FORMATTING_CODE.deserialize(Messages.get("nomana")));
                 return;
             }
             if(!isCooldowned(kitPlayer)){
