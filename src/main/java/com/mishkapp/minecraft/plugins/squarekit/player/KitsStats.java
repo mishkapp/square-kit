@@ -10,6 +10,14 @@ import java.util.HashMap;
 public class KitsStats {
     private HashMap<String, KitStats> stats = new HashMap<>();
 
+    public HashMap<String, KitStats> getStats() {
+        return stats;
+    }
+
+    public void setStats(HashMap<String, KitStats> stats) {
+        this.stats = stats;
+    }
+
     static KitsStats fromDBObject(BasicDBObject obj){
         KitsStats result = new KitsStats();
         for(String s : obj.keySet()){
@@ -38,6 +46,94 @@ public class KitsStats {
         private double pureDamageTaken = 0;
         private double pureDamageDealt = 0;
         private int moneyEarned = 0;
+
+        public int getKills() {
+            return kills;
+        }
+
+        public void setKills(int kills) {
+            this.kills = kills;
+        }
+
+        public int getDeaths() {
+            return deaths;
+        }
+
+        public void setDeaths(int deaths) {
+            this.deaths = deaths;
+        }
+
+        public double getKdRatio() {
+            return kdRatio;
+        }
+
+        public void setKdRatio(double kdRatio) {
+            this.kdRatio = kdRatio;
+        }
+
+        public int getMaxKillstreak() {
+            return maxKillstreak;
+        }
+
+        public void setMaxKillstreak(int maxKillstreak) {
+            this.maxKillstreak = maxKillstreak;
+        }
+
+        public double getPhysicalDamageTaken() {
+            return physicalDamageTaken;
+        }
+
+        public void setPhysicalDamageTaken(double physicalDamageTaken) {
+            this.physicalDamageTaken = physicalDamageTaken;
+        }
+
+        public double getPhysicalDamageDealt() {
+            return physicalDamageDealt;
+        }
+
+        public void setPhysicalDamageDealt(double physicalDamageDealt) {
+            this.physicalDamageDealt = physicalDamageDealt;
+        }
+
+        public double getMagicDamageTaken() {
+            return magicDamageTaken;
+        }
+
+        public void setMagicDamageTaken(double magicDamageTaken) {
+            this.magicDamageTaken = magicDamageTaken;
+        }
+
+        public double getMagicDamageDealt() {
+            return magicDamageDealt;
+        }
+
+        public void setMagicDamageDealt(double magicDamageDealt) {
+            this.magicDamageDealt = magicDamageDealt;
+        }
+
+        public double getPureDamageTaken() {
+            return pureDamageTaken;
+        }
+
+        public void setPureDamageTaken(double pureDamageTaken) {
+            this.pureDamageTaken = pureDamageTaken;
+        }
+
+        public double getPureDamageDealt() {
+            return pureDamageDealt;
+        }
+
+        public void setPureDamageDealt(double pureDamageDealt) {
+            this.pureDamageDealt = pureDamageDealt;
+        }
+
+        public int getMoneyEarned() {
+            return moneyEarned;
+        }
+
+        public void setMoneyEarned(int moneyEarned) {
+            this.moneyEarned = moneyEarned;
+        }
 
         static KitStats fromDBOBject(BasicDBObject obj){
             KitStats result = new KitStats();
