@@ -5,6 +5,10 @@ import com.google.inject.Inject;
 import com.mishkapp.minecraft.plugins.squarekit.commands.KitCommand;
 import com.mishkapp.minecraft.plugins.squarekit.commands.KitsCommand;
 import com.mishkapp.minecraft.plugins.squarekit.commands.UpdateCommand;
+import com.mishkapp.minecraft.plugins.squarekit.listeners.KitListener;
+import com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors.BattleInterceptor;
+import com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors.EventInterceptor;
+import com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors.WorldChangeListener;
 import com.mishkapp.minecraft.plugins.squarekit.serializers.ItemStackSerializer;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.active.HideShadow;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.attack.MagicImbueWeapon;
@@ -228,6 +232,10 @@ public class SquareKit{
 
     private void registerListeners(){
         Sponge.getEventManager().registerListeners(this, new EventInterceptor());
+        Sponge.getEventManager().registerListeners(this, new BattleInterceptor());
+        Sponge.getEventManager().registerListeners(this, new WorldChangeListener());
+
+        Sponge.getEventManager().registerListeners(this, new KitListener());
     }
 
     private void registerKits(){

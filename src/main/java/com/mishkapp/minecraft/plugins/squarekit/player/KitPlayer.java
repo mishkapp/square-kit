@@ -60,7 +60,7 @@ public class KitPlayer {
     private PlayerStats playerStats = new PlayerStats();
     private KitsStats kitsStats = new KitsStats();
 
-    private KitPlayer(Player player) {
+    public KitPlayer(Player player) {
         this.player = player;
         this.uuid = player.getUniqueId();
         initScoreboard();
