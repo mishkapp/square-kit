@@ -243,6 +243,7 @@ public class SquareKit{
         registry.registerSuffix("3C", IceRock.class);
         registry.registerSuffix("3D", Hook.class);
         registry.registerSuffix("3E", Rebound.class);
+        registry.registerSuffix("3F", BeginnersLuck.class);
 
         registry.registerSuffix("6A", ArrowGenerator.class);
         registry.registerSuffix("6B", Panic.class);
