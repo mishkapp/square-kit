@@ -1,16 +1,16 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.attack;
 
 import com.flowpowered.math.vector.Vector3d;
-import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.PlayerAttackEntityEvent;
+import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.event.cause.entity.damage.source.DamageSource;
+import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.world.World;
 
@@ -47,7 +47,9 @@ public class MagicImbueWeapon extends Suffix{
                 return;
             }
             Entity attacked = attackEvent.getAttacked();
-            attacked.damage(damage, DamageSource.builder().magical().bypassesArmor().type(MAGIC).build());
+            attacked.damage(
+                    damage,
+                    EntityDamageSource.builder().entity(kitPlayer.getMcPlayer()).magical().bypassesArmor().type(MAGIC).build());
             addEffect(attacked);
         }
     }
