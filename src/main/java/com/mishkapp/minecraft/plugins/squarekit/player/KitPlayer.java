@@ -42,6 +42,7 @@ public class KitPlayer {
     private final double KNOCKBACK_RESIST = 0.0;    // (-∞, ∞)
     private final double CRITICAL_CHANCE = 0.0;     // [0, 1]
     private final double CRITICAL_POWER = 0.0;      // [0, ∞)
+    private final double EVASION = 0.0;             // [0, 1]
 
     private HashMap<String, HashMap<Suffix, Double>> additions = new HashMap();
 
@@ -189,6 +190,18 @@ public class KitPlayer {
         return Math.max(0, result);
     }
 
+    public double getEvasion() {
+        double result = EVASION;
+        for(double i : getEvasionAdds().values()){
+            result += i;
+        }
+        if(result > 0){
+            return Math.min(1, result);
+        } else {
+            return Math.max(0, result);
+        }
+    }
+
     public HashMap<Suffix, Double> getAdditions(String s){
         if(!additions.containsKey(s)){
             additions.put(s, new HashMap<>());
@@ -243,6 +256,11 @@ public class KitPlayer {
     public HashMap<Suffix, Double> getCriticalPowerAdds() {
         return getAdditions("critical-power");
     }
+
+    public HashMap<Suffix, Double> getEvasionAdds() {
+        return getAdditions("evasion");
+    }
+
 
     public double getCurrentMana() {
         return currentMana;

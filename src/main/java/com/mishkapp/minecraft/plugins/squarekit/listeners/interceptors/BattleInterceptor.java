@@ -48,6 +48,14 @@ public class BattleInterceptor {
             KitPlayer damager = SquareKit.getPlayersRegistry().getPlayer(damageSource.getSource().getUniqueId());
             Entity damaged = event.getTargetEntity();
 
+            if(damaged instanceof Player){
+                KitPlayer damagedPlayer = PlayersRegistry.getInstance().getPlayer(damaged.getUniqueId());
+                if(damagedPlayer.getEvasion() >= random.nextDouble()){
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+
             event.setBaseOutputDamage(damager.getAttackDamage());
 
             DamageModifier critModifier = null;
