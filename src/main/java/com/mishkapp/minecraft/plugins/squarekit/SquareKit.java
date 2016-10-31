@@ -20,6 +20,7 @@ import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.Holding
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.HoldingJumpBoost;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.HoldingNightVision;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.passive.ArrowGenerator;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.passive.Panic;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.*;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.holding.*;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.use.*;
@@ -51,7 +52,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -241,6 +245,7 @@ public class SquareKit{
         registry.registerSuffix("3E", Rebound.class);
 
         registry.registerSuffix("6A", ArrowGenerator.class);
+        registry.registerSuffix("6B", Panic.class);
 
     }
 
