@@ -30,6 +30,7 @@ public class Panic extends Suffix {
                 kitPlayer.getPhysicalResistAdds().put(this, 0.0);
                 kitPlayer.getMagicResistAdds().put(this, 0.0);
             }
+            kitPlayer.updateStats();
         }
     }
 
