@@ -30,6 +30,9 @@ public class BeginnersLuck extends UseSuffix {
     private ParticleEffect particleEffect;
     private Random random = new Random();
 
+    private double evasion = 0.1;
+    private double critChance = 0.1;
+
     public BeginnersLuck(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
         super(kitPlayer, itemStack, level);
         duration = 30 * 20;
@@ -78,8 +81,8 @@ public class BeginnersLuck extends UseSuffix {
             HashMap<Suffix, Double> evaAdds = kitPlayer.getEvasionAdds();
             HashMap<Suffix, Double> crChAdds = kitPlayer.getCriticalChanceAdds();
 
-            evaAdds.put(this, 0.1);
-            crChAdds.put(this, 0.1);
+            evaAdds.put(this, evasion);
+            crChAdds.put(this, critChance);
             kitPlayer.updateStats();
 
             getTaskBuilder().execute(() -> {
@@ -106,8 +109,9 @@ public class BeginnersLuck extends UseSuffix {
     @Override
     public String getLoreEntry() {
         return Messages.get("beginners-luck-suffix")
-                .replace("%EVA%", FormatUtils.round(0.1 * 100))
-                .replace("%CRCH%", FormatUtils.round(0.1 * 100))
+                .replace("%EVA%", FormatUtils.round(evasion * 100))
+                .replace("%CRCH%", FormatUtils.round(critChance * 100))
+                .replace("%TIME%", FormatUtils.unsignedRound(duration/20))
                 + super.getLoreEntry();
     }
 }
