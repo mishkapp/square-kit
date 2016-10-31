@@ -22,11 +22,12 @@ public class PlayersRegistry {
 
     private HashMap<UUID, Ticker> tickers = new HashMap<>();
 
-    public void registerPlayer(Player player){
+    public KitPlayer registerPlayer(Player player){
         UUID uuid = player.getUniqueId();
         KitPlayer kitPlayer = KitPlayer.getKitPlayer(SquareKit.getInstance().getMongoDb(), player);
         players.put(uuid, kitPlayer);
         tickers.put(uuid, new Ticker(kitPlayer));
+        return kitPlayer;
     }
 
     public void unregisterPlayer(Player player){

@@ -1,5 +1,6 @@
 package com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors;
 
+import com.mishkapp.minecraft.plugins.squarekit.KitRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.events.*;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
@@ -56,10 +57,8 @@ public class EventInterceptor {
     @Listener
     public void onPlayerRespawn(RespawnPlayerEvent event){
         KitPlayer kitPlayer = SquareKit.getPlayersRegistry().getPlayer(event.getTargetEntity().getUniqueId());
-        kitPlayer.forceUpdate();
+        KitRegistry.getInstance().getKit("recruit").applyToPlayer(kitPlayer.getMcPlayer(), "recruit");
     }
-
-
 
     @Listener
     public void onEntityInterract(InteractEntityEvent.Secondary event, @First Player player){
@@ -196,8 +195,9 @@ public class EventInterceptor {
 
     @Listener
     public void onJoin(ClientConnectionEvent.Join event, @First Player player){
-        SquareKit.getPlayersRegistry().registerPlayer(player);
-        requestUpdate(player.getUniqueId());
+        KitPlayer kitPlayer = SquareKit.getPlayersRegistry().registerPlayer(player);
+        String kitId = kitPlayer.getCurrentKit();
+        KitRegistry.getInstance().getKit(kitId).applyToPlayer(player, kitId);
     }
 
     @Listener

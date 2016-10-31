@@ -53,7 +53,7 @@ public class KitPlayer {
 
     //here comes the model
     private UUID uuid;
-    private String currentKit = "soldier";
+    private String currentKit = "recruit";
     private int money = 0;
     private int experience = 0;
     private int currentKillstreak;
