@@ -97,7 +97,7 @@ public class Kit {
                 '}';
     }
 
-    public void applyToPlayer(Player player){
+    public void applyToPlayer(Player player, String id){
         CarriedInventory inventory = player.getInventory();
         KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player.getUniqueId());
         inventory.clear();
@@ -109,6 +109,7 @@ public class Kit {
         List<ItemStack> other = new ArrayList<>();
         items.forEach(o -> other.add(o.copy()));
         other.forEach(inventory::offer);
+        kitPlayer.setCurrentKit(id);
         kitPlayer.forceUpdate();
     }
 }

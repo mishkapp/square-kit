@@ -1,6 +1,6 @@
 package com.mishkapp.minecraft.plugins.squarekit.player;
 
-import com.mongodb.BasicDBObject;
+import org.bson.Document;
 
 import java.util.HashMap;
 
@@ -14,38 +14,39 @@ public class KitsStats {
         return stats;
     }
 
+    public KitStats get(String k){
+        if(!stats.containsKey(k)){
+            stats.put(k, new KitStats());
+        }
+        return stats.get(k);
+    }
+
     public void setStats(HashMap<String, KitStats> stats) {
         this.stats = stats;
     }
 
-    static KitsStats fromDBObject(BasicDBObject obj){
+    static KitsStats fromDocument(Document document){
         KitsStats result = new KitsStats();
-        for(String s : obj.keySet()){
-            result.stats.put(s, KitStats.fromDBOBject((BasicDBObject)obj.get(s)));
+        for(String s : document.keySet()){
+            result.stats.put(s, KitStats.fromDocument((Document)document.get(s)));
         }
         return result;
     }
 
-    BasicDBObject toDBOject(){
-        BasicDBObject result = new BasicDBObject();
+    Document toDocument(){
+        Document result = new Document();
         for(String k : stats.keySet()){
-            result.append(k, stats.get(k).toDBObject());
+            result.append(k, stats.get(k).toDocument());
         }
         return result;
     }
 
     static class KitStats {
-        private int kills = 0;
-        private int deaths = 0;
-        private double kdRatio = 0;
-        private int maxKillstreak = 0;
-        private double physicalDamageTaken = 0;
-        private double physicalDamageDealt = 0;
-        private double magicDamageTaken = 0;
-        private double magicDamageDealt = 0;
-        private double pureDamageTaken = 0;
-        private double pureDamageDealt = 0;
-        private int moneyEarned = 0;
+        private int kills = 0;              //+
+        private int deaths = 0;             //+
+        private double kdRatio = 0;         //+
+        private int maxKillstreak = 0;      //+
+        private int moneyEarned = 0;        //-
 
         public int getKills() {
             return kills;
@@ -79,54 +80,6 @@ public class KitsStats {
             this.maxKillstreak = maxKillstreak;
         }
 
-        public double getPhysicalDamageTaken() {
-            return physicalDamageTaken;
-        }
-
-        public void setPhysicalDamageTaken(double physicalDamageTaken) {
-            this.physicalDamageTaken = physicalDamageTaken;
-        }
-
-        public double getPhysicalDamageDealt() {
-            return physicalDamageDealt;
-        }
-
-        public void setPhysicalDamageDealt(double physicalDamageDealt) {
-            this.physicalDamageDealt = physicalDamageDealt;
-        }
-
-        public double getMagicDamageTaken() {
-            return magicDamageTaken;
-        }
-
-        public void setMagicDamageTaken(double magicDamageTaken) {
-            this.magicDamageTaken = magicDamageTaken;
-        }
-
-        public double getMagicDamageDealt() {
-            return magicDamageDealt;
-        }
-
-        public void setMagicDamageDealt(double magicDamageDealt) {
-            this.magicDamageDealt = magicDamageDealt;
-        }
-
-        public double getPureDamageTaken() {
-            return pureDamageTaken;
-        }
-
-        public void setPureDamageTaken(double pureDamageTaken) {
-            this.pureDamageTaken = pureDamageTaken;
-        }
-
-        public double getPureDamageDealt() {
-            return pureDamageDealt;
-        }
-
-        public void setPureDamageDealt(double pureDamageDealt) {
-            this.pureDamageDealt = pureDamageDealt;
-        }
-
         public int getMoneyEarned() {
             return moneyEarned;
         }
@@ -135,33 +88,21 @@ public class KitsStats {
             this.moneyEarned = moneyEarned;
         }
 
-        static KitStats fromDBOBject(BasicDBObject obj){
+        static KitStats fromDocument(Document document){
             KitStats result = new KitStats();
-            result.kills = obj.getInt("kills");
-            result.deaths = obj.getInt("deaths");
-            result.kdRatio = obj.getDouble("kdRatio");
-            result.physicalDamageTaken = obj.getDouble("physicalDamageTaken");
-            result.physicalDamageDealt = obj.getDouble("physicalDamageDealt");
-            result.magicDamageTaken = obj.getDouble("magicDamageTaken");
-            result.magicDamageDealt = obj.getDouble("magicDamageDealt");
-            result.pureDamageTaken = obj.getDouble("pureDamageTaken");
-            result.pureDamageDealt = obj.getDouble("pureDamageDealt");
-            result.maxKillstreak = obj.getInt("maxKillstreak");
-            result.moneyEarned = obj.getInt("moneyEarned");
+            result.kills = document.getInteger("kills");
+            result.deaths = document.getInteger("deaths");
+            result.kdRatio = document.getDouble("kdRatio");
+            result.maxKillstreak = document.getInteger("maxKillstreak");
+            result.moneyEarned = document.getInteger("moneyEarned");
             return result;
         }
 
-        BasicDBObject toDBObject(){
-            return new BasicDBObject("maxKillStreak", maxKillstreak)
+        Document toDocument(){
+            return new Document("maxKillstreak", maxKillstreak)
                     .append("kills", kills)
                     .append("deaths", deaths)
                     .append("kdRatio", kdRatio)
-                    .append("physicalDamageTaken", physicalDamageTaken)
-                    .append("physicalDamageDealt", physicalDamageDealt)
-                    .append("magicDamageTaken", magicDamageTaken)
-                    .append("magicDamageDealt", magicDamageDealt)
-                    .append("pureDamageTaken", pureDamageTaken)
-                    .append("pureDamageDealt", pureDamageDealt)
                     .append("moneyEarned", moneyEarned);
         }
     }

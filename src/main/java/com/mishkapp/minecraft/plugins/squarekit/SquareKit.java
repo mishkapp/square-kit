@@ -23,6 +23,10 @@ import com.mishkapp.minecraft.plugins.squarekit.suffixes.passive.ArrowGenerator;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.*;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.holding.*;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.use.*;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoDatabase;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -47,9 +51,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -61,6 +63,9 @@ import java.util.zip.ZipFile;
 public class SquareKit{
 
     private static SquareKit instance;
+
+    private MongoClient mongoClient;
+    private MongoDatabase mongoDb;
 
     @Inject
     private static Logger logger;
@@ -85,11 +90,20 @@ public class SquareKit{
         initSerializers();
         initCmds();
         initMessages();
+        initMongo();
         saveConf();
         registerSuffixes();
         registerListeners();
         registerKits();
         getPlayersRegistry().updateAllPlayers();
+    }
+
+    private void initMongo(){
+        mongoClient = new MongoClient(
+                new ServerAddress("s7.squareland.ru", 27017),
+                Collections.singletonList(MongoCredential.createScramSha1Credential("squarekit", "admin", "Pcy7F7Y9BBEgqzrA".toCharArray()))
+        );
+        mongoDb = mongoClient.getDatabase("squarekit");
     }
 
 //    public void onServer() {
@@ -312,5 +326,13 @@ public class SquareKit{
 
     public static KitRegistry getKitRegistry(){
         return KitRegistry.getInstance();
+    }
+
+    public MongoClient getMongoClient() {
+        return mongoClient;
+    }
+
+    public MongoDatabase getMongoDb() {
+        return mongoDb;
     }
 }

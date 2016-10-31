@@ -6,7 +6,6 @@ import com.mishkapp.minecraft.plugins.squarekit.SuffixFactory;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
-import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
@@ -54,9 +53,10 @@ public class KitPlayer {
 
     //here comes the model
     private UUID uuid;
-    private String lastKit = "soldier";
+    private String currentKit = "soldier";
     private int money = 0;
     private int experience = 0;
+    private int currentKillstreak;
     private PlayerStats playerStats = new PlayerStats();
     private KitsStats kitsStats = new KitsStats();
 
@@ -252,19 +252,38 @@ public class KitPlayer {
         this.currentMana = currentMana;
     }
 
-    public void addPhysicalDamage(double damage){
-        addPureDamage(damage * (1.0 - getPhysicalResist()));
+    public String getCurrentKit() {
+        return currentKit;
     }
 
-    public void addMagicDamage(double damage){
-        addPureDamage(damage * (1.0 - getMagicResist()));
+    public void setCurrentKit(String currentKit) {
+        this.currentKit = currentKit;
     }
 
-    public void addPureDamage(double damage){
+    public double addPhysicalDamage(double damage){
+        damage = addDamage(damage * (1.0 - getPhysicalResist()));
+        return damage;
+    }
+
+    public double addMagicDamage(double damage){
+        damage = addDamage(damage * (1.0 - getMagicResist()));
+        return damage;
+    }
+
+    public double addPureDamage(double damage){
+        damage = addDamage(damage);
+        return damage;
+    }
+
+    private double addDamage(double damage){
         double health = player.get(Keys.HEALTH).get();
         double newHealth = health - damage;
-        if(newHealth < 0) {newHealth = 0;}
+        if(newHealth < 0) {
+            newHealth = 0;
+            damage = health;
+        }
         player.offer(Keys.HEALTH, newHealth);
+        return damage;
     }
 
     public void tick(){
@@ -274,6 +293,47 @@ public class KitPlayer {
         } else {
             SquareKit.getPlayersRegistry().unregisterPlayer(getMcPlayer());
         }
+    }
+
+    public void onKill(){
+        playerStats.setKills(playerStats.getKills() + 1);
+        KitsStats.KitStats st = kitsStats.get(currentKit);
+        st.setKills(st.getKills() + 1);
+        currentKillstreak += 1;
+        recalculateKDRatio();
+    }
+
+    public void onDeath(){
+        playerStats.setDeaths(playerStats.getDeaths() + 1);
+        KitsStats.KitStats st = kitsStats.get(currentKit);
+        st.setDeaths(st.getDeaths() + 1);
+        resetKillstreak();
+        recalculateKDRatio();
+    }
+
+    private void resetKillstreak(){
+        if(playerStats.getMaxKillstreak() < currentKillstreak){
+            playerStats.setMaxKillstreak(currentKillstreak);
+        }
+        KitsStats.KitStats st = kitsStats.get(currentKit);
+        if(st.getMaxKillstreak() < currentKillstreak){
+            st.setMaxKillstreak(currentKillstreak);
+        }
+        currentKillstreak = 0;
+    }
+
+    private void recalculateKDRatio(){
+        double deaths = playerStats.getDeaths();
+        if(deaths == 0){
+            deaths = 1;
+        }
+        playerStats.setKdRatio((double)playerStats.getKills() / deaths);
+        KitsStats.KitStats st = kitsStats.get(currentKit);
+        deaths = st.getDeaths();
+        if(deaths == 0){
+            deaths = 1;
+        }
+        st.setKdRatio((double)st.getKills() / deaths);
     }
 
     public void update(){
@@ -449,20 +509,22 @@ public class KitPlayer {
     }
 
     private void fromDocument(Document document){
-        lastKit = document.getString("lastKit");
+        currentKit = document.getString("currentKit");
         money = document.getInteger("money");
         experience = document.getInteger("experience");
-        playerStats = PlayerStats.fromDBObject(document.get("stats", BasicDBObject.class));
-        kitsStats = KitsStats.fromDBObject(document.get("kitsStats", BasicDBObject.class));
+        currentKillstreak = document.getInteger("currentKillstreak");
+        playerStats = PlayerStats.fromDocument(document.get("playerStats", Document.class));
+        kitsStats = KitsStats.fromDocument(document.get("kitsStats", Document.class));
     }
 
     private Document toDocument(){
         return new Document("uuid", uuid.toString())
-                .append("lastKit", lastKit)
+                .append("currentKit", currentKit)
                 .append("money", money)
                 .append("experience", experience)
-                .append("playerStats", playerStats.toDBObject())
-                .append("kitsStats", kitsStats.toDBOject());
+                .append("currentKillstreak", currentKillstreak)
+                .append("playerStats", playerStats.toDocument())
+                .append("kitsStats", kitsStats.toDocument());
     }
 }
 

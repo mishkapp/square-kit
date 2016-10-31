@@ -24,13 +24,14 @@ public class PlayersRegistry {
 
     public void registerPlayer(Player player){
         UUID uuid = player.getUniqueId();
-        KitPlayer kitPlayer = new KitPlayer(player);
+        KitPlayer kitPlayer = KitPlayer.getKitPlayer(SquareKit.getInstance().getMongoDb(), player);
         players.put(uuid, kitPlayer);
         tickers.put(uuid, new Ticker(kitPlayer));
     }
 
     public void unregisterPlayer(Player player){
         UUID uuid = player.getUniqueId();
+        getPlayer(player.getUniqueId()).saveKitPlayer(SquareKit.getInstance().getMongoDb());
         if(players.containsKey(uuid)){
             players.remove(uuid);
         }

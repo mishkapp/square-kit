@@ -99,7 +99,7 @@ public class BattleInterceptor {
         if(damageSource instanceof IndirectEntityDamageSource){
             return;
         }
-        int damageMultiplier = 5;
+        int damageMultiplier = 4;
         if(damageSource.getType() == DamageTypes.CONTACT
                 || damageSource.getType() == DamageTypes.SUFFOCATE
                 || damageSource.getType() == DamageTypes.FALL
