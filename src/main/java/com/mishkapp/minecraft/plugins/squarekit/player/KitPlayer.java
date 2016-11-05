@@ -278,6 +278,26 @@ public class KitPlayer {
         this.currentKit = currentKit;
     }
 
+    public int getMoney() {
+        return money;
+    }
+
+    public int getExperience() {
+        return experience;
+    }
+
+    public int getCurrentKillstreak() {
+        return currentKillstreak;
+    }
+
+    public PlayerStats getPlayerStats() {
+        return playerStats;
+    }
+
+    public KitsStats getKitsStats() {
+        return kitsStats;
+    }
+
     public double addPhysicalDamage(double damage){
         damage = addDamage(damage * (1.0 - getPhysicalResist()));
         return damage;

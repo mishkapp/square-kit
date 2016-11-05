@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.mishkapp.minecraft.plugins.squarekit.commands.KitCommand;
 import com.mishkapp.minecraft.plugins.squarekit.commands.KitsCommand;
+import com.mishkapp.minecraft.plugins.squarekit.commands.StatsCommand;
 import com.mishkapp.minecraft.plugins.squarekit.commands.UpdateCommand;
 import com.mishkapp.minecraft.plugins.squarekit.listeners.KitListener;
 import com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors.BattleInterceptor;
@@ -152,7 +153,7 @@ public class SquareKit{
     }
 
     private void initCmds(){
-        // /kit
+        // /sqkit
         CommandSpec kitCmd = CommandSpec.builder()
                 .description(Text.of("Get specified kit"))
                 .executor(new KitCommand())
@@ -163,7 +164,7 @@ public class SquareKit{
 
         Sponge.getCommandManager().register(this, kitCmd, "sqkit");
 
-        // /kits
+        // /sqkits
         CommandSpec kitsCmd = CommandSpec.builder()
                 .description(Text.of("List all kits"))
                 .executor(new KitsCommand())
@@ -171,7 +172,7 @@ public class SquareKit{
 
         Sponge.getCommandManager().register(this, kitsCmd, "sqkits");
 
-        // /kits
+        // /squpdate
         CommandSpec updateCmd = CommandSpec.builder()
                 .description(Text.of("Update player"))
                 .permission("squarekit.update")
@@ -180,7 +181,16 @@ public class SquareKit{
 
         Sponge.getCommandManager().register(this, updateCmd, "squpdate");
 
+        // /sqstats
+        CommandSpec statsCmd = CommandSpec.builder()
+                .description(Text.of("Get stats for player"))
+                .executor(new StatsCommand())
+                .arguments(
+                        GenericArguments.string(Text.of("player"))
+                )
+                .build();
 
+        Sponge.getCommandManager().register(this, statsCmd, "sqstats");
     }
 
     public Path getConfigDir(){
