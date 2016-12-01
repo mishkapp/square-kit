@@ -30,7 +30,7 @@ public class MagicImbueWeapon extends Suffix{
         super(kitPlayer, itemStack, level);
         effect = ParticleEffect.builder()
                 .type(ParticleTypes.WATER_SPLASH)
-                .count(3)
+                .quantity(3)
                 .offset(new Vector3d(0, 1, 0))
                 .build();
         damage = level;

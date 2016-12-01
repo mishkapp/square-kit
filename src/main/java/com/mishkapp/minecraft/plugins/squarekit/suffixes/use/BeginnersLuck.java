@@ -40,8 +40,8 @@ public class BeginnersLuck extends UseSuffix {
         manaCost = 50 - (level * 64.0/50);
 
         particleEffect = ParticleEffect.builder()
-                .type(ParticleTypes.CRIT_MAGIC)
-                .count(2)
+                .type(ParticleTypes.MAGIC_CRITICAL_HIT)
+                .quantity(2)
                 .offset(new Vector3d(0, 1, 0))
                 .build();
     }

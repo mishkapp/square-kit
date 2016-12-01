@@ -44,8 +44,8 @@ public class Hook extends LaunchProjectileSuffix {
                 .build();
 
         trailEffect = ParticleEffect.builder()
-                .type(ParticleTypes.CRIT)
-                .count(1)
+                .type(ParticleTypes.CRITICAL_HIT)
+                .quantity(1)
                 .offset(new Vector3d(0, 0, 0))
                 .build();
     }

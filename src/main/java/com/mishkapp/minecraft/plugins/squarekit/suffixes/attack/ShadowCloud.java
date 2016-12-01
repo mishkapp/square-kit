@@ -35,8 +35,8 @@ public class ShadowCloud extends Suffix {
     public ShadowCloud(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
         super(kitPlayer, itemStack, level);
         effect = ParticleEffect.builder()
-                .type(ParticleTypes.SMOKE_LARGE)
-                .count(4)
+                .type(ParticleTypes.LARGE_SMOKE)
+                .quantity(4)
                 .offset(new Vector3d(0, 1, 0))
                 .build();
 

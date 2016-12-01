@@ -7,6 +7,8 @@ import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.entity.Hotbar;
+import org.spongepowered.api.item.inventory.property.SlotIndex;
 import org.spongepowered.api.item.inventory.type.CarriedInventory;
 
 import java.util.ArrayList;
@@ -108,7 +110,11 @@ public class Kit {
         player.setBoots(boots);
         List<ItemStack> other = new ArrayList<>();
         items.forEach(o -> other.add(o.copy()));
-        other.forEach(inventory::offer);
+        Hotbar hotbar = inventory.query(Hotbar.class);
+        for(int i = 0; i < other.size(); i++){
+            hotbar.set(new SlotIndex(i), other.get(i));
+        }
+        hotbar.setSelectedSlotIndex(0);
         kitPlayer.setCurrentKit(id);
         kitPlayer.forceUpdate();
     }

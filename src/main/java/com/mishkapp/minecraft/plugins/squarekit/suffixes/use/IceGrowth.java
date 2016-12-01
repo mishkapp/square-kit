@@ -55,7 +55,7 @@ public class IceGrowth extends UseSuffix {
 
         particleEffect = ParticleEffect.builder()
                 .type(ParticleTypes.SNOW_SHOVEL)
-                .count(1)
+                .quantity(1)
                 .offset(new Vector3d(0, 1, 0))
                 .build();
     }

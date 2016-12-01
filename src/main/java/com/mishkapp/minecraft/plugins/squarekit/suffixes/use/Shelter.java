@@ -41,7 +41,7 @@ public class Shelter extends UseSuffix {
 
         particleEffect = ParticleEffect.builder()
                 .type(ParticleTypes.SLIME)
-                .count(2)
+                .quantity(2)
                 .offset(new Vector3d(0, 1, 0))
                 .build();
     }

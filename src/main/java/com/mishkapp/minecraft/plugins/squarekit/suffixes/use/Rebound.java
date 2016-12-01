@@ -22,7 +22,7 @@ import static java.lang.Math.*;
 public class Rebound extends UseSuffix{
     private Random random = new Random();
     private ParticleEffect particleEffect = ParticleEffect.builder()
-            .count(3)
+            .quantity(3)
             .type(ParticleTypes.CLOUD)
             .build();
 

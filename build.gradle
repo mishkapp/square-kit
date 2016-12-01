@@ -35,9 +35,10 @@ task fatJar(type: Jar) {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
 
+
     provided 'org.mongodb:mongodb-driver:3.0.4'
 
-    compile 'org.spongepowered:spongeapi:5.0.0-20161003.175748-144'
+    compile 'org.spongepowered:spongeapi:6.0.0-20161126.155828-25'
 
     compile fileTree(dir: 'libs', include: '*.jar')
 }

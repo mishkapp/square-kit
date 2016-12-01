@@ -45,7 +45,7 @@ public class IceRock extends LaunchProjectileSuffix {
 
         trailEffect = ParticleEffect.builder()
                 .type(ParticleTypes.SNOWBALL)
-                .count(16)
+                .quantity(16)
                 .offset(new Vector3d(0, 0, 0))
                 .build();
     }

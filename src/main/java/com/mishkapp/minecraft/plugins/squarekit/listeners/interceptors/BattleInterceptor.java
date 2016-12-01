@@ -37,8 +37,8 @@ public class BattleInterceptor {
 
     private Random random = new Random();
     private ParticleEffect criticalEffect = ParticleEffect.builder()
-            .type(ParticleTypes.CRIT)
-            .count(6)
+            .type(ParticleTypes.CRITICAL_HIT)
+            .quantity(6)
             .offset(new Vector3d(0, 1, 0))
             .build();
 
