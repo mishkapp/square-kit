@@ -56,6 +56,7 @@ public class KitPlayer {
     private UUID uuid;
     private String currentKit = "recruit";
     private int money = 0;
+    private int level = 1;
     private int experience = 0;
     private int currentKillstreak;
     private PlayerStats playerStats = new PlayerStats();
@@ -333,6 +334,21 @@ public class KitPlayer {
         }
     }
 
+    public void addExp(int exp){
+        int maxExp = LevelTable.experiences[level - 1];
+        if((exp + experience) >= maxExp){
+            levelup();
+            experience = maxExp - (exp + experience);
+        } else {
+            experience += exp;
+        }
+    }
+
+    public void levelup(){
+        level += 1;
+        //TODO: maybe add some effects
+    }
+
     public void onKill(){
         playerStats.setKills(playerStats.getKills() + 1);
         KitsStats.KitStats st = kitsStats.get(currentKit);
@@ -549,6 +565,7 @@ public class KitPlayer {
     private void fromDocument(Document document){
         currentKit = document.getString("currentKit");
         money = document.getInteger("money");
+        level = document.getInteger("level");
         experience = document.getInteger("experience");
         currentKillstreak = document.getInteger("currentKillstreak");
         playerStats = PlayerStats.fromDocument(document.get("playerStats", Document.class));
@@ -559,6 +576,7 @@ public class KitPlayer {
         return new Document("uuid", uuid.toString())
                 .append("currentKit", currentKit)
                 .append("money", money)
+                .append("level", level)
                 .append("experience", experience)
                 .append("currentKillstreak", currentKillstreak)
                 .append("playerStats", playerStats.toDocument())
