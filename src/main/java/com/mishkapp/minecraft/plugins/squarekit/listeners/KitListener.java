@@ -3,6 +3,7 @@ package com.mishkapp.minecraft.plugins.squarekit.listeners;
 import com.mishkapp.minecraft.plugins.squarekit.events.PlayerKilledByEntityEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.PlayerKilledByPlayerEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.PlayerKilledEvent;
+import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.filter.type.Exclude;
 
@@ -25,10 +26,12 @@ public class KitListener {
 
     @Listener
     public void onDeath(PlayerKilledByPlayerEvent event){
-        event.getPlayer().onDeath();
-        if(event.getKiller() != event.getPlayer()){
-            event.getKiller().onKill();
+        KitPlayer killed = event.getPlayer();
+        KitPlayer killer = event.getKiller();
+        if(killer != killed){
+            killer.onKill(killed);
         }
+        killed.onDeath();
     }
 
 }

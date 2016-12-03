@@ -5,7 +5,9 @@ import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.SuffixFactory;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
+import com.mishkapp.minecraft.plugins.squarekit.utils.ExpUtils;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
+import com.mishkapp.minecraft.plugins.squarekit.utils.GoldUtils;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
@@ -283,6 +285,10 @@ public class KitPlayer {
         return money;
     }
 
+    public int getLevel() {
+        return level;
+    }
+
     public int getExperience() {
         return experience;
     }
@@ -334,6 +340,16 @@ public class KitPlayer {
         }
     }
 
+    public void addMoney(int money){
+        this.money += money;
+        //TODO: message
+    }
+
+    public void subtractMoney(int money){
+        this.money = Math.max(0, this.money - money);
+        //TODO: message
+    }
+
     public void addExp(int exp){
         int maxExp = LevelTable.experiences[level - 1];
         if((exp + experience) >= maxExp){
@@ -342,6 +358,22 @@ public class KitPlayer {
         } else {
             experience += exp;
         }
+        //TODO: message
+    }
+
+    public void subtractExp(int exp){
+        if(exp > experience){
+            delvl();
+            experience = LevelTable.experiences[level - 1] - (exp - experience);
+        } else {
+            experience -= exp;
+        }
+        //TODO: message
+    }
+
+    public void delvl(){
+        level -= 1;
+        //TODO: some effects maybe
     }
 
     public void levelup(){
@@ -349,18 +381,22 @@ public class KitPlayer {
         //TODO: maybe add some effects
     }
 
-    public void onKill(){
+    public void onKill(KitPlayer killed){
         playerStats.setKills(playerStats.getKills() + 1);
         KitsStats.KitStats st = kitsStats.get(currentKit);
         st.setKills(st.getKills() + 1);
         currentKillstreak += 1;
         recalculateKDRatio();
+        addMoney(GoldUtils.goldReceived(killed, this));
+        addExp(ExpUtils.expReceived(killed, this));
     }
 
     public void onDeath(){
         playerStats.setDeaths(playerStats.getDeaths() + 1);
         KitsStats.KitStats st = kitsStats.get(currentKit);
         st.setDeaths(st.getDeaths() + 1);
+        subtractExp(ExpUtils.expPenalty(this));
+        subtractMoney(GoldUtils.goldPenalty(this));
         resetKillstreak();
         recalculateKDRatio();
     }
