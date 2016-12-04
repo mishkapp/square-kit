@@ -30,6 +30,7 @@ public class SphereArea extends Area {
         fi = new Vector3d(x2, y2, z2);
     }
 
+    @Override
     public Vector3d getCenter() {
         return center;
     }

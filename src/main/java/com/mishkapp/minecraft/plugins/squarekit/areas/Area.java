@@ -54,6 +54,8 @@ public abstract class Area {
 
     public abstract boolean isInside(Location l);
 
+    public abstract Vector3d getCenter();
+
     public String getId() {
         return id;
     }

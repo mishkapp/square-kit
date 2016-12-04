@@ -39,6 +39,11 @@ public class CuboidArea extends Area {
     }
 
     @Override
+    public Vector3d getCenter() {
+        return aabb.getCenter();
+    }
+
+    @Override
     public void fillBoundPoints() {
         boundPoints = new ArrayList<>();
         double minX = aabb.getMin().getX();
