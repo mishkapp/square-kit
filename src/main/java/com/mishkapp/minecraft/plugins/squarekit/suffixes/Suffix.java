@@ -4,6 +4,7 @@ import com.mishkapp.minecraft.plugins.squarekit.utils.ItemUtils;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.type.HandType;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 import static org.spongepowered.api.data.type.HandTypes.MAIN_HAND;
@@ -46,6 +47,10 @@ public abstract class Suffix {
     protected boolean isItemInHand() {
         return isSimilar(itemStack, kitPlayer.getMcPlayer().getItemInHand(MAIN_HAND).orElse(null))
                 || isSimilar(itemStack, kitPlayer.getMcPlayer().getItemInHand(OFF_HAND).orElse(null));
+    }
+
+    protected boolean isItemInHand(HandType handType) {
+        return isSimilar(itemStack, kitPlayer.getMcPlayer().getItemInHand(handType).orElse(null));
     }
 
     public void register() {}

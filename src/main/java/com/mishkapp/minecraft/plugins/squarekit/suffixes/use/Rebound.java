@@ -38,7 +38,7 @@ public class Rebound extends UseSuffix{
         if(event instanceof ItemUsedEvent){
             Player player = kitPlayer.getMcPlayer();
 
-            if(!isItemInHand()){
+            if(!isItemInHand(((ItemUsedEvent) event).getHandType())){
                 return;
             }
 

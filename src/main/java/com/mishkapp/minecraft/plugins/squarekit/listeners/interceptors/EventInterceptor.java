@@ -6,6 +6,7 @@ import com.mishkapp.minecraft.plugins.squarekit.events.*;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.utils.Utils;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.type.HandType;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -65,37 +66,45 @@ public class EventInterceptor {
         ItemStack mainHand = player.getItemInHand(MAIN_HAND).orElse(null);
         ItemStack offHand = player.getItemInHand(OFF_HAND).orElse(null);
 
-        if(mainHand == null &&
-                offHand == null){
+        if(mainHand.getItem().getId().equals("minecraft:air") &&
+                offHand.getItem().getId().equals("minecraft:air")){
+            return;
+        }
+        if(offHand.getItem().getId().equals("minecraft:air") &&
+                event instanceof InteractEntityEvent.Secondary.OffHand){
             return;
         }
 
-        if(offHand == null && event instanceof InteractEntityEvent.Secondary.OffHand){
+        if(mainHand.getItem().getId().equals("minecraft:air") &&
+                event instanceof InteractEntityEvent.Secondary.MainHand){
             return;
         }
 
-        if(mainHand == null && event instanceof InteractEntityEvent.Secondary.MainHand){
-            return;
-        }
-
-        if(mainHand != null && offHand != null && event instanceof InteractEntityEvent.Secondary.MainHand){
+        if(!mainHand.getItem().getId().equals("minecraft:air") &&
+                !offHand.getItem().getId().equals("minecraft:air") &&
+                event instanceof InteractEntityEvent.Secondary.MainHand){
             return;
         }
 
         ItemStack usedItem;
+        HandType handType;
 
-        if (mainHand != null && offHand != null){
+        if (!mainHand.getItem().getId().equals("minecraft:air") &&
+                !offHand.getItem().getId().equals("minecraft:air")){
             usedItem = offHand;
+            handType = OFF_HAND;
         } else {
-            if(mainHand != null){
+            if(!mainHand.getItem().getId().equals("minecraft:air")){
                 usedItem = mainHand;
+                handType = MAIN_HAND;
             } else {
                 usedItem = offHand;
+                handType = OFF_HAND;
             }
         }
 
         if(Utils.isKitItem(usedItem)){
-            Sponge.getEventManager().post(new ItemUsedEvent(SquareKit.getPlayersRegistry().getPlayer(player.getUniqueId())));
+            Sponge.getEventManager().post(new ItemUsedEvent(SquareKit.getPlayersRegistry().getPlayer(player.getUniqueId()), handType));
         }
     }
 
@@ -104,37 +113,45 @@ public class EventInterceptor {
         ItemStack mainHand = player.getItemInHand(MAIN_HAND).orElse(null);
         ItemStack offHand = player.getItemInHand(OFF_HAND).orElse(null);
 
-        if(mainHand == null &&
-                offHand == null){
+        if(mainHand.getItem().getId().equals("minecraft:air") &&
+                offHand.getItem().getId().equals("minecraft:air")){
+            return;
+        }
+        if(offHand.getItem().getId().equals("minecraft:air") &&
+                event instanceof InteractBlockEvent.Secondary.OffHand){
             return;
         }
 
-        if(offHand == null && event instanceof InteractBlockEvent.Secondary.OffHand){
+        if(mainHand.getItem().getId().equals("minecraft:air") &&
+                event instanceof InteractBlockEvent.Secondary.MainHand){
             return;
         }
 
-        if(mainHand == null && event instanceof InteractBlockEvent.Secondary.MainHand){
-            return;
-        }
-
-        if(mainHand != null && offHand != null && event instanceof InteractBlockEvent.Secondary.MainHand){
+        if(!mainHand.getItem().getId().equals("minecraft:air") &&
+                !offHand.getItem().getId().equals("minecraft:air") &&
+                event instanceof InteractBlockEvent.Secondary.MainHand){
             return;
         }
 
         ItemStack usedItem;
+        HandType handType;
 
-        if (mainHand != null && offHand != null){
+        if (!mainHand.getItem().getId().equals("minecraft:air") &&
+                !offHand.getItem().getId().equals("minecraft:air")){
             usedItem = offHand;
+            handType = OFF_HAND;
         } else {
-            if(mainHand != null){
+            if(!mainHand.getItem().getId().equals("minecraft:air")){
                 usedItem = mainHand;
+                handType = MAIN_HAND;
             } else {
                 usedItem = offHand;
+                handType = OFF_HAND;
             }
         }
 
         if(Utils.isKitItem(usedItem)){
-            Sponge.getEventManager().post(new ItemUsedEvent(SquareKit.getPlayersRegistry().getPlayer(player.getUniqueId())));
+            Sponge.getEventManager().post(new ItemUsedEvent(SquareKit.getPlayersRegistry().getPlayer(player.getUniqueId()), handType));
         }
     }
 
