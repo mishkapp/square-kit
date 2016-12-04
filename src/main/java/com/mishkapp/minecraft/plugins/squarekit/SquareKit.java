@@ -3,7 +3,10 @@ package com.mishkapp.minecraft.plugins.squarekit;
 import com.google.common.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.mishkapp.minecraft.plugins.squarekit.areas.Area;
-import com.mishkapp.minecraft.plugins.squarekit.commands.*;
+import com.mishkapp.minecraft.plugins.squarekit.commands.KitCommand;
+import com.mishkapp.minecraft.plugins.squarekit.commands.KitsCommand;
+import com.mishkapp.minecraft.plugins.squarekit.commands.StatsCommand;
+import com.mishkapp.minecraft.plugins.squarekit.commands.UpdateCommand;
 import com.mishkapp.minecraft.plugins.squarekit.commands.area.*;
 import com.mishkapp.minecraft.plugins.squarekit.listeners.KitListener;
 import com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors.BattleInterceptor;
@@ -31,10 +34,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.GuiceObjectMapperFactory;
-import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializerCollection;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 import org.bson.Document;
@@ -51,17 +52,11 @@ import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Logger;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 /**
  * Created by mishkapp on 27.04.2016.
@@ -281,15 +276,6 @@ public class SquareKit{
                 )
                 .build();
 
-//        CommandSpec areaDefine = CommandSpec.builder()
-//                .description(Text.of("Define area"))
-//                .child(areaDefineCuboid, "cuboid")
-//                .child(areaDefineSphere, "sphere")
-//                .arguments(
-//                        GenericArguments.string(Text.of("areaId"))
-//                )
-//                .build();
-
         CommandSpec areaRemoveHandler = CommandSpec.builder()
                 .description(Text.of("Remove handler from area"))
                 .executor(new RemoveHandlerCommand())
@@ -403,59 +389,15 @@ public class SquareKit{
     }
 
     private void registerKits(){
-        try{
             KitRegistry registry = getKitRegistry();
 
-            Path kitsPath = getConfigDir().resolve("kits");
+            MongoCollection collection = mongoDb.getCollection("kits");
+            MongoCursor cursor = collection.find().iterator();
 
-            Asset asset = game.getAssetManager().getAsset(plugin, "kits").orElse(null);
-
-            String zipPath = asset.getUrl().toString()
-                    .replace("jar:file:", "")
-                    .replaceFirst("!/.*", "");
-
-            String pathInZip = asset.getUrl().toString()
-                    .replaceFirst(".*jar!/", "");
-
-            ZipFile zipFile = new ZipFile(zipPath);
-
-            Enumeration<? extends ZipEntry> entries = zipFile.entries();
-
-            Set<String> kitNames = new HashSet<>();
-
-            while(entries.hasMoreElements()){
-                String fileName = entries.nextElement().getName();
-                if(fileName.startsWith(pathInZip) && fileName.endsWith("conf")){
-                    kitNames.add(fileName.replaceFirst(".*/", ""));
-                }
+            while (cursor.hasNext()){
+                Document kitDoc = (Document) cursor.next();
+                registry.registerKit(kitDoc.getString("id"), Kit.fromDocument(kitDoc));
             }
-
-            Files.createDirectories(kitsPath);
-
-            for(String s : kitNames){
-                kitsPath.resolve(s).toFile().delete();
-                Asset a = game.getAssetManager().getAsset(plugin, "kits/" + s).orElse(null);
-                a.copyToDirectory(kitsPath);
-            }
-
-            File[] kitFiles = configDir.resolve("kits").toFile().listFiles((dir, name) -> name.endsWith(".conf"));
-
-            for(File f : kitFiles){
-                String kitId = f.getName().substring(0, f.getName().length() - 5);
-                System.out.println(kitId);
-                try{
-                    ConfigurationNode cn = HoconConfigurationLoader.builder()
-                            .setPath(f.toPath())
-                            .build()
-                            .load(ConfigurationOptions.defaults().setObjectMapperFactory(factory).setSerializers(serializers));
-                    registry.registerKit(kitId, cn.getValue(TypeToken.of(Kit.class)));
-                } catch (ObjectMappingException e){
-                    e.printStackTrace();
-                }
-            }
-        } catch (IOException e){
-            e.printStackTrace();
-        }
     }
 
     public static SquareKit getInstance() {

@@ -2,8 +2,8 @@ package com.mishkapp.minecraft.plugins.squarekit;
 
 
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
-import ninja.leaping.configurate.objectmapping.Setting;
-import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
+import com.mishkapp.minecraft.plugins.squarekit.utils.MongoUtils;
+import org.bson.Document;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -17,31 +17,21 @@ import java.util.List;
 /**
  * Created by mishkapp on 28.06.2016.
  */
-@ConfigSerializable
 public class Kit {
 
-    @Setting
+    private String id;
     private String name;
-    @Setting
     private String description;
-    @Setting
     private int price;
-    @Setting
     private String permission;
-    @Setting
     private ItemStack helmet;
-    @Setting
     private ItemStack chestplate;
-    @Setting
     private ItemStack leggings;
-    @Setting
     private ItemStack boots;
-    @Setting
     private ItemStack offhand;
-    @Setting("other")
-    private List<ItemStack> items;
+    private List<ItemStack> items = new ArrayList<>();
 
-    public Kit(){}
+    private Kit(){}
 
     public String getName() {
         return name;
@@ -117,5 +107,31 @@ public class Kit {
         hotbar.setSelectedSlotIndex(0);
         kitPlayer.setCurrentKit(id);
         kitPlayer.forceUpdate();
+    }
+
+    public static Kit fromDocument(Document document){
+        Kit kit = new Kit();
+        kit.id = document.getString("id");
+        kit.name = document.getString("name");
+        kit.description = document.getString("description");
+        kit.price = document.getInteger("price");
+        kit.permission = document.getString("permission");
+        kit.helmet = MongoUtils.itemStackFromDocument((Document) document.get("helmet"));
+        kit.chestplate = MongoUtils.itemStackFromDocument((Document) document.get("chestplate"));
+        kit.leggings = MongoUtils.itemStackFromDocument((Document) document.get("leggings"));
+        kit.boots = MongoUtils.itemStackFromDocument((Document) document.get("boots"));
+        kit.offhand = MongoUtils.itemStackFromDocument((Document) document.get("offhand"));
+
+        List<Document> other = (List<Document>) document.get("other");
+
+        if(other == null){
+            return kit;
+        }
+
+        for(Document doc : other){
+            kit.items.add(MongoUtils.itemStackFromDocument(doc));
+        }
+
+        return kit;
     }
 }
