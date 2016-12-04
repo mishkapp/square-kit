@@ -8,6 +8,10 @@ import org.spongepowered.api.world.Location;
 
 import java.util.ArrayList;
 
+import static java.lang.Math.PI;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+
 /**
  * Created by mishkapp on 03.12.2016.
  */
@@ -55,28 +59,20 @@ public class SphereArea extends Area {
     @Override
     public void fillBoundPoints() {
         boundPoints = new ArrayList<>();
-        double minX = center.getX() - fi.getX();
-        double minY = center.getY() - fi.getY();
-        double minZ = center.getZ() - fi.getZ();
-
-        double maxX = center.getX() + fi.getX();
-        double maxY = center.getY() + fi.getY();
-        double maxZ = center.getZ() + fi.getZ();
-
-        double epsX = (Math.PI) / (maxX - minX);
+        double epsX = (PI) / (fi.getX() * 2);
         epsX /= 3.0;
-        double epsY = (Math.PI * 2.0) / (maxY - minY);
+        double epsY = (PI * 2.0) / (fi.getY() * 2);
         epsY /= 3.0;
 
-            for (double i = 0; i <= Math.PI; i += epsX){
-                for (double j = 0; j <= Math.PI * 2; j += epsY){
-                    boundPoints.add(new Vector3d(
-                            center.getX() + fi.getX() * Math.sin(i) * Math.cos(j),
-                            center.getY() + fi.getY() * Math.sin(i) * Math.sin(j),
-                            center.getZ() + fi.getZ() * Math.cos(i)
-                    ));
-                }
+        for (double i = 0; i <= PI; i += epsX){
+            for (double j = 0; j <= PI * 2; j += epsY){
+                boundPoints.add(new Vector3d(
+                        center.getX() + fi.getX() * sin(i) * cos(j),
+                        center.getY() + fi.getY() * sin(i) * sin(j),
+                        center.getZ() + fi.getZ() * cos(i)
+                ));
             }
+        }
     }
 
     @Override
