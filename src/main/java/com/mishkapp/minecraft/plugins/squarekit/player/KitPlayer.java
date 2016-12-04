@@ -600,10 +600,13 @@ public class KitPlayer {
 
     private void fromDocument(Document document){
         currentKit = document.getString("currentKit");
-        money = document.getInteger("money");
-        level = document.getInteger("level");
-        experience = document.getInteger("experience");
-        currentKillstreak = document.getInteger("currentKillstreak");
+        if(currentKit == null){
+            currentKit = "recruit";
+        }
+        money = document.getInteger("money", 0);
+        level = document.getInteger("level", 0);
+        experience = document.getInteger("experience", 0);
+        currentKillstreak = document.getInteger("currentKillstreak", 0);
         playerStats = PlayerStats.fromDocument(document.get("playerStats", Document.class));
         kitsStats = KitsStats.fromDocument(document.get("kitsStats", Document.class));
     }
