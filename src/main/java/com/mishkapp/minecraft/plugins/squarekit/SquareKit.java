@@ -2,10 +2,9 @@ package com.mishkapp.minecraft.plugins.squarekit;
 
 import com.google.common.reflect.TypeToken;
 import com.google.inject.Inject;
-import com.mishkapp.minecraft.plugins.squarekit.commands.KitCommand;
-import com.mishkapp.minecraft.plugins.squarekit.commands.KitsCommand;
-import com.mishkapp.minecraft.plugins.squarekit.commands.StatsCommand;
-import com.mishkapp.minecraft.plugins.squarekit.commands.UpdateCommand;
+import com.mishkapp.minecraft.plugins.squarekit.areas.Area;
+import com.mishkapp.minecraft.plugins.squarekit.commands.*;
+import com.mishkapp.minecraft.plugins.squarekit.commands.area.*;
 import com.mishkapp.minecraft.plugins.squarekit.listeners.KitListener;
 import com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors.BattleInterceptor;
 import com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors.EventInterceptor;
@@ -28,6 +27,8 @@ import com.mishkapp.minecraft.plugins.squarekit.suffixes.use.*;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.ConfigurationOptions;
@@ -36,6 +37,7 @@ import ninja.leaping.configurate.objectmapping.GuiceObjectMapperFactory;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializerCollection;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
+import org.bson.Document;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.asset.Asset;
@@ -92,10 +94,11 @@ public class SquareKit{
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
         instance = this;
+        initMongo();
         initSerializers();
         initCmds();
+        initAreas();
         initMessages();
-        initMongo();
         saveConf();
         registerSuffixes();
         registerListeners();
@@ -116,6 +119,14 @@ public class SquareKit{
 //        getPlayersRegistry().purge();
 //        getKitRegistry().purge();
 //    }
+
+    private void initAreas(){
+        MongoCollection collection = mongoDb.getCollection("areas");
+        MongoCursor cursor = collection.find().iterator();
+        while (cursor.hasNext()){
+            AreaRegistry.getInstance().add(Area.fromDocument((Document) cursor.next()));
+        }
+    }
 
     private void initMessages(){
         Path messagesPath = getConfigDir().resolve("messages.conf");
@@ -191,6 +202,129 @@ public class SquareKit{
                 .build();
 
         Sponge.getCommandManager().register(this, statsCmd, "sqstats");
+
+        // /area
+        CommandSpec areaLoad = CommandSpec.builder()
+                .description(Text.of("Load area from database"))
+                .executor(new LoadCommand())
+                .arguments(
+                        GenericArguments.string(Text.of("areaId"))
+                )
+                .build();
+
+        CommandSpec areaSave = CommandSpec.builder()
+                .description(Text.of("Save area to database"))
+                .executor(new SaveCommand())
+                .arguments(
+                        GenericArguments.string(Text.of("areaId"))
+                )
+                .build();
+
+        CommandSpec areaClearHandlers = CommandSpec.builder()
+                .description(Text.of("Remove all handlers from area"))
+                .executor(new ClearHandlersCommand())
+                .arguments(
+                        GenericArguments.string(Text.of("areaId"))
+                )
+                .build();
+
+        CommandSpec areaAddHandler = CommandSpec.builder()
+                .description(Text.of("Add handler to area"))
+                .executor(new AddHandlerCommand())
+                .arguments(
+                        GenericArguments.string(Text.of("areaId")),
+                        GenericArguments.string(Text.of("handlerCode"))
+                )
+                .build();
+
+        CommandSpec areaSetSafe = CommandSpec.builder()
+                .description(Text.of("Set area as safe zone"))
+                .executor(new SetSafeCommand())
+                .arguments(
+                        GenericArguments.string(Text.of("areaId"))
+                )
+                .build();
+
+        CommandSpec areaSetUnsafe = CommandSpec.builder()
+                .description(Text.of("Set area as unsafe zone"))
+                .executor(new SetUnsafeCommand())
+                .arguments(
+                        GenericArguments.string(Text.of("areaId"))
+                )
+                .build();
+
+        CommandSpec areaRemove = CommandSpec.builder()
+                .description(Text.of("Remove area"))
+                .executor(new RemoveCommand())
+                .arguments(
+                        GenericArguments.string(Text.of("areaId"))
+                )
+                .build();
+
+        CommandSpec areaDefineCuboid = CommandSpec.builder()
+                .description(Text.of("Define cuboid area"))
+                .executor(new DefineCuboidCommand())
+                .arguments(
+                        GenericArguments.string(Text.of("areaId")),
+                        GenericArguments.string(Text.of("min")),
+                        GenericArguments.string(Text.of("max"))
+                )
+                .build();
+
+        CommandSpec areaDefineSphere = CommandSpec.builder()
+                .description(Text.of("Define sphere area"))
+                .executor(new DefineSphereCommand())
+                .arguments(
+                        GenericArguments.string(Text.of("areaId")),
+                        GenericArguments.string(Text.of("center")),
+                        GenericArguments.string(Text.of("fi"))
+                )
+                .build();
+
+//        CommandSpec areaDefine = CommandSpec.builder()
+//                .description(Text.of("Define area"))
+//                .child(areaDefineCuboid, "cuboid")
+//                .child(areaDefineSphere, "sphere")
+//                .arguments(
+//                        GenericArguments.string(Text.of("areaId"))
+//                )
+//                .build();
+
+        CommandSpec areaRemoveHandler = CommandSpec.builder()
+                .description(Text.of("Remove handler from area"))
+                .executor(new RemoveHandlerCommand())
+                .arguments(
+                        GenericArguments.string(Text.of("areaId")),
+                        GenericArguments.integer(Text.of("handlerId"))
+                )
+                .build();
+
+        CommandSpec areaInfo = CommandSpec.builder()
+                .description(Text.of("Info about area"))
+                .executor(new InfoCommand())
+                .arguments(
+                        GenericArguments.string(Text.of("areaId"))
+                )
+                .build();
+
+
+        CommandSpec areaCmd = CommandSpec.builder()
+                .description(Text.of("Get stats for player"))
+                .permission("squarekit.admin")
+                .child(areaInfo, "info")
+                .child(areaLoad, "load")
+                .child(areaSave, "save")
+                .child(areaClearHandlers, "clearHandlers")
+                .child(areaRemoveHandler, "removeHandler")
+                .child(areaAddHandler, "addHandler")
+                .child(areaSetSafe, "setSafe")
+                .child(areaSetUnsafe, "setUnsafe")
+                .child(areaRemove, "remove")
+                .child(areaDefineCuboid, "define-cuboid")
+                .child(areaDefineSphere, "define-sphere")
+                .build();
+
+        Sponge.getCommandManager().register(this, areaCmd, "sqarea");
     }
 
     public Path getConfigDir(){
