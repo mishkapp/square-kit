@@ -8,9 +8,7 @@ import org.spongepowered.api.world.Location;
 
 import java.util.ArrayList;
 
-import static java.lang.Math.PI;
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
+import static java.lang.Math.*;
 
 /**
  * Created by mishkapp on 03.12.2016.
@@ -49,11 +47,10 @@ public class SphereArea extends Area {
             return false;
         }
 
-        double xDelta = Math.abs(center.getX() - l.getX());
-        double yDelta = Math.abs(center.getY() - l.getY());
-        double zDelta = Math.abs(center.getZ() - l.getZ());
-
-        return xDelta <= fi.getX() && yDelta <= fi.getY() && zDelta <= fi.getZ();
+        double result = (pow(l.getX() - center.getX(), 2)/pow(fi.getX(), 2))
+                + (pow(l.getY() - center.getY(), 2)/pow(fi.getY(), 2))
+                + (pow(l.getZ() - center.getZ(), 2)/pow(fi.getZ(), 2));
+        return result <= 1.0;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.mishkapp.minecraft.plugins.squarekit.listeners;
 
+import com.mishkapp.minecraft.plugins.squarekit.TopStreakerBar;
 import com.mishkapp.minecraft.plugins.squarekit.events.PlayerKilledByEntityEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.PlayerKilledByPlayerEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.PlayerKilledEvent;
@@ -16,12 +17,14 @@ public class KitListener {
     @Exclude({PlayerKilledByEntityEvent.class, PlayerKilledByPlayerEvent.class})
     public void onDeath(PlayerKilledEvent event){
         event.getPlayer().onDeath();
+        TopStreakerBar.getInstance().update();
     }
 
     @Listener
     @Exclude({PlayerKilledByPlayerEvent.class})
     public void onDeath(PlayerKilledByEntityEvent event){
         event.getPlayer().onDeath();
+        TopStreakerBar.getInstance().update();
     }
 
     @Listener
@@ -32,6 +35,7 @@ public class KitListener {
             killer.onKill(killed);
         }
         killed.onDeath();
+        TopStreakerBar.getInstance().update();
     }
 
 }
