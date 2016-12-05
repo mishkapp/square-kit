@@ -9,6 +9,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scheduler.Task;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -63,6 +64,10 @@ public class PlayersRegistry {
             instance = new PlayersRegistry();
         }
         return instance;
+    }
+
+    public List<KitPlayer> getPlayers(){
+        return (List<KitPlayer>) players.values();
     }
 
     public KitPlayer getPlayer(UUID uuid) {
