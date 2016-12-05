@@ -8,8 +8,8 @@ import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
  */
 public class GoldUtils {
 
-    public static int goldReceived(KitPlayer killed, KitPlayer killer){
-        int result = killed.getLevel() * (10 + Math.min(0, killed.getCurrentKillstreak() - 10));
+    public static double goldReceived(KitPlayer killed, KitPlayer killer){
+        double result = killed.getLevel() * (10 + Math.min(0, killed.getCurrentKillstreak() - 10));
         if(killed.getLevel() != 1){
             result += (killed.getMoney() * (0.02 + (Math.min(0, killed.getCurrentKillstreak() - 10)/2.0)));
         }
@@ -18,10 +18,10 @@ public class GoldUtils {
         return result;
     }
 
-    public static int goldPenalty(KitPlayer killed){
-        int result = 0;
+    public static double goldPenalty(KitPlayer killed){
+        double result = 0;
         if(killed.getLevel() != 1){
-            result = killed.getMoney() / 20;
+            result = killed.getMoney() / 20.0;
         }
         return result;
     }

@@ -57,7 +57,7 @@ public class KitPlayer {
     //here comes the model
     private UUID uuid;
     private String currentKit = "recruit";
-    private int money = 0;
+    private double money = 0;
     private int level = 1;
     private int experience = 0;
     private int currentKillstreak;
@@ -281,7 +281,7 @@ public class KitPlayer {
         this.currentKit = currentKit;
     }
 
-    public int getMoney() {
+    public double getMoney() {
         return money;
     }
 
@@ -340,13 +340,13 @@ public class KitPlayer {
         }
     }
 
-    public void addMoney(int money){
+    public void addMoney(double money){
         this.money += money;
         //TODO: message
     }
 
-    public void subtractMoney(int money){
-        this.money = Math.max(0, this.money - money);
+    public void subtractMoney(double money){
+        this.money = Math.max(0.0, this.money - money);
         //TODO: message
     }
 
@@ -603,7 +603,7 @@ public class KitPlayer {
         if(currentKit == null){
             currentKit = "recruit";
         }
-        money = document.getInteger("money", 0);
+        money = document.getDouble("money");
         level = document.getInteger("level", 0);
         experience = document.getInteger("experience", 0);
         currentKillstreak = document.getInteger("currentKillstreak", 0);
