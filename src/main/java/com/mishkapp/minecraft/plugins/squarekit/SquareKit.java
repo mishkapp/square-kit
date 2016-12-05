@@ -104,7 +104,7 @@ public class SquareKit{
     private void initMongo(){
         mongoClient = new MongoClient(
                 new ServerAddress("s7.squareland.ru", 27017),
-                Collections.singletonList(MongoCredential.createScramSha1Credential("squarekit", "admin", "Pcy7F7Y9BBEgqzrA".toCharArray()))
+                Collections.singletonList(MongoCredential.createScramSha1Credential("squarekit", "squarekit", "Pcy7F7Y9BBEgqzrA".toCharArray()))
         );
         mongoDb = mongoClient.getDatabase("squarekit");
     }

@@ -5,6 +5,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.boss.BossBarColors;
 import org.spongepowered.api.boss.BossBarOverlays;
 import org.spongepowered.api.boss.ServerBossBar;
+import org.spongepowered.api.text.Text;
 
 import java.util.Comparator;
 import java.util.List;
@@ -20,6 +21,7 @@ public class TopStreakerBar {
             .playEndBossMusic(false)
             .color(BossBarColors.RED)
             .overlay(BossBarOverlays.NOTCHED_20)
+            .name(Text.of("STREAK"))
             .visible(true)
             .build();
 

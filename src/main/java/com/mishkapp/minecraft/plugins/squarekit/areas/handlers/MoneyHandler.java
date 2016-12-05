@@ -3,14 +3,27 @@ package com.mishkapp.minecraft.plugins.squarekit.areas.handlers;
 import com.mishkapp.minecraft.plugins.squarekit.PlayersRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.areas.Area;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
+import org.spongepowered.api.boss.BossBarColors;
+import org.spongepowered.api.boss.BossBarOverlays;
+import org.spongepowered.api.boss.ServerBossBar;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.Text;
 
 import java.util.List;
+
+import static org.spongepowered.api.text.format.TextColors.GOLD;
 
 /**
  * Created by mishkapp on 03.12.2016.
  */
 public class MoneyHandler extends Handler {
+    private ServerBossBar bossBar = ServerBossBar.builder()
+            .color(BossBarColors.YELLOW)
+            .overlay(BossBarOverlays.PROGRESS)
+            .name(Text.of("MONEY"))
+            .percent(1.0f)
+            .build();
+
     private double moneyPerTick;
 
     public MoneyHandler() {
@@ -19,11 +32,14 @@ public class MoneyHandler extends Handler {
 
     @Override
     public void tick(Area area) {
+        bossBar.removePlayers(bossBar.getPlayers());
         List<Player> players = area.getPlayers();
-        if(players.isEmpty()){
+        if(players.isEmpty() || players.size() < 10){
             return;
         }
-        int moneyAdd = (int) (moneyPerTick/(players.size()) + (moneyPerTick * 0.1 * players.size()));
+        bossBar.addPlayers(players);
+        int moneyAdd = (int) (moneyPerTick/(players.size()) + ((moneyPerTick * 0.1 * players.size())/players.size()));
+        bossBar.setName(Text.builder().color(GOLD).append(Text.of("Деньги: " + moneyPerTick + "/сек")).build());
         players.forEach(p -> PlayersRegistry.getInstance().getPlayer(p.getUniqueId()).addMoney(moneyAdd));
     }
 
