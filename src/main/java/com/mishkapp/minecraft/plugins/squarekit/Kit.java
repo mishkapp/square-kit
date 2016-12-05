@@ -2,10 +2,12 @@ package com.mishkapp.minecraft.plugins.squarekit;
 
 
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
+import com.mishkapp.minecraft.plugins.squarekit.utils.ItemUtils;
 import com.mishkapp.minecraft.plugins.squarekit.utils.MongoUtils;
 import org.bson.Document;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.entity.Hotbar;
 import org.spongepowered.api.item.inventory.property.SlotIndex;
@@ -32,6 +34,14 @@ public class Kit {
     private List<ItemStack> items = new ArrayList<>();
 
     private Kit(){}
+
+    public ItemStack getItemForMenu(){
+        ItemStack result = ItemStack.of(ItemTypes.GOLDEN_SWORD, 1);
+        ItemUtils.setName(result, name);
+        ItemUtils.addLore(result, "&eСтоимость: " + price);
+        ItemUtils.addLore(result, description);
+        return result;
+    }
 
     public String getName() {
         return name;
