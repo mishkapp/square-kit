@@ -83,6 +83,7 @@ public abstract class Area {
 
     public void removeHandler(int id){
         if(handlers.size() > id){
+            handlers.get(id).remove(this);
             handlers.remove(id);
         }
     }

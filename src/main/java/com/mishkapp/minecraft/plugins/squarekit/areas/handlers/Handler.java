@@ -10,6 +10,8 @@ public abstract class Handler {
 
     public abstract void tick(Area area);
 
+    public void remove(Area area){}
+
     public abstract String serialize();
 
     public static Handler deserialize(String code){
@@ -20,6 +22,8 @@ public abstract class Handler {
                 return MoneyHandler.deserialize(args);
             case "visual" :
                 return VisualHandler.deserialize(args);
+            case "floating-item" :
+                return FloatingItemHandler.deserialize(args);
             default:
                 return null;
         }
