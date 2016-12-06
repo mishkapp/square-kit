@@ -363,8 +363,12 @@ public class KitPlayer {
 
     public void subtractExp(int exp){
         if(exp > experience){
-            delvl();
-            experience = LevelTable.experiences[level - 1] - (exp - experience);
+            if(level == 1){
+                experience = 0;
+            } else {
+                delvl();
+                experience = LevelTable.experiences[level - 1] - (exp - experience);
+            }
         } else {
             experience -= exp;
         }
