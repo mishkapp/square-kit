@@ -1,8 +1,10 @@
 package com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors;
 
+import com.mishkapp.minecraft.plugins.squarekit.PlayersRegistry;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
+import org.spongepowered.api.event.block.TickBlockEvent;
 import org.spongepowered.api.event.filter.cause.First;
 
 /**
@@ -11,8 +13,29 @@ import org.spongepowered.api.event.filter.cause.First;
 public class WorldChangeListener {
     @Listener
     public void onBlockPlace(ChangeBlockEvent.Place event, @First Player player){
-        if (!player.hasPermission("squarekit.build")) {
+        if (!isInBuildMode(player)) {
             event.setCancelled(true);
         }
+    }
+
+    @Listener
+    public void onBlockBreak(ChangeBlockEvent.Break event, @First Player player){
+        if (!isInBuildMode(player)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @Listener
+    public void onBlockDecay(ChangeBlockEvent.Decay event){
+        event.setCancelled(true);
+    }
+
+    @Listener
+    public void onBlockTick(TickBlockEvent event){
+        event.setCancelled(true);
+    }
+
+    private boolean isInBuildMode(Player player){
+        return PlayersRegistry.getInstance().getPlayer(player.getUniqueId()).isInBuildMode();
     }
 }

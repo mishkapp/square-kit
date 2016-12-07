@@ -3,10 +3,7 @@ package com.mishkapp.minecraft.plugins.squarekit;
 import com.google.common.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.mishkapp.minecraft.plugins.squarekit.areas.Area;
-import com.mishkapp.minecraft.plugins.squarekit.commands.KitCommand;
-import com.mishkapp.minecraft.plugins.squarekit.commands.KitsCommand;
-import com.mishkapp.minecraft.plugins.squarekit.commands.StatsCommand;
-import com.mishkapp.minecraft.plugins.squarekit.commands.UpdateCommand;
+import com.mishkapp.minecraft.plugins.squarekit.commands.*;
 import com.mishkapp.minecraft.plugins.squarekit.commands.area.*;
 import com.mishkapp.minecraft.plugins.squarekit.listeners.KitListener;
 import com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors.BattleInterceptor;
@@ -168,7 +165,7 @@ public class SquareKit{
                 )
                 .build();
 
-        Sponge.getCommandManager().register(this, kitCmd, "sqkit");
+        Sponge.getCommandManager().register(this, kitCmd, "kit");
 
         // /sqkits
         CommandSpec kitsCmd = CommandSpec.builder()
@@ -176,7 +173,7 @@ public class SquareKit{
                 .executor(new KitsCommand())
                 .build();
 
-        Sponge.getCommandManager().register(this, kitsCmd, "sqkits");
+        Sponge.getCommandManager().register(this, kitsCmd, "kits");
 
         // /squpdate
         CommandSpec updateCmd = CommandSpec.builder()
@@ -185,7 +182,7 @@ public class SquareKit{
                 .executor(new UpdateCommand())
                 .build();
 
-        Sponge.getCommandManager().register(this, updateCmd, "squpdate");
+        Sponge.getCommandManager().register(this, updateCmd, "update");
 
         // /sqstats
         CommandSpec statsCmd = CommandSpec.builder()
@@ -196,7 +193,16 @@ public class SquareKit{
                 )
                 .build();
 
-        Sponge.getCommandManager().register(this, statsCmd, "sqstats");
+        Sponge.getCommandManager().register(this, statsCmd, "stats");
+
+        // /sqstats
+        CommandSpec buildModeCmd = CommandSpec.builder()
+                .description(Text.of("Toggle build mode"))
+                .permission("squarekit.builder")
+                .executor(new BuildModeCommand())
+                .build();
+
+        Sponge.getCommandManager().register(this, buildModeCmd, "buildmode");
 
         // /area
         CommandSpec areaLoad = CommandSpec.builder()
@@ -310,7 +316,7 @@ public class SquareKit{
                 .child(areaDefineSphere, "define-sphere")
                 .build();
 
-        Sponge.getCommandManager().register(this, areaCmd, "sqarea");
+        Sponge.getCommandManager().register(this, areaCmd, "area");
     }
 
     public Path getConfigDir(){

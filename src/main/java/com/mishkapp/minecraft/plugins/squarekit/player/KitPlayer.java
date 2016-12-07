@@ -68,6 +68,8 @@ public class KitPlayer {
     private PlayerStats playerStats = new PlayerStats();
     private KitsStats kitsStats = new KitsStats();
 
+    private boolean isInBuildMode = false;
+
     public KitPlayer(Player player) {
         this.player = player;
         this.uuid = player.getUniqueId();
@@ -87,6 +89,14 @@ public class KitPlayer {
         scoreboard.addObjective(statsObj);
         updateScoreboard();
         player.setScoreboard(scoreboard);
+    }
+
+    public boolean isInBuildMode() {
+        return isInBuildMode;
+    }
+
+    public void setInBuildMode(boolean inBuildMode) {
+        isInBuildMode = inBuildMode;
     }
 
     public UUID getUuid(){
