@@ -97,6 +97,7 @@ public class SquareKit{
         registerListeners();
         registerKits();
         getPlayersRegistry().updateAllPlayers();
+        TopStreakerBar.getInstance().init();
     }
 
     private void initMongo(){
