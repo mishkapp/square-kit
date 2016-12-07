@@ -50,6 +50,9 @@ public class AreaRegistry {
     }
 
     public void load(String key){
+        if(registry.containsKey(key)){
+            registry.get(key).removeHandlers();
+        }
         add(Area.load(key));
     }
 

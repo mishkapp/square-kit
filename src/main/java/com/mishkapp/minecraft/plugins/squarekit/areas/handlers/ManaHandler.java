@@ -40,8 +40,13 @@ public class ManaHandler extends Handler{
         }
         bossBar.addPlayers(players);
         double manaAdd = ((baseMana * (1 + (0.025 * (players.size() - 1))))/(players.size()));
-        bossBar.setName(Text.builder().color(BLUE).append(Text.of("Мана: " + FormatUtils.thousandth(manaAdd) + "/сек")).build());
+        bossBar.setName(Text.builder().color(BLUE).append(Text.of("Мана: " + FormatUtils.hundredth(manaAdd) + "/сек")).build());
         players.forEach(p -> PlayersRegistry.getInstance().getPlayer(p.getUniqueId()).addMana(manaAdd));
+    }
+
+    @Override
+    public void remove(Area area){
+        bossBar.removePlayers(bossBar.getPlayers());
     }
 
     @Override

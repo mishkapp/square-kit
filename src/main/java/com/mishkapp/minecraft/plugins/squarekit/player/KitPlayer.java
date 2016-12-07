@@ -642,5 +642,9 @@ public class KitPlayer {
     public void addMana(double manaAdd) {
         currentMana = min(getMaxMana(), currentMana + manaAdd);
     }
+
+    public void addHealth(double hpAdd) {
+        getMcPlayer().offer(Keys.HEALTH, min(getMaxMana(), getMcPlayer().getHealthData().health().get() + hpAdd));
+    }
 }
 

@@ -5,6 +5,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.boss.BossBarColors;
 import org.spongepowered.api.boss.BossBarOverlays;
 import org.spongepowered.api.boss.ServerBossBar;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
@@ -26,10 +27,12 @@ public class FeedHandler extends Handler{
             .build();
 
     private int baseTime;
+    private int foodAdd;
 
     private int currentTick = 0;
 
     public FeedHandler() {
+        foodAdd = 1;
         baseTime = 4;
     }
 
@@ -48,7 +51,7 @@ public class FeedHandler extends Handler{
             currentTick += 1;
         } else {
             players.forEach(p -> {
-                p.foodLevel().set(min(p.foodLevel().get() + 1, 20));
+                p.offer(Keys.FOOD_LEVEL, min(p.foodLevel().get() + foodAdd, 20));
             });
             currentTick = 0;
         }
@@ -57,14 +60,20 @@ public class FeedHandler extends Handler{
     }
 
     @Override
+    public void remove(Area area){
+        bossBar.removePlayers(bossBar.getPlayers());
+    }
+
+    @Override
     public String serialize() {
-        return "feed:" + baseTime;
+        return "feed:" + foodAdd + ":" + baseTime;
     }
 
     public static FeedHandler deserialize(String[] args){
         FeedHandler result = new FeedHandler();
-        if(args.length > 0){
-            result.baseTime = Integer.parseInt(args[0]);
+        if(args.length > 1){
+            result.foodAdd = Integer.parseInt(args[0]);
+            result.baseTime = Integer.parseInt(args[1]);
         }
         return result;
     }

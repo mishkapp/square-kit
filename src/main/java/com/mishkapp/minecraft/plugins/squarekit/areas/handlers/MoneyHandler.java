@@ -40,8 +40,13 @@ public class MoneyHandler extends Handler {
         }
         bossBar.addPlayers(players);
         double moneyAdd = ((moneyPerTick * (1 + (0.025 * (players.size() - 1))))/(players.size()));
-        bossBar.setName(Text.builder().color(GOLD).append(Text.of("Деньги: " + FormatUtils.thousandth(moneyAdd) + "/сек")).build());
+        bossBar.setName(Text.builder().color(GOLD).append(Text.of("Деньги: " + FormatUtils.hundredth(moneyAdd) + "/сек")).build());
         players.forEach(p -> PlayersRegistry.getInstance().getPlayer(p.getUniqueId()).addMoney(moneyAdd));
+    }
+
+    @Override
+    public void remove(Area area){
+        bossBar.removePlayers(bossBar.getPlayers());
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.Text;
 
 /**
  * Created by mishkapp on 03.12.2016.
@@ -32,6 +33,7 @@ public class DefineCuboidCommand implements CommandExecutor {
             Area area = new CuboidArea(areaId, player.getWorld().getName(), vec1, vec2);
             AreaRegistry.getInstance().add(area);
             area.save();
+            player.sendMessage(Text.of("Area " + areaId + " created"));
         }
         return CommandResult.empty();
     }
