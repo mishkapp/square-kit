@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.mongodb.client.model.Filters.eq;
+import static java.lang.Math.min;
 import static org.spongepowered.api.text.format.TextColors.DARK_BLUE;
 
 /**
@@ -160,7 +161,7 @@ public class KitPlayer {
         for(double i : getPhysicalResistAdds().values()){
             result += i;
         }
-        return Math.min(1, result);
+        return min(1, result);
     }
 
     public double getMagicResist() {
@@ -168,7 +169,7 @@ public class KitPlayer {
         for(double i : getMagicResistAdds().values()){
             result += i;
         }
-        return Math.min(1, result);
+        return min(1, result);
     }
 
     public double getMaxHealth() {
@@ -193,7 +194,7 @@ public class KitPlayer {
             result += i;
         }
         if(result > 0){
-            return Math.min(1, result);
+            return min(1, result);
         } else {
             return Math.max(0, result);
         }
@@ -213,7 +214,7 @@ public class KitPlayer {
             result += i;
         }
         if(result > 0){
-            return Math.min(1, result);
+            return min(1, result);
         } else {
             return Math.max(0, result);
         }
@@ -636,6 +637,10 @@ public class KitPlayer {
                 .append("currentKillstreak", currentKillstreak)
                 .append("playerStats", playerStats.toDocument())
                 .append("kitsStats", kitsStats.toDocument());
+    }
+
+    public void addMana(double manaAdd) {
+        currentMana = min(getMaxMana(), currentMana + manaAdd);
     }
 }
 

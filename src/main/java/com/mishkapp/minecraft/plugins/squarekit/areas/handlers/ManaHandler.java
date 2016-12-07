@@ -12,23 +12,23 @@ import org.spongepowered.api.text.Text;
 
 import java.util.List;
 
-import static org.spongepowered.api.text.format.TextColors.GOLD;
+import static org.spongepowered.api.text.format.TextColors.BLUE;
 
 /**
- * Created by mishkapp on 03.12.2016.
+ * Created by mishkapp on 08.12.2016.
  */
-public class MoneyHandler extends Handler {
+public class ManaHandler extends Handler{
     private ServerBossBar bossBar = ServerBossBar.builder()
-            .color(BossBarColors.YELLOW)
+            .color(BossBarColors.BLUE)
             .overlay(BossBarOverlays.PROGRESS)
-            .name(Text.of("MONEY"))
+            .name(Text.of("MANA"))
             .percent(1.0f)
             .build();
 
-    private double moneyPerTick;
+    private double baseMana;
 
-    public MoneyHandler() {
-        moneyPerTick = 10.0;
+    public ManaHandler() {
+        baseMana = 1.0;
     }
 
     @Override
@@ -39,20 +39,20 @@ public class MoneyHandler extends Handler {
             return;
         }
         bossBar.addPlayers(players);
-        double moneyAdd = ((moneyPerTick * (1 + (0.025 * (players.size() - 1))))/(players.size()));
-        bossBar.setName(Text.builder().color(GOLD).append(Text.of("Деньги: " + FormatUtils.thousandth(moneyAdd) + "/сек")).build());
-        players.forEach(p -> PlayersRegistry.getInstance().getPlayer(p.getUniqueId()).addMoney(moneyAdd));
+        double manaAdd = ((baseMana * (1 + (0.025 * (players.size() - 1))))/(players.size()));
+        bossBar.setName(Text.builder().color(BLUE).append(Text.of("Мана: " + FormatUtils.thousandth(manaAdd) + "/сек")).build());
+        players.forEach(p -> PlayersRegistry.getInstance().getPlayer(p.getUniqueId()).addMana(manaAdd));
     }
 
     @Override
     public String serialize() {
-        return "money:" + FormatUtils.unsignedTenth(moneyPerTick);
+        return "mana:" + FormatUtils.unsignedTenth(baseMana);
     }
 
-    public static MoneyHandler deserialize(String[] args){
-        MoneyHandler result = new MoneyHandler();
+    public static ManaHandler deserialize(String[] args){
+        ManaHandler result = new ManaHandler();
         if(args.length > 0){
-            result.moneyPerTick = Double.parseDouble(args[0]);
+            result.baseMana = Double.parseDouble(args[0]);
         }
         return result;
     }

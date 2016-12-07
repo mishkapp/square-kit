@@ -12,23 +12,23 @@ import org.spongepowered.api.text.Text;
 
 import java.util.List;
 
-import static org.spongepowered.api.text.format.TextColors.GOLD;
+import static org.spongepowered.api.text.format.TextColors.LIGHT_PURPLE;
 
 /**
- * Created by mishkapp on 03.12.2016.
+ * Created by mishkapp on 08.12.2016.
  */
-public class MoneyHandler extends Handler {
+public class HealthHandler extends Handler {
     private ServerBossBar bossBar = ServerBossBar.builder()
-            .color(BossBarColors.YELLOW)
+            .color(BossBarColors.PINK)
             .overlay(BossBarOverlays.PROGRESS)
-            .name(Text.of("MONEY"))
+            .name(Text.of("HEALTH"))
             .percent(1.0f)
             .build();
 
-    private double moneyPerTick;
+    private double baseHp;
 
-    public MoneyHandler() {
-        moneyPerTick = 10.0;
+    public HealthHandler() {
+        baseHp = 1.0;
     }
 
     @Override
@@ -39,20 +39,20 @@ public class MoneyHandler extends Handler {
             return;
         }
         bossBar.addPlayers(players);
-        double moneyAdd = ((moneyPerTick * (1 + (0.025 * (players.size() - 1))))/(players.size()));
-        bossBar.setName(Text.builder().color(GOLD).append(Text.of("Деньги: " + FormatUtils.thousandth(moneyAdd) + "/сек")).build());
-        players.forEach(p -> PlayersRegistry.getInstance().getPlayer(p.getUniqueId()).addMoney(moneyAdd));
+        double hpAdd = ((baseHp * (1 + (0.025 * (players.size() - 1))))/(players.size()));
+        bossBar.setName(Text.builder().color(LIGHT_PURPLE).append(Text.of("Здоровье: " + FormatUtils.thousandth(hpAdd) + "/сек")).build());
+        players.forEach(p -> PlayersRegistry.getInstance().getPlayer(p.getUniqueId()).addMana(hpAdd));
     }
 
     @Override
     public String serialize() {
-        return "money:" + FormatUtils.unsignedTenth(moneyPerTick);
+        return "health:" + FormatUtils.unsignedTenth(baseHp);
     }
 
-    public static MoneyHandler deserialize(String[] args){
-        MoneyHandler result = new MoneyHandler();
+    public static HealthHandler deserialize(String[] args){
+        HealthHandler result = new HealthHandler();
         if(args.length > 0){
-            result.moneyPerTick = Double.parseDouble(args[0]);
+            result.baseHp = Double.parseDouble(args[0]);
         }
         return result;
     }
