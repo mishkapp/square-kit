@@ -2,6 +2,7 @@ package com.mishkapp.minecraft.plugins.squarekit.commands;
 
 import com.mishkapp.minecraft.plugins.squarekit.Kit;
 import com.mishkapp.minecraft.plugins.squarekit.KitRegistry;
+import com.mishkapp.minecraft.plugins.squarekit.PlayersRegistry;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -20,7 +21,7 @@ public class KitCommand implements CommandExecutor {
             Player player = (Player)src;
             String s = (String)args.getOne("kitId").orElse("");
             Kit kit = KitRegistry.getInstance().getKit(s);
-            kit.applyToPlayer(player, s);
+            kit.applyToPlayer(PlayersRegistry.getInstance().getPlayer(player.getUniqueId()));
         }
         return CommandResult.empty();
     }

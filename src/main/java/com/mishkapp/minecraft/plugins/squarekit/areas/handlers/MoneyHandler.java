@@ -35,12 +35,12 @@ public class MoneyHandler extends Handler {
     public void tick(Area area) {
         bossBar.removePlayers(bossBar.getPlayers());
         List<Player> players = area.getPlayers();
-        if(players.isEmpty() || Sponge.getServer().getOnlinePlayers().size() < 10){
+        if(players.isEmpty() || Sponge.getServer().getOnlinePlayers().size() < 1){
             return;
         }
         bossBar.addPlayers(players);
-        double moneyAdd = ((moneyPerTick * (1 + (0.025 * players.size() - 1)))/(players.size()));
-        bossBar.setName(Text.builder().color(GOLD).append(Text.of("Деньги: " + moneyAdd + "/сек")).build());
+        double moneyAdd = ((moneyPerTick * (1 + (0.025 * (players.size() - 1))))/(players.size()));
+        bossBar.setName(Text.builder().color(GOLD).append(Text.of("Деньги: " + FormatUtils.tenth(moneyAdd) + "/сек")).build());
         players.forEach(p -> PlayersRegistry.getInstance().getPlayer(p.getUniqueId()).addMoney(moneyAdd));
     }
 

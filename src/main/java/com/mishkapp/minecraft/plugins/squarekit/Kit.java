@@ -99,9 +99,9 @@ public class Kit {
                 '}';
     }
 
-    public void applyToPlayer(Player player, String id){
+    public void applyToPlayer(KitPlayer kitPlayer){
+        Player player = kitPlayer.getMcPlayer();
         CarriedInventory inventory = player.getInventory();
-        KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player.getUniqueId());
         inventory.clear();
         player.offer(Keys.POTION_EFFECTS, new ArrayList<>());
         player.setHelmet(helmet);

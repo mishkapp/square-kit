@@ -9,12 +9,10 @@ import org.spongepowered.api.event.filter.cause.First;
  * Created by mishkapp on 29.10.2016.
  */
 public class WorldChangeListener {
-
     @Listener
     public void onBlockPlace(ChangeBlockEvent.Place event, @First Player player){
         if (!player.hasPermission("squarekit.build")) {
             event.setCancelled(true);
         }
     }
-
 }

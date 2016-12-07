@@ -57,8 +57,13 @@ public class EventInterceptor {
 
     @Listener
     public void onPlayerRespawn(RespawnPlayerEvent event){
-        KitPlayer kitPlayer = SquareKit.getPlayersRegistry().getPlayer(event.getTargetEntity().getUniqueId());
-        KitRegistry.getInstance().getKit("recruit").applyToPlayer(kitPlayer.getMcPlayer(), "recruit");
+        Sponge.getScheduler().createTaskBuilder()
+                .delayTicks(5)
+                .execute(r -> {
+                    KitPlayer kitPlayer = SquareKit.getPlayersRegistry().getPlayer(event.getTargetEntity().getUniqueId());
+                    KitRegistry.getInstance().getKit("recruit").applyToPlayer(kitPlayer);
+                })
+                .submit(SquareKit.getInstance().getPlugin());
     }
 
     @Listener
@@ -214,7 +219,7 @@ public class EventInterceptor {
     public void onJoin(ClientConnectionEvent.Join event, @First Player player){
         KitPlayer kitPlayer = SquareKit.getPlayersRegistry().registerPlayer(player);
         String kitId = kitPlayer.getCurrentKit();
-        KitRegistry.getInstance().getKit(kitId).applyToPlayer(player, kitId);
+        KitRegistry.getInstance().getKit(kitId).applyToPlayer(kitPlayer);
     }
 
     @Listener
@@ -225,8 +230,6 @@ public class EventInterceptor {
     //TODO: event not implemented
     @Listener
     public void onArrowLaunch(LaunchProjectileEvent event) {}
-
-
 
     private void requestUpdate(UUID uuid) {
         Sponge.getScheduler().createTaskBuilder().

@@ -11,6 +11,7 @@ import com.mishkapp.minecraft.plugins.squarekit.utils.GoldUtils;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.entity.HealthData;
 import org.spongepowered.api.entity.living.player.Player;
@@ -20,7 +21,10 @@ import org.spongepowered.api.scoreboard.displayslot.DisplaySlots;
 import org.spongepowered.api.scoreboard.objective.Objective;
 import org.spongepowered.api.text.Text;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 import static com.mongodb.client.model.Filters.eq;
 import static org.spongepowered.api.text.format.TextColors.DARK_BLUE;
@@ -86,11 +90,11 @@ public class KitPlayer {
     }
 
     public UUID getUuid(){
-        return player.getUniqueId();
+        return getMcPlayer().getUniqueId();
     }
 
     public double getHealth(){
-        return player.health().get();
+        return getMcPlayer().health().get();
     }
 
     public double getAttackDamage(){
@@ -321,6 +325,7 @@ public class KitPlayer {
     }
 
     private double addDamage(double damage){
+        Player player = getMcPlayer();
         double health = player.get(Keys.HEALTH).get();
         double newHealth = health - damage;
         if(newHealth < 0) {
@@ -432,7 +437,7 @@ public class KitPlayer {
 
     public void update(){
         System.out.println("UPDATE");
-
+        updateMcPlayer();
         List<KitItem> items = SuffixFactory.getKitItems(this);
 
         List<KitItem> newItems = new ArrayList<>();
@@ -462,7 +467,9 @@ public class KitPlayer {
 
     public void forceUpdate(){
         System.out.println("FORCE UPDATE");
+        updateMcPlayer();
         purgeAdditions();
+
         kitItems = SuffixFactory.getKitItems(this);
         kitItems.forEach(
                 o -> o.getSuffices().forEach(Suffix::register)
@@ -470,22 +477,27 @@ public class KitPlayer {
         updateStats();
     }
 
+    public void updateMcPlayer(){
+        Player tmp = Sponge.getServer().getPlayer(uuid).get();
+        if(tmp != player){
+            player = tmp;
+        }
+    }
+
+    public void updateMcPlayer(Player player){
+        this.player = player;
+    }
+
     public void unregister(Suffix s) {
         additions.values().forEach(
                 o -> {
-                    Iterator<Map.Entry<Suffix,Double>> it = o.entrySet().iterator();
-                    while (it.hasNext()) {
-                        Map.Entry<Suffix,Double> k = it.next();
-                        //I use '==' instead of 'equals' because we need to find SAME object
-                        if (k.getKey() == s) {
-                            it.remove();
-                        }
-                    }
+                    //I use '==' instead of 'equals' because we need to find SAME object
+                    o.entrySet().removeIf(k -> k.getKey() == s);
                 });
     }
 
     private void purgeAdditions() {
-        additions.values().forEach(HashMap::clear);
+        additions = new HashMap<>();
     }
 
     private void updateScoreboard(){
@@ -516,6 +528,10 @@ public class KitPlayer {
 
 
     public void updateStats(){
+        if(getHealth() <= 0){
+            return;
+        }
+        Player player = getMcPlayer();
         player.offer(Keys.MAX_HEALTH, getMaxHealth());
         player.offer(Keys.WALKING_SPEED, (getSpeed() * 0.1));
         player.offer(Keys.ATTACK_DAMAGE, getAttackDamage());
@@ -553,6 +569,7 @@ public class KitPlayer {
     }
 
     private void regenHealth(){
+        Player player = getMcPlayer();
         HealthData hd = player.getHealthData();
         double health = hd.health().get();
         if(health <= 0 || health == getMaxHealth()) {return;}
@@ -562,23 +579,8 @@ public class KitPlayer {
     }
 
     public Player getMcPlayer() {
+        updateMcPlayer();
         return player;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof KitPlayer)) return false;
-
-        KitPlayer kitPlayer = (KitPlayer) o;
-
-        return player.equals(kitPlayer.player);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return player.hashCode();
     }
 
     public static KitPlayer getKitPlayer(MongoDatabase mongoDatabase, Player player){

@@ -118,6 +118,7 @@ public class BattleInterceptor {
                 || damageSource.getType() == DamageTypes.VOID
                 ){
             event.setBaseDamage(event.getBaseDamage() * damageMultiplier);
+            return;
         }
 
         if(event.getTargetEntity() instanceof Player){
@@ -157,6 +158,10 @@ public class BattleInterceptor {
     @Listener
     public void onPlayerDeath(DestructEntityEvent.Death event, @Getter("getTargetEntity") Player player, @First DamageSource damageSource){
         event.setMessageCancelled(true);
+//        System.out.println("event = " + event);
+//        System.out.println("damageSource = " + damageSource);
+//        System.out.println("player = " + player.isRemoved());
+
 
         if(damageSource instanceof IndirectEntityDamageSource){
             IndirectEntityDamageSource ieds = (IndirectEntityDamageSource)damageSource;
