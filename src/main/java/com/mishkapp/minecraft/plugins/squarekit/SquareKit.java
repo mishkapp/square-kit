@@ -90,6 +90,7 @@ public class SquareKit{
         initSerializers();
         initCmds();
         initAreas();
+        initConfigs();
         initMessages();
         saveConf();
         registerSuffixes();
@@ -118,6 +119,10 @@ public class SquareKit{
         while (cursor.hasNext()){
             AreaRegistry.getInstance().add(Area.fromDocument((Document) cursor.next()));
         }
+    }
+
+    private void initConfigs(){
+        ConfigProvider.getInstance().init(mongoDb);
     }
 
     private void initMessages(){
@@ -156,7 +161,7 @@ public class SquareKit{
     }
 
     private void initCmds(){
-        // /sqkit
+        // /kit
         CommandSpec kitCmd = CommandSpec.builder()
                 .description(Text.of("Get specified kit"))
                 .executor(new KitCommand())
@@ -167,7 +172,7 @@ public class SquareKit{
 
         Sponge.getCommandManager().register(this, kitCmd, "kit");
 
-        // /sqkits
+        // /kits
         CommandSpec kitsCmd = CommandSpec.builder()
                 .description(Text.of("List all kits"))
                 .executor(new KitsCommand())
@@ -175,7 +180,7 @@ public class SquareKit{
 
         Sponge.getCommandManager().register(this, kitsCmd, "kits");
 
-        // /squpdate
+        // /update
         CommandSpec updateCmd = CommandSpec.builder()
                 .description(Text.of("Update player"))
                 .permission("squarekit.update")
@@ -184,7 +189,7 @@ public class SquareKit{
 
         Sponge.getCommandManager().register(this, updateCmd, "update");
 
-        // /sqstats
+        // /stats
         CommandSpec statsCmd = CommandSpec.builder()
                 .description(Text.of("Get stats for player"))
                 .executor(new StatsCommand())
@@ -195,7 +200,7 @@ public class SquareKit{
 
         Sponge.getCommandManager().register(this, statsCmd, "stats");
 
-        // /sqstats
+        // /buildmode
         CommandSpec buildModeCmd = CommandSpec.builder()
                 .description(Text.of("Toggle build mode"))
                 .permission("squarekit.builder")
@@ -203,6 +208,23 @@ public class SquareKit{
                 .build();
 
         Sponge.getCommandManager().register(this, buildModeCmd, "buildmode");
+
+//        // /setspawn
+//        CommandSpec setSpawnCmd = CommandSpec.builder()
+//                .description(Text.of("Set global spawn where player stands"))
+//                .permission("squarekit.admin")
+//                .executor(new SetSpawnCommand())
+//                .build();
+//
+//        Sponge.getCommandManager().register(this, setSpawnCmd, "setspawn");
+
+//        // /spawn
+//        CommandSpec spawnCmd = CommandSpec.builder()
+//                .description(Text.of("Sends player to spawn"))
+//                .executor(new SpawnCommand())
+//                .build();
+//
+//        Sponge.getCommandManager().register(this, spawnCmd, "spawn");
 
         // /area
         CommandSpec areaLoad = CommandSpec.builder()

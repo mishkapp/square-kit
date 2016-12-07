@@ -1,6 +1,8 @@
 package com.mishkapp.minecraft.plugins.squarekit;
 
 import ninja.leaping.configurate.ConfigurationNode;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.HashMap;
 

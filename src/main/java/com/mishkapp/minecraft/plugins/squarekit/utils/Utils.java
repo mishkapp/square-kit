@@ -7,6 +7,7 @@ import org.spongepowered.api.data.type.DyeColor;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.List;
 import java.util.Optional;
@@ -139,5 +140,9 @@ public class Utils {
                 return WHITE;
             }
         }
+    }
+
+    public static Text _text(String s){
+        return TextSerializers.FORMATTING_CODE.deserialize(s);
     }
 }
