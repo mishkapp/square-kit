@@ -62,7 +62,7 @@ public abstract class UseSuffix extends Suffix {
 
             TextColor barColor;
             if(ratio <= 0.0){
-                barColor = TextColors.DARK_GREEN;
+                barColor = TextColors.BLUE;
             } else {
                 barColor = TextColors.GOLD;
             }

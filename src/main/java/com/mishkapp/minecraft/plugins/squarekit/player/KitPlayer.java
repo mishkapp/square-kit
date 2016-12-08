@@ -20,6 +20,7 @@ import org.spongepowered.api.scoreboard.critieria.Criteria;
 import org.spongepowered.api.scoreboard.displayslot.DisplaySlots;
 import org.spongepowered.api.scoreboard.objective.Objective;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +29,7 @@ import java.util.UUID;
 
 import static com.mongodb.client.model.Filters.eq;
 import static java.lang.Math.min;
-import static org.spongepowered.api.text.format.TextColors.DARK_BLUE;
+import static org.spongepowered.api.text.format.TextColors.*;
 
 /**
  * Created by mishkapp on 27.04.2016.
@@ -85,7 +86,7 @@ public class KitPlayer {
         statsObj = Objective.builder()
                 .name("stats")
                 .criterion(Criteria.DUMMY)
-                .displayName(Text.of("Stats"))
+                .displayName(Text.builder().color(TextColors.GRAY).append(Text.of("Параметры")).build())
                 .build();
         scoreboard.addObjective(statsObj);
         updateScoreboard();
@@ -516,25 +517,43 @@ public class KitPlayer {
             statsObj.removeScore(t);
         }
 
-        statsObj.getOrCreateScore(getPhysicalResistText()).setScore(2);
-        statsObj.getOrCreateScore(getMagicResistText()).setScore(1);
-        statsObj.getOrCreateScore(getManaScoreText()).setScore(0);
+        statsObj.getOrCreateScore(getPhysicalResistText()).setScore(4);
+        statsObj.getOrCreateScore(getMagicResistText()).setScore(3);
+        statsObj.getOrCreateScore(getManaScoreText()).setScore(2);
+        statsObj.getOrCreateScore(getMoneyText()).setScore(1);
+        statsObj.getOrCreateScore(getStreakText()).setScore(0);
 
         scoreboard.updateDisplaySlot(statsObj, DisplaySlots.SIDEBAR);
     }
 
     private Text getManaScoreText() {
         return Text.builder("Мана: " + FormatUtils.unsignedRound(currentMana) + "/" + FormatUtils.unsignedRound(getMaxMana()))
-                .color(DARK_BLUE)
+                .color(BLUE)
                 .build();
     }
 
     private Text getPhysicalResistText(){
-        return Text.of("Ф.Сопр: " + FormatUtils.unsignedTenth(getPhysicalResist() * 100) + "%");
+        return Text.builder("Ф.Сопр: " + FormatUtils.unsignedTenth(getPhysicalResist() * 100) + "%")
+                .color(GOLD)
+                .build();
     }
 
     private Text getMagicResistText(){
-        return Text.of("М.Сопр: " + FormatUtils.unsignedTenth(getMagicResist() * 100) + "%");
+        return Text.builder("М.Сопр: " + FormatUtils.unsignedTenth(getMagicResist() * 100) + "%")
+                .color(DARK_BLUE)
+                .build();
+    }
+
+    private Text getMoneyText(){
+        return Text.builder("Деньги: " + FormatUtils.unsignedRound(getMoney()))
+                .color(YELLOW)
+                .build();
+    }
+
+    private Text getStreakText(){
+        return Text.builder("Серия убийств: " + currentKillstreak)
+                .color(RED)
+                .build();
     }
 
 
