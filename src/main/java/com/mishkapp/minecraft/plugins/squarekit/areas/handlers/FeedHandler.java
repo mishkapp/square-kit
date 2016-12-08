@@ -1,18 +1,21 @@
 package com.mishkapp.minecraft.plugins.squarekit.areas.handlers;
 
 import com.mishkapp.minecraft.plugins.squarekit.areas.Area;
+import com.mishkapp.minecraft.plugins.squarekit.utils.InventoryUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.boss.BossBarColors;
 import org.spongepowered.api.boss.BossBarOverlays;
 import org.spongepowered.api.boss.ServerBossBar;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 
 import java.util.List;
 
 import static java.lang.Math.floor;
 import static java.lang.Math.min;
+import static org.spongepowered.api.item.ItemTypes.APPLE;
 import static org.spongepowered.api.text.format.TextColors.GREEN;
 
 /**
@@ -51,7 +54,18 @@ public class FeedHandler extends Handler{
             currentTick += 1;
         } else {
             players.forEach(p -> {
-                p.offer(Keys.FOOD_LEVEL, min(p.foodLevel().get() + foodAdd, 20));
+                int food = p.foodLevel().get();
+                if(food == 20){
+                    int applesCount = InventoryUtils.countItems(p.getInventory(), APPLE);
+
+                    p.sendMessage(Text.of("" + applesCount));
+                    if (applesCount < 10) {
+                        InventoryUtils.addItem(p, ItemStack.of(APPLE, 1));
+//                        InventoryTransactionResult res = pInv.getHotbar().offer(ItemStack.of(APPLE, 1));
+                    }
+                } else {
+                    p.offer(Keys.FOOD_LEVEL, min(food + foodAdd, 20));
+                }
             });
             currentTick = 0;
         }
