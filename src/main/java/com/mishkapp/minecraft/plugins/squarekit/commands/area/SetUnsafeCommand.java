@@ -1,5 +1,6 @@
-package com.mishkapp.minecraft.plugins.squarekit;
+package com.mishkapp.minecraft.plugins.squarekit.commands.area;
 
+import com.mishkapp.minecraft.plugins.squarekit.AreaRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.areas.Area;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
