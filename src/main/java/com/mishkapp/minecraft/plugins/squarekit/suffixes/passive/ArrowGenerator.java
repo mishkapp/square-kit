@@ -8,7 +8,6 @@ import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import com.mishkapp.minecraft.plugins.squarekit.utils.InventoryUtils;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.type.CarriedInventory;
 
 import static org.spongepowered.api.item.ItemTypes.ARROW;
 
