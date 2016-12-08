@@ -171,6 +171,7 @@ public class EventInterceptor {
         final KitPlayer kitPlayer = tempPlayer;
         List<Entity> entities = event.getEntities();
         if(entities.contains(kitPlayer.getMcPlayer())){
+            event.setCancelled(true);
             return;
         }
         entities.forEach(e -> Sponge.getEventManager().post(new EntityCollideEntityEvent(kitPlayer, entity, e)));
