@@ -6,6 +6,7 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.TickBlockEvent;
 import org.spongepowered.api.event.filter.cause.First;
+import org.spongepowered.api.event.world.ExplosionEvent;
 
 /**
  * Created by mishkapp on 29.10.2016.
@@ -32,6 +33,11 @@ public class WorldChangeListener {
 
     @Listener
     public void onBlockTick(TickBlockEvent event){
+        event.setCancelled(true);
+    }
+
+    @Listener
+    public void onExplode(ExplosionEvent.Pre event){
         event.setCancelled(true);
     }
 
