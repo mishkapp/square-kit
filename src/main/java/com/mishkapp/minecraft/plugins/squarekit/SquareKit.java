@@ -20,6 +20,7 @@ import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.Holding
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.HoldingJumpBoost;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.HoldingNightVision;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.passive.ArrowGenerator;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.passive.AstralVision;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.passive.Panic;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.*;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.holding.*;
@@ -406,6 +407,7 @@ public class SquareKit{
 
         registry.registerSuffix("6A", ArrowGenerator.class);
         registry.registerSuffix("6B", Panic.class);
+        registry.registerSuffix("6C", AstralVision.class);
 
     }
 

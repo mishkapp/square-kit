@@ -44,6 +44,12 @@ public class AreaRegistry {
         return registry.values().parallelStream().filter(a -> a.isInside(player)).collect(Collectors.toList());
     }
 
+    public List<Area> getNearbyAreas(Player player, int distance){
+        return registry.values().parallelStream().filter(a ->
+            a.getWorld().equals(player.getWorld()) && a.getCenter().distance(player.getLocation().getPosition()) < distance
+        ).collect(Collectors.toList());
+    }
+
     public void save(String key){
         if(!(registry.containsKey(key))){
             return;
