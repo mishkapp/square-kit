@@ -55,24 +55,25 @@ public class CuboidArea extends Area {
         double maxZ = aabb.getMax().getZ();
 
         for (double d = minX; d < maxX; d += 0.5){
-            boundPoints.add(new Vector3d(d, minY, minZ));
-            boundPoints.add(new Vector3d(d, maxY, minZ));
-            boundPoints.add(new Vector3d(d, minY, maxZ));
-            boundPoints.add(new Vector3d(d, maxY, maxZ));
+            for (double c = minY; c < maxY; c += 0.5){
+                boundPoints.add(new Vector3d(d, c, minZ));
+                boundPoints.add(new Vector3d(d, c, maxZ));
+            }
         }
 
         for (double d = minY; d < maxY; d += 0.5){
-            boundPoints.add(new Vector3d(minX, d, minZ));
-            boundPoints.add(new Vector3d(maxX, d, minZ));
-            boundPoints.add(new Vector3d(minX, d, maxZ));
-            boundPoints.add(new Vector3d(maxX, d, maxZ));
+            for (double c = minZ; c < maxZ; c += 0.5){
+                boundPoints.add(new Vector3d(minX, d, c));
+                boundPoints.add(new Vector3d(maxX, d, c));
+            }
         }
 
         for (double d = minZ; d < maxZ; d += 0.5){
-            boundPoints.add(new Vector3d(minX, minY, d));
-            boundPoints.add(new Vector3d(maxX, minY, d));
-            boundPoints.add(new Vector3d(minX, maxY, d));
-            boundPoints.add(new Vector3d(maxX, maxY, d));
+            for (double c = minX; c < maxX; c += 0.5) {
+                boundPoints.add(new Vector3d(c, minY, d));
+                boundPoints.add(new Vector3d(c, maxY, d));
+            }
+
         }
     }
 
