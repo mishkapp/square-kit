@@ -5,6 +5,10 @@ import com.google.inject.Inject;
 import com.mishkapp.minecraft.plugins.squarekit.areas.Area;
 import com.mishkapp.minecraft.plugins.squarekit.commands.*;
 import com.mishkapp.minecraft.plugins.squarekit.commands.area.*;
+import com.mishkapp.minecraft.plugins.squarekit.commands.warp.AddPoint;
+import com.mishkapp.minecraft.plugins.squarekit.commands.warp.Info;
+import com.mishkapp.minecraft.plugins.squarekit.commands.warp.RemovePoint;
+import com.mishkapp.minecraft.plugins.squarekit.commands.warp.Tp;
 import com.mishkapp.minecraft.plugins.squarekit.listeners.KitListener;
 import com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors.BattleInterceptor;
 import com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors.EventInterceptor;
@@ -99,6 +103,7 @@ public class SquareKit{
         registerKits();
         getPlayersRegistry().updateAllPlayers();
         TopStreakerBar.getInstance().init();
+        WarpZonesRegistry.getInstance().init();
     }
 
     private void initMongo(){
@@ -210,6 +215,53 @@ public class SquareKit{
                 .build();
 
         Sponge.getCommandManager().register(this, buildModeCmd, "buildmode");
+
+        // /warp
+        CommandSpec warpAddPoint = CommandSpec.builder()
+                .description(Text.of("Adds point to warp list"))
+                .permission("squarekit.admin")
+                .executor(new AddPoint())
+                .arguments(
+                        GenericArguments.string(Text.of("id"))
+                )
+                .build();
+
+        CommandSpec warpInfo = CommandSpec.builder()
+                .description(Text.of("Get info about warp list"))
+                .permission("squarekit.admin")
+                .executor(new Info())
+                .arguments(
+                        GenericArguments.string(Text.of("id"))
+                )
+                .build();
+
+        CommandSpec warpRemovePoint = CommandSpec.builder()
+                .description(Text.of("Removes point from warp list"))
+                .permission("squarekit.admin")
+                .executor(new RemovePoint())
+                .arguments(
+                        GenericArguments.string(Text.of("id")),
+                        GenericArguments.string(Text.of("pointId"))
+                )
+                .build();
+
+        CommandSpec warpTp = CommandSpec.builder()
+                .description(Text.of("Teleport to warp"))
+                .executor(new Tp())
+                .arguments(
+                        GenericArguments.string(Text.of("id"))
+                )
+                .build();
+
+        CommandSpec warpCmd = CommandSpec.builder()
+                .description(Text.of("Warp command"))
+                .child(warpAddPoint, "add")
+                .child(warpInfo, "info")
+                .child(warpRemovePoint, "remove")
+                .child(warpTp, "tp")
+                .build();
+
+        Sponge.getCommandManager().register(this, warpCmd, "warp");
 
 //        // /setspawn
 //        CommandSpec setSpawnCmd = CommandSpec.builder()
