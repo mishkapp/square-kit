@@ -5,6 +5,8 @@ import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.Slot;
+import org.spongepowered.api.item.inventory.entity.Hotbar;
+import org.spongepowered.api.item.inventory.entity.PlayerInventory;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -12,6 +14,16 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by mishkapp on 08.12.2016.
  */
 public class InventoryUtils {
+
+    public static int countItems(Player player, ItemType type){
+        PlayerInventory playerInventory = player.getInventory().query(PlayerInventory.class);
+        int result = 0;
+        result += countItems(playerInventory.getEquipment(), type);
+        result += countItems(playerInventory.getHotbar(), type);
+        result += countItems(playerInventory.getMain(), type);
+        result += countItems(playerInventory.getOffhand(), type);
+        return result;
+    }
 
     public static int countItems(Inventory inventory, ItemType type){
         AtomicInteger res = new AtomicInteger(0);
@@ -31,6 +43,28 @@ public class InventoryUtils {
     }
 
     public static void addItem(Player player,ItemStack itemStack){
-        player.getInventory().offer(itemStack);
+        Hotbar hotbar = player.getInventory().query(Hotbar.class);
+        AtomicInteger remain = new AtomicInteger(itemStack.getQuantity());
+        hotbar.iterator().forEachRemaining(h -> {
+            if(remain.get() == 0){
+                return;
+            }
+            Slot slot = (Slot) h;
+            int stackSize = slot.getStackSize();
+            if(slot.contains(itemStack.getItem()) && slot.getStackSize() < 64){
+                if((stackSize + remain.get()) < 64){
+                    itemStack.setQuantity(stackSize + remain.get());
+                    slot.set(itemStack);
+                    remain.set(0);
+                } else {
+                    slot.set(ItemStack.of(itemStack.getItem(), 64));
+                    remain.set(remain.get() - (64 - stackSize));
+                }
+            }
+            if(slot.getStackSize() == 0){
+                slot.set(itemStack);
+                remain.set(0);
+            }
+        });
     }
 }

@@ -32,11 +32,16 @@ public class FeedHandler extends Handler{
     private int baseTime;
     private int foodAdd;
 
+    private int apples;
+    private int maxApples;
+
     private int currentTick = 0;
 
     public FeedHandler() {
         foodAdd = 1;
         baseTime = 4;
+        apples = 1;
+        maxApples = 10;
     }
 
     @Override
@@ -56,12 +61,10 @@ public class FeedHandler extends Handler{
             players.forEach(p -> {
                 int food = p.foodLevel().get();
                 if(food == 20){
-                    int applesCount = InventoryUtils.countItems(p.getInventory(), APPLE);
+                    int applesCount = InventoryUtils.countItems(p, APPLE);
 
-                    p.sendMessage(Text.of("" + applesCount));
-                    if (applesCount < 10) {
-                        InventoryUtils.addItem(p, ItemStack.of(APPLE, 1));
-//                        InventoryTransactionResult res = pInv.getHotbar().offer(ItemStack.of(APPLE, 1));
+                    if (applesCount < maxApples) {
+                        InventoryUtils.addItem(p, ItemStack.of(APPLE, apples));
                     }
                 } else {
                     p.offer(Keys.FOOD_LEVEL, min(food + foodAdd, 20));
@@ -80,14 +83,22 @@ public class FeedHandler extends Handler{
 
     @Override
     public String serialize() {
-        return "feed:" + foodAdd + ":" + baseTime;
+        return "feed:" + foodAdd + ":" + baseTime + ":" + apples + ":" + maxApples;
     }
 
     public static FeedHandler deserialize(String[] args){
         FeedHandler result = new FeedHandler();
-        if(args.length > 1){
+        if (args.length > 0) {
             result.foodAdd = Integer.parseInt(args[0]);
+        }
+        if (args.length > 1){
             result.baseTime = Integer.parseInt(args[1]);
+        }
+        if (args.length > 2){
+            result.apples = Integer.parseInt(args[2]);
+        }
+        if (args.length > 3){
+            result.maxApples = Integer.parseInt(args[3]);
         }
         return result;
     }
