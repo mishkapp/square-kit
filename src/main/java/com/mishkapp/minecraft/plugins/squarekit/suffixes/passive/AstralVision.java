@@ -1,7 +1,9 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.passive;
 
+import com.flowpowered.math.vector.Vector3d;
 import com.mishkapp.minecraft.plugins.squarekit.AreaRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
+import com.mishkapp.minecraft.plugins.squarekit.WarpZonesRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.areas.Area;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
@@ -15,6 +17,10 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import java.util.List;
 import java.util.Random;
 
+import static java.lang.Math.PI;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+
 /**
  * Created by mishkapp on 08.12.2016.
  */
@@ -25,7 +31,7 @@ public class AstralVision extends Suffix {
     private double mpRegen = 0.125;
     private double hpRegen = 0.05;
 
-    private int drawDelay = 8;
+    private int drawDelay = 6;
     private int currentTick = 0;
     private Random random = new Random();
 
@@ -49,6 +55,7 @@ public class AstralVision extends Suffix {
                 kitPlayer.getEvasionAdds().put(this, evasion);
                 kitPlayer.getManaRegenAdds().put(this, mpRegen);
                 kitPlayer.getHealthRegenAdds().put(this, hpRegen);
+                drawEffect();
             } else {
                 kitPlayer.getSpeedAdds().put(this, 0.0);
                 kitPlayer.getEvasionAdds().put(this, 0.0);
@@ -66,25 +73,70 @@ public class AstralVision extends Suffix {
         }
     }
 
-    private void drawAreas() {
-        List<Area> areas = AreaRegistry.getInstance().getNearbyAreas(kitPlayer.getMcPlayer(), 30);
-        if (areas.size() == 0) {
-            return;
+    private void drawEffect(){
+
+        for(double i = 0; i < 2 * PI; i += random.nextDouble() * 2){
+            Vector3d offset = new Vector3d(
+                    random.nextGaussian()/5,
+                    random.nextDouble(),
+                    random.nextGaussian()/5
+            );
+
+            Vector3d velocity = new Vector3d(
+                    random.nextGaussian()/25,
+                    0.2 + random.nextGaussian()/50,
+                    random.nextGaussian()/25
+            );
+            ParticleEffect pe = ParticleEffect.builder().from(effect).offset(offset).velocity(velocity).build();
+
+            kitPlayer.getMcPlayer().getWorld().spawnParticles(
+                    pe,
+                    kitPlayer.getMcPlayer().getLocation().getPosition().add(
+                            sin(i) + random.nextGaussian() / 15,
+                            0,
+                            cos(i) + random.nextGaussian() / 15));
+
         }
 
-        for (Area area : areas) {
-            area.getBoundPoints().stream()
-                    .filter(p ->
-                            (random.nextDouble() < 0.3
-                                    && kitPlayer.getMcPlayer().getLocation().getPosition().distance(p) < 30))
-                    .forEach(p ->
-                            kitPlayer.getMcPlayer().spawnParticles(
-                                    effect,
-                                    p.add(
-                                            random.nextGaussian() / 4,
-                                            random.nextGaussian() / 4,
-                                            random.nextGaussian() / 4)));
+
+    }
+
+    private void drawAreas() {
+        List<Area> areas = AreaRegistry.getInstance().getNearbyAreas(kitPlayer.getMcPlayer(), 30);
+        if (areas.size() > 0) {
+            for (Area area : areas) {
+                area.getBoundPoints().stream()
+                        .filter(p ->
+                                (random.nextDouble() < 0.3
+                                        && kitPlayer.getMcPlayer().getLocation().getPosition().distance(p) < 30))
+                        .forEach(p ->
+                                kitPlayer.getMcPlayer().spawnParticles(
+                                        effect,
+                                        p.add(
+                                                random.nextGaussian() / 4,
+                                                random.nextGaussian() / 4,
+                                                random.nextGaussian() / 4)));
+            }
         }
+
+        List<WarpZonesRegistry.WarpPoint> points = WarpZonesRegistry.getInstance().getNearbyPoints(kitPlayer.getMcPlayer(), 30);
+        points.forEach(p -> {
+            if(p == null){
+                return;
+            }
+            for (double i = 0; i < PI * 2; i += 0.5) {
+                kitPlayer.getMcPlayer().spawnParticles(
+                        effect,
+                        p.getPosition().add(
+                                0.7 * sin(i) + random.nextGaussian() / 10,
+                                1 + random.nextGaussian() / 10,
+                                0.7 * cos(i) + random.nextGaussian() / 10));
+            }
+        });
+
+
+
+
     }
 
     @Override
