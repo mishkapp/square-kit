@@ -35,7 +35,7 @@ public class MoneyHandler extends Handler {
     public void tick(Area area) {
         bossBar.removePlayers(bossBar.getPlayers());
         List<Player> players = area.getPlayers();
-        if(players.isEmpty() || Sponge.getServer().getOnlinePlayers().size() < 1){
+        if(players.isEmpty() || Sponge.getServer().getOnlinePlayers().size() < 10){
             return;
         }
         bossBar.addPlayers(players);
