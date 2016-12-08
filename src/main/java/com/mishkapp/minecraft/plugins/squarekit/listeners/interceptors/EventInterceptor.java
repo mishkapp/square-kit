@@ -1,6 +1,7 @@
 package com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors;
 
 import com.mishkapp.minecraft.plugins.squarekit.KitRegistry;
+import com.mishkapp.minecraft.plugins.squarekit.PlayersRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.events.*;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
@@ -19,8 +20,8 @@ import org.spongepowered.api.event.entity.living.humanoid.player.RespawnPlayerEv
 import org.spongepowered.api.event.entity.projectile.LaunchProjectileEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.filter.cause.Root;
-import org.spongepowered.api.event.filter.type.Exclude;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
+import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -183,10 +184,17 @@ public class EventInterceptor {
     }
 
     @Listener
-    @Exclude({ChangeInventoryEvent.Held.class, ChangeInventoryEvent.Transfer.class})
-    public void onInventoryChange(ChangeInventoryEvent event, @First Player player){
-        //TODO: Temporary disabled this update hook
-//        requestUpdate(player.getUniqueId());
+    public void onInventoryClick(ClickInventoryEvent.Primary event, @First Player player){
+        if (!isInBuildMode(player)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @Listener
+    public void onInventoryClick(ClickInventoryEvent.Secondary event, @First Player player){
+        if (!isInBuildMode(player)) {
+            event.setCancelled(true);
+        }
     }
 
     @Listener
@@ -237,5 +245,9 @@ public class EventInterceptor {
                 delayTicks(1).
                 execute(() -> Sponge.getEventManager().post(new PlayerUpdateRequestEvent(SquareKit.getPlayersRegistry().getPlayer(uuid)))).
                 submit(SquareKit.getInstance());
+    }
+
+    private boolean isInBuildMode(Player player){
+        return PlayersRegistry.getInstance().getPlayer(player.getUniqueId()).isInBuildMode();
     }
 }
