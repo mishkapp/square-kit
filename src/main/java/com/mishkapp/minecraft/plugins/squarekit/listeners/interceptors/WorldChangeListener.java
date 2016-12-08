@@ -4,6 +4,7 @@ import com.mishkapp.minecraft.plugins.squarekit.PlayersRegistry;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
+import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.block.TickBlockEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.world.ExplosionEvent;
@@ -21,6 +22,13 @@ public class WorldChangeListener {
 
     @Listener
     public void onBlockBreak(ChangeBlockEvent.Break event, @First Player player){
+        if (!isInBuildMode(player)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @Listener
+    public void onBlockInteract(InteractBlockEvent event, @First Player player){
         if (!isInBuildMode(player)) {
             event.setCancelled(true);
         }
