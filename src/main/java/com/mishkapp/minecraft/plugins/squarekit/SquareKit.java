@@ -17,6 +17,7 @@ import com.mishkapp.minecraft.plugins.squarekit.serializers.ItemStackSerializer;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.active.HideShadow;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.attack.MagicImbueWeapon;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.attack.ShadowCloud;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.attack.SpiritsBurden;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.bow.ArrowDamage;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.bow.EntanglingArrow;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.Invisibility;
@@ -449,6 +450,7 @@ public class SquareKit{
         registry.registerSuffix("1A", HideShadow.class);
         registry.registerSuffix("1B", ShadowCloud.class);
         registry.registerSuffix("1C", MagicImbueWeapon.class);
+        registry.registerSuffix("1D", SpiritsBurden.class);
 
         registry.registerSuffix("3A", Shelter.class);
         registry.registerSuffix("3B", IceGrowth.class);
