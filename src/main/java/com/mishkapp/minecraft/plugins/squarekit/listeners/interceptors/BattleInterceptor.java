@@ -1,6 +1,7 @@
 package com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors;
 
 import com.flowpowered.math.vector.Vector3d;
+import com.mishkapp.minecraft.plugins.squarekit.AreaRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.PlayersRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.events.*;
@@ -45,10 +46,18 @@ public class BattleInterceptor {
     @Listener
     public void onHit(AttackEntityEvent event, @First EntityDamageSource damageSource){
         if(damageSource.getSource() instanceof Player){
+            if(AreaRegistry.getInstance().isInSafeArea((Player) damageSource.getSource())){
+                event.setCancelled(true);
+                return;
+            }
             KitPlayer damager = SquareKit.getPlayersRegistry().getPlayer(damageSource.getSource().getUniqueId());
             Entity damaged = event.getTargetEntity();
 
             if(damaged instanceof Player){
+                if(AreaRegistry.getInstance().isInSafeArea((Player) damaged)){
+                    event.setCancelled(true);
+                    return;
+                }
                 KitPlayer damagedPlayer = PlayersRegistry.getInstance().getPlayer(damaged.getUniqueId());
                 if(damagedPlayer.getEvasion() >= random.nextDouble()){
                     event.setCancelled(true);
@@ -122,6 +131,10 @@ public class BattleInterceptor {
         }
 
         if(event.getTargetEntity() instanceof Player){
+            if(AreaRegistry.getInstance().isInSafeArea((Player) event.getTargetEntity())){
+                event.setCancelled(true);
+                return;
+            }
             KitPlayer kitPlayer = SquareKit.getPlayersRegistry().getPlayer(event.getTargetEntity().getUniqueId());
             if(damageSource.isMagic()){
                 kitPlayer.addMagicDamage(event.getBaseDamage());

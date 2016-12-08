@@ -2,8 +2,11 @@ package com.mishkapp.minecraft.plugins.squarekit;
 
 import com.mishkapp.minecraft.plugins.squarekit.areas.Area;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by mishkapp on 03.12.2016.
@@ -31,6 +34,14 @@ public class AreaRegistry {
         } else {
             return null;
         }
+    }
+
+    public boolean isInSafeArea(Player player){
+        return getApplicableAreas(player).parallelStream().filter(Area::isSafe).count() > 0;
+    }
+
+    public List<Area> getApplicableAreas(Player player){
+        return registry.values().parallelStream().filter(a -> a.isInside(player)).collect(Collectors.toList());
     }
 
     public void save(String key){
