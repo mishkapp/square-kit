@@ -10,7 +10,7 @@ public class LevelTable {
     public static final int[] experiences = new int[MAX_LEVEL];
 
     static {
-        //TODO: formula needs to be rethought
+        //TODO: formula needs to be rethought //((x^4)/2.8) + 1000
         for(int i = 0; i < MAX_LEVEL; i++){
             experiences[i] = (i * i) + 100;
         }

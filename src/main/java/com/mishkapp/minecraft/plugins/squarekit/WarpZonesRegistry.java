@@ -10,9 +10,8 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.world.World;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -55,6 +54,21 @@ public class WarpZonesRegistry {
         }
         registry.get(id).remove(pointId);
         save();
+    }
+
+    public void warp(Player player, String id){
+        List<WarpPoint> points = getPoints(id);
+
+        final List<WarpPoint> warpPoints = points.parallelStream()
+                .sorted(Comparator.comparingInt(WarpPoint::getNearbyPlayersCount))
+                .collect(Collectors.toList());
+        List<WarpPoint> warpPoints1 = warpPoints.parallelStream()
+                .filter(p -> p.getNearbyPlayersCount() == warpPoints.get(0).getNearbyPlayersCount())
+                .collect(Collectors.toList());
+        WarpPoint point = warpPoints1.get(new Random().nextInt(warpPoints1.size()));
+        if(point != null){
+            player.transferToWorld(point.getWorld(), point.getPosition());
+        }
     }
 
     public void save(){

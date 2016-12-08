@@ -20,6 +20,8 @@ public abstract class Handler {
         switch (split[0]){
             case "money" :
                 return MoneyHandler.deserialize(args);
+            case "warp" :
+                return WarpHandler.deserialize(args);
             case "feed" :
                 return FeedHandler.deserialize(args);
             case "mana" :
