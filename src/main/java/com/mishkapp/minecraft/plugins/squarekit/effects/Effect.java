@@ -15,6 +15,8 @@ public abstract class Effect {
 
     protected long startTime;
 
+    protected boolean running = true;
+
     public Effect(KitPlayer kitPlayer, Suffix source, int level, long duration) {
         this.kitPlayer = kitPlayer;
         this.source = source;
@@ -40,13 +42,17 @@ public abstract class Effect {
         return duration;
     }
 
-    public void remove(){
-        kitPlayer.removeEffect(this);
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
     }
 
     public void tick(){
         if((System.currentTimeMillis() - startTime) >= duration){
-            remove();
+            running = false;
         }
     }
 }

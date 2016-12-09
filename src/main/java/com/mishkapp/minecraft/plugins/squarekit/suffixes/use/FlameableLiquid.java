@@ -39,8 +39,8 @@ import static java.lang.StrictMath.sin;
  * Created by mishkapp on 09.12.2016.
  */
 public class FlameableLiquid extends UseSuffix {
-    private double hSpeed = 0.3;
-    private double vSpeed = 0.3;
+    private double hSpeed = 0.5;
+    private double vSpeed = 0.5;
 
     private double damage = 10.0;
     private int liveTime = 5 * 20;
@@ -161,11 +161,11 @@ public class FlameableLiquid extends UseSuffix {
         KitPlayer affectedPlayer = PlayersRegistry.getInstance().getPlayer(affected.getUniqueId());
         List<Effect> effects = affectedPlayer.getEffects();
 
-        List<Effect> flames = effects.parallelStream().filter(e -> e instanceof Flame).collect(Collectors.toList());
+        List<Effect> flames = effects.parallelStream().filter(e -> e instanceof Flame && e.isRunning()).collect(Collectors.toList());
 
         if(flames.size() > 0){
             Flame flame = (Flame) flames.get(0);
-            affectedPlayer.removeEffect(flame);
+            flame.setRunning(false);
             affectedPlayer.addEffect(new Flame(affectedPlayer, this, Math.min(flame.getLevel() + 1, 5), time * 1000));
         } else {
             affectedPlayer.addEffect(new Flame(affectedPlayer, this, 1, time * 1000));

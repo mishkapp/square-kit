@@ -108,6 +108,12 @@ public class BattleInterceptor {
                     damager,
                     damaged
             ));
+            if(damaged instanceof Player){
+                Sponge.getEventManager().post(new PlayerAttackEntityEvent(
+                        PlayersRegistry.getInstance().getPlayer(damaged.getUniqueId()),
+                        damager.getMcPlayer()
+                ));
+            }
         }
     }
 

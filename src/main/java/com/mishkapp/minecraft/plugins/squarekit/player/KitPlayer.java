@@ -353,6 +353,7 @@ public class KitPlayer {
 
     public void tick(){
         if(getMcPlayer().isOnline()){
+            effects.removeIf(e -> !e.isRunning());
             effects.forEach(Effect::tick);
             tickRegens();
             updateScoreboard();
@@ -669,10 +670,6 @@ public class KitPlayer {
 
     public void addHealth(double hpAdd) {
         getMcPlayer().offer(Keys.HEALTH, min(getMaxMana(), getMcPlayer().getHealthData().health().get() + hpAdd));
-    }
-
-    public void removeEffect(Effect effect) {
-        effects.remove(effect);
     }
 
     public List<Effect> getEffects(){
