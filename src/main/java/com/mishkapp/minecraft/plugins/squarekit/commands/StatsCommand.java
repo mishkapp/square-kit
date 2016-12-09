@@ -49,10 +49,6 @@ public class StatsCommand implements CommandExecutor {
         b.append(target.getDisplayNameData().displayName().get());
         b.append(Text.NEW_LINE);
 
-        b.append(Text.of("Ранг: "));
-        b.append(Text.of(kitPlayer.getExperience()));
-        b.append(Text.NEW_LINE);
-
         b.append(Text.of("Убийств: "));
         b.append(Text.of(playerStats.getKills()));
         b.append(Text.NEW_LINE);
