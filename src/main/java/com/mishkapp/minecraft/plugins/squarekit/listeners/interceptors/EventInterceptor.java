@@ -268,7 +268,6 @@ public class EventInterceptor {
 
     @Listener
     public void onAuth(ClientConnectionEvent.Auth event){
-        System.out.println("event = " + event);
         SquareKit.getPlayersRegistry().registerPlayer(event.getProfile().getUniqueId());
     }
 
