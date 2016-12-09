@@ -36,7 +36,7 @@ public class Flame extends Effect {
             currentTick += 1;
         } else {
             DamageSource source = EntityDamageSource.builder().entity(kitPlayer.getMcPlayer()).type(DamageTypes.FIRE).magical().bypassesArmor().build();
-            kitPlayer.getMcPlayer().damage((level/4.0), source);
+            kitPlayer.getMcPlayer().damage((level) * 1.5, source);
             drawEffect();
             currentTick = 0;
         }

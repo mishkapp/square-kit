@@ -43,13 +43,14 @@ public class FlameableLiquid extends UseSuffix {
     private double vSpeed = 0.5;
 
     private double damage = 10.0;
-    private int liveTime = 5 * 20;
+    private int liveTime = 7 * 20;
     private int time = 10;
 
     private ParticleEffect trailEffect = ParticleEffect.builder()
             .quantity(1)
             .type(ParticleTypes.FLAME)
             .build();
+
     private Entity lastEntity = null;
 
     private Random random = new Random();
@@ -57,7 +58,7 @@ public class FlameableLiquid extends UseSuffix {
     public FlameableLiquid(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
         super(kitPlayer, itemStack, level);
 
-        cooldown = 4 * 1000;
+        cooldown = 3.5 * 1000;
         manaCost = 10 - (level * 64.0/10);
     }
 

@@ -88,7 +88,7 @@ public class KitsCommand implements CommandExecutor {
             int i = 0;
             for(Kit k : kits){
                 ItemStack menuItem = k.getMenuItem();
-                if(kitPlayer.getMoney() < k.getPrice()){
+                if(kitPlayer.getMoney() < k.getPrice() || kitPlayer.getLevel() < k.getMinLevel()){
                     menuItem = ItemStack.builder().from(menuItem).itemType(ItemTypes.BARRIER).build();
                 }
                 itemKitMap.put(menuItem, k);
