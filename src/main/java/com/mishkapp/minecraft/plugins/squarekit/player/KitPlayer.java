@@ -1,6 +1,7 @@
 package com.mishkapp.minecraft.plugins.squarekit.player;
 
 import com.mishkapp.minecraft.plugins.squarekit.KitItem;
+import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.SuffixFactory;
 import com.mishkapp.minecraft.plugins.squarekit.effects.Effect;
@@ -15,6 +16,7 @@ import org.bson.Document;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.entity.HealthData;
+import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scoreboard.Scoreboard;
 import org.spongepowered.api.scoreboard.critieria.Criteria;
@@ -28,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import static com.mishkapp.minecraft.plugins.squarekit.utils.Utils._text;
 import static com.mongodb.client.model.Filters.eq;
 import static java.lang.Math.min;
 import static org.spongepowered.api.text.format.TextColors.*;
@@ -363,25 +366,32 @@ public class KitPlayer {
         }
     }
 
-    public void addMoney(double money){
+    public void addMoney(double money, boolean silent){
         this.money += money;
-        //TODO: message
+        if(!silent){
+            getMcPlayer().sendMessage(_text(Messages.get("money-gained").replace("%MONEY%", FormatUtils.unsignedRound(money))));
+        }
     }
 
-    public void subtractMoney(double money){
+    public void subtractMoney(double money, boolean silent){
         this.money = Math.max(0.0, this.money - money);
-        //TODO: message
+        if(!silent){
+            getMcPlayer().sendMessage(_text(Messages.get("money-lost").replace("%MONEY%", FormatUtils.unsignedRound(money))));
+        }
     }
 
     public void addExp(int exp){
         int maxExp = LevelTable.experiences[level - 1];
         if((exp + experience) >= maxExp){
-            levelup();
-            experience = maxExp - (exp + experience);
+            if(levelup()){
+                experience = maxExp - (exp + experience);
+            } else {
+                return;
+            }
         } else {
             experience += exp;
         }
-        //TODO: message
+        getMcPlayer().sendMessage(_text(Messages.get("exp-gained").replace("%EXP%", String.valueOf(exp))));
     }
 
     public void subtractExp(int exp){
@@ -389,23 +399,38 @@ public class KitPlayer {
             if(level == 1){
                 experience = 0;
             } else {
-                delvl();
-                experience = LevelTable.experiences[level - 1] - (exp - experience);
+                if(delvl()){
+                    experience = LevelTable.experiences[level - 1] - (exp - experience);
+                } else {
+                    return;
+                }
             }
         } else {
             experience -= exp;
         }
-        //TODO: message
+        getMcPlayer().sendMessage(_text(Messages.get("exp-lost").replace("%EXP%", String.valueOf(exp))));
     }
 
-    public void delvl(){
+    public boolean delvl(){
+        if(level == 1){
+            return false;
+        }
         level -= 1;
-        //TODO: some effects maybe
+
+        getMcPlayer().playSound(SoundTypes.ITEM_SHIELD_BREAK, getMcPlayer().getLocation().getPosition(), 1);
+        getMcPlayer().sendMessage(_text(Messages.get("delvl").replace("%LVL%", String.valueOf(level))));
+        return true;
     }
 
-    public void levelup(){
+    public boolean levelup(){
+        if(level == LevelTable.MAX_LEVEL){
+            return false;
+        }
         level += 1;
-        //TODO: maybe add some effects
+
+        getMcPlayer().playSound(SoundTypes.ENTITY_PLAYER_LEVELUP, getMcPlayer().getLocation().getPosition(), 1);
+        getMcPlayer().sendMessage(_text(Messages.get("lvlup").replace("%LVL%", String.valueOf(level))));
+        return true;
     }
 
     public void onKill(KitPlayer killed){
@@ -414,7 +439,7 @@ public class KitPlayer {
         st.setKills(st.getKills() + 1);
         currentKillstreak += 1;
         recalculateKDRatio();
-        addMoney(GoldUtils.goldReceived(killed, this));
+        addMoney(GoldUtils.goldReceived(killed, this), false);
         addExp(ExpUtils.expReceived(killed, this));
     }
 
@@ -423,7 +448,7 @@ public class KitPlayer {
         KitsStats.KitStats st = kitsStats.get(currentKit);
         st.setDeaths(st.getDeaths() + 1);
         subtractExp(ExpUtils.expPenalty(this));
-        subtractMoney(GoldUtils.goldPenalty(this));
+        subtractMoney(GoldUtils.goldPenalty(this), false);
         resetKillstreak();
         recalculateKDRatio();
     }
@@ -524,11 +549,12 @@ public class KitPlayer {
             statsObj.removeScore(t);
         }
 
-        statsObj.getOrCreateScore(getPhysicalResistText()).setScore(4);
-        statsObj.getOrCreateScore(getMagicResistText()).setScore(3);
-        statsObj.getOrCreateScore(getManaScoreText()).setScore(2);
-        statsObj.getOrCreateScore(getMoneyText()).setScore(1);
-        statsObj.getOrCreateScore(getStreakText()).setScore(0);
+        statsObj.getOrCreateScore(getPhysicalResistText()).setScore(5);
+        statsObj.getOrCreateScore(getMagicResistText()).setScore(4);
+        statsObj.getOrCreateScore(getManaScoreText()).setScore(3);
+        statsObj.getOrCreateScore(getMoneyText()).setScore(2);
+        statsObj.getOrCreateScore(getStreakText()).setScore(1);
+        statsObj.getOrCreateScore(getLevelText()).setScore(0);
 
         scoreboard.updateDisplaySlot(statsObj, DisplaySlots.SIDEBAR);
     }
@@ -560,6 +586,12 @@ public class KitPlayer {
     private Text getStreakText(){
         return Text.builder("Серия убийств: " + currentKillstreak)
                 .color(RED)
+                .build();
+    }
+
+    private Text getLevelText(){
+        return Text.builder("Уровень: " + level)
+                .color(GREEN)
                 .build();
     }
 

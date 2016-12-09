@@ -5,14 +5,14 @@ package com.mishkapp.minecraft.plugins.squarekit.player;
  */
 public class LevelTable {
 
-    public static final int MAX_LEVEL = 50;
+    public static final int MAX_LEVEL = 20;
 
     public static final int[] experiences = new int[MAX_LEVEL];
 
     static {
         //TODO: formula needs to be rethought //((x^4)/2.8) + 1000
         for(int i = 0; i < MAX_LEVEL; i++){
-            experiences[i] = (i * i) + 100;
+            experiences[i] = (i * i * i * i) + 1000;
         }
     }
 }

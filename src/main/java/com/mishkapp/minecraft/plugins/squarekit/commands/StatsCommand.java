@@ -2,6 +2,7 @@ package com.mishkapp.minecraft.plugins.squarekit.commands;
 
 import com.mishkapp.minecraft.plugins.squarekit.PlayersRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
+import com.mishkapp.minecraft.plugins.squarekit.player.LevelTable;
 import com.mishkapp.minecraft.plugins.squarekit.player.PlayerStats;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.Sponge;
@@ -70,6 +71,14 @@ public class StatsCommand implements CommandExecutor {
 
         b.append(Text.of("Максимум убийств подряд: "));
         b.append(Text.of(playerStats.getMaxKillstreak()));
+        b.append(Text.NEW_LINE);
+
+        b.append(Text.of("Уровень: "));
+        b.append(Text.of(kitPlayer.getLevel()));
+        b.append(Text.NEW_LINE);
+
+        b.append(Text.of("Опыт: "));
+        b.append(Text.of(kitPlayer.getExperience() + "/" + LevelTable.experiences[kitPlayer.getLevel() - 1]));
         b.append(Text.NEW_LINE);
 
         b.append(Text.of("================================"));
