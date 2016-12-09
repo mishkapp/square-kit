@@ -7,6 +7,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.item.inventory.entity.Hotbar;
 import org.spongepowered.api.item.inventory.entity.PlayerInventory;
+import org.spongepowered.api.item.inventory.type.GridInventory;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -44,8 +45,12 @@ public class InventoryUtils {
 
     public static void addItem(Player player,ItemStack itemStack){
         Hotbar hotbar = player.getInventory().query(Hotbar.class);
+        addItem(hotbar, itemStack);
+    }
+
+    public static void addItem(Inventory inventory,ItemStack itemStack){
         AtomicInteger remain = new AtomicInteger(itemStack.getQuantity());
-        hotbar.iterator().forEachRemaining(h -> {
+        inventory.iterator().forEachRemaining(h -> {
             if(remain.get() == 0){
                 return;
             }

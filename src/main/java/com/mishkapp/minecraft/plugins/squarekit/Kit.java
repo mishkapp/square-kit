@@ -26,6 +26,7 @@ public class Kit {
     private String description;
     private int price;
     private String permission;
+    private ItemStack menuItem;
     private ItemStack helmet;
     private ItemStack chestplate;
     private ItemStack leggings;
@@ -35,12 +36,12 @@ public class Kit {
 
     private Kit(){}
 
-    public ItemStack getItemForMenu(){
-        ItemStack result = ItemStack.of(ItemTypes.GOLDEN_SWORD, 1);
-        ItemUtils.setName(result, name);
-        ItemUtils.addLore(result, "&eСтоимость: " + price);
-        ItemUtils.addLore(result, description);
-        return result;
+    public ItemStack getMenuItem(){
+        return menuItem;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getName() {
@@ -126,6 +127,16 @@ public class Kit {
         kit.description = document.getString("description");
         kit.price = document.getInteger("price");
         kit.permission = document.getString("permission");
+
+        if(document.containsKey("menuItem")){
+            kit.menuItem = MongoUtils.itemStackFromDocument((Document) document.get("menuItem"));
+        } else {
+            kit.menuItem = ItemStack.of(ItemTypes.GOLDEN_SWORD, 1);
+        }
+        ItemUtils.setName(kit.menuItem, kit.name);
+        ItemUtils.addLore(kit.menuItem, "&eСтоимость: " + kit.price);
+        ItemUtils.addLore(kit.menuItem, kit.description);
+
         kit.helmet = MongoUtils.itemStackFromDocument((Document) document.get("helmet"));
         kit.chestplate = MongoUtils.itemStackFromDocument((Document) document.get("chestplate"));
         kit.leggings = MongoUtils.itemStackFromDocument((Document) document.get("leggings"));

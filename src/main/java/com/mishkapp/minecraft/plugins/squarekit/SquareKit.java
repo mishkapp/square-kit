@@ -172,6 +172,7 @@ public class SquareKit{
         // /kit
         CommandSpec kitCmd = CommandSpec.builder()
                 .description(Text.of("Get specified kit"))
+                .permission("squarekit.admin")
                 .executor(new KitCommand())
                 .arguments(
                         GenericArguments.string(Text.of("kitId"))
