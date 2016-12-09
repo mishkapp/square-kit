@@ -11,6 +11,7 @@ import com.mishkapp.minecraft.plugins.squarekit.events.ItemUsedEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.ItemUsedOnTargetEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
+import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import com.mishkapp.minecraft.plugins.squarekit.utils.SpongeUtils;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.particle.ParticleEffect;
@@ -43,6 +44,8 @@ public class FlameableLiquid extends UseSuffix {
 
     private double damage = 10.0;
     private int liveTime = 5 * 20;
+    private int time = 10;
+
     private ParticleEffect trailEffect = ParticleEffect.builder()
             .quantity(1)
             .type(ParticleTypes.FLAME)
@@ -148,6 +151,7 @@ public class FlameableLiquid extends UseSuffix {
     }
 
     private void onCollide(Entity affected){
+        addCollideEffect(affected);
         DamageSource source = EntityDamageSource.builder().entity(kitPlayer.getMcPlayer()).type(DamageTypes.PROJECTILE).magical().bypassesArmor().build();
         affected.damage(damage, source);
 
@@ -162,9 +166,9 @@ public class FlameableLiquid extends UseSuffix {
         if(flames.size() > 0){
             Flame flame = (Flame) flames.get(0);
             affectedPlayer.removeEffect(flame);
-            affectedPlayer.addEffect(new Flame(affectedPlayer, this, Math.min(flame.getLevel() + 1, 5), 10 * 1000));
+            affectedPlayer.addEffect(new Flame(affectedPlayer, this, Math.min(flame.getLevel() + 1, 5), time * 1000));
         } else {
-            affectedPlayer.addEffect(new Flame(affectedPlayer, this, 1, 10 * 1000));
+            affectedPlayer.addEffect(new Flame(affectedPlayer, this, 1, time * 1000));
         }
     }
 
@@ -208,6 +212,24 @@ public class FlameableLiquid extends UseSuffix {
                 trailEffect,
                 entity.getLocation().getPosition().add(random.nextGaussian()/4, random.nextGaussian()/4, random.nextGaussian()/4)
         );
+    }
 
+    private void addCollideEffect(Entity entity){
+        if(trailEffect == null || entity == null || entity.isRemoved() || entity.isOnGround()){
+            return;
+        }
+        for(int i = 0; i < 25; i++)
+        entity.getWorld().spawnParticles(
+                trailEffect,
+                entity.getLocation().getPosition().add(random.nextGaussian() * 1.2, random.nextGaussian() * 1.2, random.nextGaussian() * 1.2)
+        );
+    }
+
+    @Override
+    public String getLoreEntry() {
+        return Messages.get("flameable-liquid-suffix")
+                .replace("%DAMAGE%", FormatUtils.unsignedRound(damage))
+                .replace("%TIME%", FormatUtils.unsignedTenth(time))
+                + super.getLoreEntry();
     }
 }
