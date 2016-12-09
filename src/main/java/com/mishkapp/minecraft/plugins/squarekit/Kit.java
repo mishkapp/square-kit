@@ -26,6 +26,7 @@ public class Kit {
     private String description;
     private int price;
     private String permission;
+    private int minLevel;
     private ItemStack menuItem;
     private ItemStack helmet;
     private ItemStack chestplate;
@@ -58,6 +59,10 @@ public class Kit {
 
     public String getPermission() {
         return permission;
+    }
+
+    public int getMinLevel() {
+        return minLevel;
     }
 
     public ItemStack getHelmet() {
@@ -128,13 +133,23 @@ public class Kit {
         kit.price = document.getInteger("price");
         kit.permission = document.getString("permission");
 
+        if(document.containsKey("minLevel")){
+            kit.minLevel = document.getInteger("minLevel");
+        } else {
+            kit.minLevel = 1;
+        }
+
         if(document.containsKey("menuItem")){
             kit.menuItem = MongoUtils.itemStackFromDocument((Document) document.get("menuItem"));
         } else {
             kit.menuItem = ItemStack.of(ItemTypes.GOLDEN_SWORD, 1);
         }
+
         ItemUtils.setName(kit.menuItem, kit.name);
         ItemUtils.addLore(kit.menuItem, "&eСтоимость: " + kit.price);
+        if(kit.minLevel > 1){
+            ItemUtils.addLore(kit.menuItem, "&6Требуемый уровень: " + kit.minLevel);
+        }
         ItemUtils.addLore(kit.menuItem, kit.description);
 
         kit.helmet = MongoUtils.itemStackFromDocument((Document) document.get("helmet"));

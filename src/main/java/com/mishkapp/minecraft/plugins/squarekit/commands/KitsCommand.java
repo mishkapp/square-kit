@@ -102,6 +102,11 @@ public class KitsCommand implements CommandExecutor {
             return;
         }
 
+        if(kitPlayer.getLevel() < kit.getMinLevel()){
+            player.sendMessage(_text(Messages.get("kit-level-too-small").replace("%KIT%", kit.getName())));
+            return;
+        }
+
         if(kitPlayer.getCurrentKit().equals(kit.getId())){
             player.sendMessage(_text(Messages.get("kit-already-picked").replace("%KIT%", kit.getName())));
             return;

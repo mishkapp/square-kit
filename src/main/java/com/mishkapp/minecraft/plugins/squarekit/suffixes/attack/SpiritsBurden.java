@@ -70,7 +70,7 @@ public class SpiritsBurden extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("ice-rock-suffix")
+        return Messages.get("spirits-burden-suffix")
                 .replace("%TIME%", FormatUtils.unsignedRound(duration))
                 .replace("%MANACOST%", FormatUtils.unsignedRound(manaCost));
     }
