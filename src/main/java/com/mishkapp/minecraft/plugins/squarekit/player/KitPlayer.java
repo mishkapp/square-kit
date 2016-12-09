@@ -3,6 +3,7 @@ package com.mishkapp.minecraft.plugins.squarekit.player;
 import com.mishkapp.minecraft.plugins.squarekit.KitItem;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.SuffixFactory;
+import com.mishkapp.minecraft.plugins.squarekit.effects.Effect;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import com.mishkapp.minecraft.plugins.squarekit.utils.ExpUtils;
@@ -53,6 +54,8 @@ public class KitPlayer {
     private final double EVASION = 0.0;             // [0, 1]
 
     private HashMap<String, HashMap<Suffix, Double>> additions = new HashMap();
+
+    private List<Effect> effects = new ArrayList<>();
 
     private double currentMana = 0.0;
 
@@ -350,6 +353,7 @@ public class KitPlayer {
 
     public void tick(){
         if(getMcPlayer().isOnline()){
+            effects.forEach(Effect::tick);
             tickRegens();
             updateScoreboard();
         } else {
@@ -479,6 +483,7 @@ public class KitPlayer {
 
     public void forceUpdate(){
         System.out.println("FORCE UPDATE");
+        effects = new ArrayList<>();
         updateMcPlayer();
         purgeAdditions();
 
@@ -664,6 +669,18 @@ public class KitPlayer {
 
     public void addHealth(double hpAdd) {
         getMcPlayer().offer(Keys.HEALTH, min(getMaxMana(), getMcPlayer().getHealthData().health().get() + hpAdd));
+    }
+
+    public void removeEffect(Effect effect) {
+        effects.remove(effect);
+    }
+
+    public List<Effect> getEffects(){
+        return effects;
+    }
+
+    public void addEffect(Effect effect) {
+        effects.add(effect);
     }
 }
 

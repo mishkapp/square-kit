@@ -5,10 +5,12 @@ import com.mishkapp.minecraft.plugins.squarekit.PlayersRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.events.*;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
+import com.mishkapp.minecraft.plugins.squarekit.utils.MathUtils;
 import com.mishkapp.minecraft.plugins.squarekit.utils.Utils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.type.HandType;
 import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.CollideBlockEvent;
@@ -27,8 +29,10 @@ import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.spongepowered.api.data.type.HandTypes.MAIN_HAND;
 import static org.spongepowered.api.data.type.HandTypes.OFF_HAND;
@@ -110,7 +114,7 @@ public class EventInterceptor {
         }
 
         if(Utils.isKitItem(usedItem)){
-            Sponge.getEventManager().post(new ItemUsedEvent(SquareKit.getPlayersRegistry().getPlayer(player.getUniqueId()), handType));
+            Sponge.getEventManager().post(new ItemUsedOnTargetEvent(SquareKit.getPlayersRegistry().getPlayer(player.getUniqueId()), handType, event.getTargetEntity()));
         }
     }
 
@@ -157,7 +161,55 @@ public class EventInterceptor {
         }
 
         if(Utils.isKitItem(usedItem)){
-            Sponge.getEventManager().post(new ItemUsedEvent(SquareKit.getPlayersRegistry().getPlayer(player.getUniqueId()), handType));
+            Entity target = getTarget(event, player);
+            System.out.println("target = " + target);
+            if(target != null){
+                Sponge.getEventManager().post(new ItemUsedOnTargetEvent(SquareKit.getPlayersRegistry().getPlayer(player.getUniqueId()), handType, target));
+            } else {
+                Sponge.getEventManager().post(new ItemUsedEvent(SquareKit.getPlayersRegistry().getPlayer(player.getUniqueId()), handType));
+                
+            }
+        }
+    }
+
+    private Entity getTarget(InteractBlockEvent.Secondary event, Player player) {
+        List<Entity> list = player.getNearbyEntities(30).stream().filter(e -> {
+            if(e == player || !(e instanceof Living)){
+                return false;
+            }
+
+            double x0 = player.getLocation().getX();
+            double y0 = player.getLocation().getY();
+            double z0 = player.getLocation().getZ();
+
+            double x = e.getLocation().getX() - x0;
+            double y = e.getLocation().getY() - y0;
+            double z = e.getLocation().getZ() - z0;
+
+            double r = Math.sqrt((x * x) + (y * y) + (z * z));
+
+            double phi = Math.acos(z / r);
+            phi = Math.toDegrees(phi);
+
+            double theta = Math.acos(y / r);
+            theta = Math.toDegrees(theta);
+            theta = theta - 90.0;
+
+            if(x < 0){
+                phi = phi - 360.0;
+            } else {
+                phi = phi * (-1);
+            }
+
+            double pTheta = player.getHeadRotation().getX();
+            double pPhi = player.getHeadRotation().getY();
+
+            return MathUtils.isSameDirection(phi, pPhi, theta, pTheta, 12);
+        }).sorted(Comparator.comparingDouble(e2 -> e2.getLocation().getPosition().distance(player.getLocation().getPosition()))).collect(Collectors.toList());
+        if(list.size() == 0){
+            return null;
+        } else {
+            return list.get(0);
         }
     }
 
