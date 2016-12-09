@@ -39,19 +39,19 @@ public class KitPlayer {
 
     private List<KitItem> kitItems = new ArrayList<>();
 
-    private final double PHYSICAL_DAMAGE = 1.0;     // [1, ∞)
-    private final double MAX_MANA = 100.0;          // [0, ∞)
-    private final double MANA_REGEN = 0.0;          // (-∞, ∞)
-    private final double HEALTH_REGEN = 0.125;      // (-∞, ∞)
-    private final double SPEED = 1.0;               // (0, ∞)
-    private final double COOLDOWN_RATE = 1.0;       // (0, ∞)
-    private final double PHYSICAL_RESIST = 0.0;     // (-∞, 1]
-    private final double MAGIC_RESIST = 0.0;        // (-∞, 1]
-    private final double MAX_HEALTH = 100.0;        // [1, ∞)
-    private final double KNOCKBACK_RESIST = 0.0;    // (-∞, ∞)
-    private final double CRITICAL_CHANCE = 0.0;     // [0, 1]
-    private final double CRITICAL_POWER = 0.0;      // [0, ∞)
-    private final double EVASION = 0.0;             // [0, 1]
+    private double PHYSICAL_DAMAGE = 1.0;     // [1, ∞)
+    private double MAX_MANA = 100.0;          // [0, ∞)
+    private double MANA_REGEN = 0.0;          // (-∞, ∞)
+    private double HEALTH_REGEN = 0.125;      // (-∞, ∞)
+    private double SPEED = 1.0;               // (0, ∞)
+    private double COOLDOWN_RATE = 1.0;       // (0, ∞)
+    private double PHYSICAL_RESIST = 0.0;     // (-∞, 1]
+    private double MAGIC_RESIST = 0.0;        // (-∞, 1]
+    private double MAX_HEALTH = 100.0;        // [1, ∞)
+    private double KNOCKBACK_RESIST = 0.0;    // (-∞, ∞)
+    private double CRITICAL_CHANCE = 0.0;     // [0, 1]
+    private double CRITICAL_POWER = 0.0;      // [0, ∞)
+    private double EVASION = 0.0;             // [0, 1]
 
     private HashMap<String, HashMap<Suffix, Double>> additions = new HashMap();
 
@@ -80,6 +80,7 @@ public class KitPlayer {
         this.uuid = player.getUniqueId();
         initScoreboard();
         currentMana = getMaxMana();
+        addDefaultValues();
     }
 
     private void initScoreboard(){
@@ -678,6 +679,12 @@ public class KitPlayer {
 
     public void addEffect(Effect effect) {
         effects.add(effect);
+    }
+
+    public void addDefaultValues(){
+        if(getMcPlayer().hasPermission("squarekit.alphatest")){
+            COOLDOWN_RATE += 0.1;
+        }
     }
 }
 
