@@ -27,7 +27,6 @@ import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.Comparator;
 import java.util.List;
@@ -45,7 +44,7 @@ public class EventInterceptor {
 
     public EventInterceptor(){
         Sponge.getGame().getServer().getOnlinePlayers().
-                forEach((p -> SquareKit.getPlayersRegistry().registerPlayer(p)));
+                forEach((p -> SquareKit.getPlayersRegistry().registerPlayer(p.getUniqueId())));
 
     }
 
@@ -268,16 +267,15 @@ public class EventInterceptor {
     }
 
     @Listener
-    public void onLogin(ClientConnectionEvent.Login event, @First Player player){
-        if(!player.hasPermission("squarekit.tester")){
-            event.setMessage(TextSerializers.FORMATTING_CODE.deserialize("&6Эх, как жаль, что вы не тестер :("));
-            event.setCancelled(true);
-        }
+    public void onAuth(ClientConnectionEvent.Auth event){
+        System.out.println("event = " + event);
+        SquareKit.getPlayersRegistry().registerPlayer(event.getProfile().getUniqueId());
     }
 
     @Listener
-    public void onJoin(ClientConnectionEvent.Join event, @First Player player){
-        KitPlayer kitPlayer = SquareKit.getPlayersRegistry().registerPlayer(player);
+    public void onLogin(ClientConnectionEvent.Join event, @First Player player){
+        PlayersRegistry.getInstance().initPlayer(player);
+        KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player.getUniqueId());
         String kitId = kitPlayer.getCurrentKit();
         KitRegistry.getInstance().getKit(kitId).applyToPlayer(kitPlayer);
     }

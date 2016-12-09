@@ -21,22 +21,37 @@ public class PlayersRegistry {
     private static PlayersRegistry instance;
 
     private HashMap<UUID, KitPlayer> players = new HashMap<>();
+    private HashMap<UUID, KitPlayer> inactive = new HashMap<>();
+
+    private HashMap<UUID, KitPlayer> pending = new HashMap<>();
 
     private HashMap<UUID, Ticker> tickers = new HashMap<>();
 
-    public KitPlayer registerPlayer(Player player){
-        UUID uuid = player.getUniqueId();
-        KitPlayer kitPlayer = KitPlayer.getKitPlayer(SquareKit.getInstance().getMongoDb(), player);
-        players.put(uuid, kitPlayer);
-        tickers.put(uuid, new Ticker(kitPlayer));
+    public KitPlayer registerPlayer(UUID uuid){
+        KitPlayer kitPlayer = KitPlayer.getKitPlayer(SquareKit.getInstance().getMongoDb(), uuid);
+        if(inactive.containsKey(uuid)){
+            pending.put(uuid, inactive.get(uuid));
+        } else {
+            pending.put(uuid, kitPlayer);
+        }
+
         return kitPlayer;
+    }
+
+    public void initPlayer(Player player){
+        UUID uuid = player.getUniqueId();
+        if(pending.containsKey(uuid)){
+            players.put(uuid, pending.remove(uuid));
+            tickers.put(uuid, new Ticker(players.get(uuid)));
+            players.get(uuid).init();
+        }
     }
 
     public void unregisterPlayer(Player player){
         UUID uuid = player.getUniqueId();
         getPlayer(player.getUniqueId()).saveKitPlayer(SquareKit.getInstance().getMongoDb());
         if(players.containsKey(uuid)){
-            players.remove(uuid);
+            inactive.put(uuid, players.remove(uuid));
         }
         if(tickers.containsKey(uuid)){
             tickers.get(uuid).cancel();
@@ -88,7 +103,7 @@ public class PlayersRegistry {
             task = SpongeUtils.getTaskBuilder().execute(this)
                     .delayTicks(5)
                     .intervalTicks(5)
-                    .name("SquareKit - Ticker: " + player.getMcPlayer().getName())
+                    .name("SquareKit - Ticker")
                     .submit(SquareKit.getInstance());
         }
 

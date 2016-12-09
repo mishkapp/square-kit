@@ -78,11 +78,13 @@ public class KitPlayer {
 
     private boolean isInBuildMode = false;
 
-    public KitPlayer(Player player) {
-        this.player = player;
-        this.uuid = player.getUniqueId();
-        initScoreboard();
+    public KitPlayer(UUID uuid) {
+        this.uuid = uuid;
         currentMana = getMaxMana();
+    }
+
+    public void init(){
+        initScoreboard();
         addDefaultValues();
     }
 
@@ -97,7 +99,7 @@ public class KitPlayer {
                 .build();
         scoreboard.addObjective(statsObj);
         updateScoreboard();
-        player.setScoreboard(scoreboard);
+        getMcPlayer().setScoreboard(scoreboard);
     }
 
     public boolean isInBuildMode() {
@@ -522,7 +524,10 @@ public class KitPlayer {
     }
 
     public void updateMcPlayer(){
-        Player tmp = Sponge.getServer().getPlayer(uuid).get();
+        Player tmp = Sponge.getServer().getPlayer(uuid).orElse(null);
+        if(tmp == null){
+            return;
+        }
         if(tmp != player){
             player = tmp;
         }
@@ -652,11 +657,10 @@ public class KitPlayer {
         return player;
     }
 
-    public static KitPlayer getKitPlayer(MongoDatabase mongoDatabase, Player player){
+    public static KitPlayer getKitPlayer(MongoDatabase mongoDatabase, UUID uuid){
         MongoCollection collection = mongoDatabase.getCollection("players");
-        UUID uuid = player.getUniqueId();
         Document document = (Document) collection.find(eq("uuid", uuid.toString())).first();
-        KitPlayer result = new KitPlayer(player);
+        KitPlayer result = new KitPlayer(uuid);
         if(document != null){
             result.fromDocument(document);
         }

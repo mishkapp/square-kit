@@ -42,7 +42,7 @@ public class TopStreakerBar {
                 .color(TextColors.RED)
                 .append(kitPlayer.getMcPlayer().getDisplayNameData().displayName().get())
                 .append(Text.of(" [" + kitPlayer.getCurrentKillstreak() + "]")).build());
-        bossBar.setPercent((float) (kitPlayer.getHealth()/kitPlayer.getMaxHealth()));
+        bossBar.setPercent((float) Math.min(1, kitPlayer.getHealth()/kitPlayer.getMaxHealth()));
         render();
     }
 
