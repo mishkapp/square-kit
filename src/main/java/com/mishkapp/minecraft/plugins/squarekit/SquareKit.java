@@ -211,7 +211,6 @@ public class SquareKit{
         // /buildmode
         CommandSpec buildModeCmd = CommandSpec.builder()
                 .description(Text.of("Toggle build mode"))
-                .permission("squarekit.builder")
                 .executor(new BuildModeCommand())
                 .build();
 
@@ -220,7 +219,6 @@ public class SquareKit{
         // /warp
         CommandSpec warpAddPoint = CommandSpec.builder()
                 .description(Text.of("Adds point to warp list"))
-                .permission("squarekit.admin")
                 .executor(new AddPoint())
                 .arguments(
                         GenericArguments.string(Text.of("id"))
@@ -229,7 +227,6 @@ public class SquareKit{
 
         CommandSpec warpInfo = CommandSpec.builder()
                 .description(Text.of("Get info about warp list"))
-                .permission("squarekit.admin")
                 .executor(new Info())
                 .arguments(
                         GenericArguments.string(Text.of("id"))
@@ -238,7 +235,6 @@ public class SquareKit{
 
         CommandSpec warpRemovePoint = CommandSpec.builder()
                 .description(Text.of("Removes point from warp list"))
-                .permission("squarekit.admin")
                 .executor(new RemovePoint())
                 .arguments(
                         GenericArguments.string(Text.of("id")),
@@ -256,6 +252,7 @@ public class SquareKit{
 
         CommandSpec warpCmd = CommandSpec.builder()
                 .description(Text.of("Warp command"))
+                .permission("squarekit.admin")
                 .child(warpAddPoint, "add")
                 .child(warpInfo, "info")
                 .child(warpRemovePoint, "remove")
