@@ -16,7 +16,7 @@ public class ChangeKitHandler extends Handler {
         return "change-kit";
     }
 
-    public static FeedHandler deserialize(String[] args){
-        return new FeedHandler();
+    public static ChangeKitHandler deserialize(String[] args){
+        return new ChangeKitHandler();
     }
 }
