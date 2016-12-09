@@ -715,7 +715,7 @@ public class KitPlayer {
 
     public void addDefaultValues(){
         if(getMcPlayer().hasPermission("squarekit.alphatest")){
-            COOLDOWN_RATE += 0.1;
+            COOLDOWN_RATE -= 0.1;
         }
     }
 }
