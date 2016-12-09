@@ -1,9 +1,8 @@
 package com.mishkapp.minecraft.plugins.squarekit.commands;
 
-import com.mishkapp.minecraft.plugins.squarekit.Kit;
-import com.mishkapp.minecraft.plugins.squarekit.Messages;
-import com.mishkapp.minecraft.plugins.squarekit.PlayersRegistry;
-import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
+import com.mishkapp.minecraft.plugins.squarekit.*;
+import com.mishkapp.minecraft.plugins.squarekit.areas.Area;
+import com.mishkapp.minecraft.plugins.squarekit.areas.handlers.ChangeKitHandler;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.utils.ItemUtils;
 import org.spongepowered.api.command.CommandException;
@@ -42,6 +41,15 @@ public class KitsCommand implements CommandExecutor {
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         if(src instanceof Player){
             Player player = (Player)src;
+            List<Area> areas = AreaRegistry.getInstance().getApplicableAreas(player);
+
+            int c = (int) areas.parallelStream()
+                    .filter(a -> a.getHandlers().parallelStream()
+                            .filter(h -> h instanceof ChangeKitHandler).count() > 0).count();
+            if(c <= 0){
+                player.sendMessage(_text(Messages.get("kit-bad-area")));
+                return CommandResult.empty();
+            }
 
             List<Kit> kits = SquareKit.getKitRegistry().getKitList().stream()
                     .filter(k -> player.hasPermission(k.getPermission()))
