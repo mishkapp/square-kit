@@ -162,7 +162,6 @@ public class EventInterceptor {
 
         if(Utils.isKitItem(usedItem)){
             Entity target = getTarget(event, player);
-            System.out.println("target = " + target);
             if(target != null){
                 Sponge.getEventManager().post(new ItemUsedOnTargetEvent(SquareKit.getPlayersRegistry().getPlayer(player.getUniqueId()), handType, target));
             } else {
