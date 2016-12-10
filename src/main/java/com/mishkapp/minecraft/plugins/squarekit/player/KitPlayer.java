@@ -669,7 +669,7 @@ public class KitPlayer {
     private void regenHealth(){
         Player player = getMcPlayer();
         HealthData hd = player.getHealthData();
-        double health = hd.health().get();
+        double health = player.health().get();
         if(health <= 0 || health == getMaxHealth()) {return;}
         double newHealth = health + getHealthRegen();
         if(newHealth > getMaxHealth()) {newHealth = getMaxHealth();}
@@ -730,7 +730,7 @@ public class KitPlayer {
     }
 
     public void addHealth(double hpAdd) {
-        getMcPlayer().offer(Keys.HEALTH, min(getMaxMana(), getMcPlayer().getHealthData().health().get() + hpAdd));
+        getMcPlayer().offer(Keys.HEALTH, min(getMaxHealth(), getMcPlayer().getHealthData().health().get() + hpAdd));
     }
 
     public List<Effect> getEffects(){
