@@ -398,7 +398,7 @@ public class KitPlayer {
         int maxExp = LevelTable.experiences[level - 1];
         if((exp + experience) >= maxExp){
             if(levelup()){
-                experience = maxExp - (exp + experience);
+                experience = Math.abs(maxExp - (exp + experience));
             } else {
                 return;
             }
