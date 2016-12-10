@@ -28,7 +28,7 @@ public class PlayersRegistry {
     private HashMap<UUID, Ticker> tickers = new HashMap<>();
 
     public KitPlayer registerPlayer(UUID uuid){
-        KitPlayer kitPlayer = KitPlayer.getKitPlayer(SquareKit.getInstance().getMongoDb(), uuid);
+        KitPlayer kitPlayer = KitPlayer.getKitPlayer(uuid);
         if(inactive.containsKey(uuid)){
             pending.put(uuid, inactive.get(uuid));
         } else {
@@ -49,9 +49,9 @@ public class PlayersRegistry {
 
     public void unregisterPlayer(Player player){
         UUID uuid = player.getUniqueId();
-        getPlayer(player.getUniqueId()).saveKitPlayer(SquareKit.getInstance().getMongoDb());
         if(players.containsKey(uuid)){
             inactive.put(uuid, players.remove(uuid));
+            inactive.get(uuid).saveKitPlayer();
         }
         if(tickers.containsKey(uuid)){
             tickers.get(uuid).cancel();
@@ -82,6 +82,10 @@ public class PlayersRegistry {
         return instance;
     }
 
+    public void savePlayers(){
+        players.values().parallelStream().forEach(KitPlayer::saveKitPlayer);
+    }
+
     public List<KitPlayer> getPlayers(){
         return new ArrayList<>(players.values());
     }
@@ -98,6 +102,9 @@ public class PlayersRegistry {
         private KitPlayer player;
         private Task task;
 
+        int saveTick = 240;
+        int currentTick = 0;
+
         public Ticker(KitPlayer player) {
             this.player = player;
             task = SpongeUtils.getTaskBuilder().execute(this)
@@ -111,6 +118,12 @@ public class PlayersRegistry {
         public void run() {
             TickEvent event = new TickEvent(player);
             Sponge.getEventManager().post(event);
+            if(currentTick < saveTick){
+                currentTick += 1;
+            } else {
+                player.saveKitPlayer();
+                currentTick = 0;
+            }
         }
 
         public void cancel(){

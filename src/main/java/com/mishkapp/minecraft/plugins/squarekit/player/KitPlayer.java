@@ -11,7 +11,6 @@ import com.mishkapp.minecraft.plugins.squarekit.utils.ExpUtils;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import com.mishkapp.minecraft.plugins.squarekit.utils.GoldUtils;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
@@ -657,8 +656,8 @@ public class KitPlayer {
         return player;
     }
 
-    public static KitPlayer getKitPlayer(MongoDatabase mongoDatabase, UUID uuid){
-        MongoCollection collection = mongoDatabase.getCollection("players");
+    public static KitPlayer getKitPlayer(UUID uuid){
+        MongoCollection collection = SquareKit.getInstance().getMongoDb().getCollection("players");
         Document document = (Document) collection.find(eq("uuid", uuid.toString())).first();
         KitPlayer result = new KitPlayer(uuid);
         if(document != null){
@@ -667,8 +666,8 @@ public class KitPlayer {
         return result;
     }
 
-    public void saveKitPlayer(MongoDatabase mongoDatabase){
-        MongoCollection collection = mongoDatabase.getCollection("players");
+    public void saveKitPlayer(){
+        MongoCollection collection = SquareKit.getInstance().getMongoDb().getCollection("players");
         Document document = (Document) collection.find(eq("uuid", uuid.toString())).first();
         if(document != null){
             collection.findOneAndReplace(eq("uuid", uuid.toString()), toDocument());

@@ -112,6 +112,11 @@ public class SquareKit{
         getPlayersRegistry().updateAllPlayers();
     }
 
+    @Listener
+    public void onGameStopping(GameStartingServerEvent event){
+        getPlayersRegistry().savePlayers();
+    }
+
     private void initMongo(){
         mongoClient = new MongoClient(
                 new ServerAddress("s7.squareland.ru", 27017),
