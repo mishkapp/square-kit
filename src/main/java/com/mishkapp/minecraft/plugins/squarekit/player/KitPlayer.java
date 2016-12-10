@@ -380,6 +380,9 @@ public class KitPlayer {
     }
 
     public void addMoney(double money, boolean silent){
+        if(money == 0.0){
+            return;
+        }
         money = money * getMoneyMultiplier();
         this.money += money;
         if(!silent){
@@ -388,6 +391,9 @@ public class KitPlayer {
     }
 
     public void subtractMoney(double money, boolean silent){
+        if(money == 0.0){
+            return;
+        }
         this.money = Math.max(0.0, this.money - money);
         if(!silent){
             getMcPlayer().sendMessage(_text(Messages.get("money-lost").replace("%MONEY%", FormatUtils.unsignedRound(money))));
@@ -405,6 +411,9 @@ public class KitPlayer {
         } else {
             experience += exp;
         }
+        if(exp <= 0){
+            return;
+        }
         getMcPlayer().sendMessage(_text(Messages.get("exp-gained").replace("%EXP%", String.valueOf(exp))));
     }
 
@@ -421,6 +430,9 @@ public class KitPlayer {
             }
         } else {
             experience -= exp;
+        }
+        if(exp <= 0){
+            return;
         }
         getMcPlayer().sendMessage(_text(Messages.get("exp-lost").replace("%EXP%", String.valueOf(exp))));
     }
