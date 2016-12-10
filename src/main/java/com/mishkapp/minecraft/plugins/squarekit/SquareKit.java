@@ -7,7 +7,10 @@ import com.mishkapp.minecraft.plugins.squarekit.commands.*;
 import com.mishkapp.minecraft.plugins.squarekit.commands.area.*;
 import com.mishkapp.minecraft.plugins.squarekit.commands.reload.ReloadKitsCommand;
 import com.mishkapp.minecraft.plugins.squarekit.commands.reload.ReloadMessagesCommand;
-import com.mishkapp.minecraft.plugins.squarekit.commands.warp.*;
+import com.mishkapp.minecraft.plugins.squarekit.commands.warp.AddPoint;
+import com.mishkapp.minecraft.plugins.squarekit.commands.warp.Info;
+import com.mishkapp.minecraft.plugins.squarekit.commands.warp.RemovePoint;
+import com.mishkapp.minecraft.plugins.squarekit.commands.warp.Tp;
 import com.mishkapp.minecraft.plugins.squarekit.listeners.KitListener;
 import com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors.BattleInterceptor;
 import com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors.EventInterceptor;
@@ -45,6 +48,7 @@ import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.state.GameAboutToStartServerEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -98,8 +102,13 @@ public class SquareKit{
 
     }
 
+//    @Listener
+//    public void onLoadComplete(GameLoadCompleteEvent event){
+//        Sponge.getServer().setHasWhitelist(true);
+//    }
+
     @Listener
-    public void onGameStarting(GameStartingServerEvent event){
+    public void onGameStarting(GameAboutToStartServerEvent event){
         initConfigs();
         saveConf();
         registerSuffixes();
@@ -110,7 +119,11 @@ public class SquareKit{
         initAreas();
         getPlayersRegistry().updateAllPlayers();
 
-        initialized = true;
+//        Sponge.getScheduler().createTaskBuilder()
+//                .execute(r -> Sponge.getServer().setHasWhitelist(false))
+//                .async()
+//                .delay(5, TimeUnit.SECONDS)
+//                .submit(getPlugin());
     }
 
     @Listener

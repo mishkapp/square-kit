@@ -48,7 +48,7 @@ public class SpawnConfig {
         World world = Sponge.getServer().getWorld(Sponge.getServer().getDefaultWorldName()).orElse(null);
         return new SpawnConfig(
                 world,
-                world.getSpawnLocation().getPosition(),
+                null,
                 new Vector3d(0, 0, 0)
         );
     }
