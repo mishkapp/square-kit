@@ -97,15 +97,16 @@ public class SquareKit{
         initSerializers();
         initCmds();
         initMessages();
-        saveConf();
-        registerSuffixes();
-        registerListeners();
-        registerKits();
+
     }
 
     @Listener
     public void onGameStarting(GameStartingServerEvent event){
         initConfigs();
+        saveConf();
+        registerSuffixes();
+        registerListeners();
+        registerKits();
         TopStreakerBar.getInstance().init();
         WarpZonesRegistry.getInstance().init();
         initAreas();
