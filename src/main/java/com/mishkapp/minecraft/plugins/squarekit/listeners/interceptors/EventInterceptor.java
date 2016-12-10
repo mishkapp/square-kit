@@ -13,7 +13,6 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.block.CollideBlockEvent;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
 import org.spongepowered.api.event.entity.CollideEntityEvent;
@@ -227,11 +226,6 @@ public class EventInterceptor {
             return;
         }
         entities.forEach(e -> Sponge.getEventManager().post(new EntityCollideEntityEvent(kitPlayer, entity, e)));
-    }
-
-    @Listener
-    public void onEntityCollideBlock(CollideBlockEvent event){
-
     }
 
     @Listener
