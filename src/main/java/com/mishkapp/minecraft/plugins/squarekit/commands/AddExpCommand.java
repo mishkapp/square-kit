@@ -1,4 +1,4 @@
-package com.mishkapp.minecraft.plugins.squarekit.commands.warp;
+package com.mishkapp.minecraft.plugins.squarekit.commands;
 
 import com.mishkapp.minecraft.plugins.squarekit.PlayersRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;

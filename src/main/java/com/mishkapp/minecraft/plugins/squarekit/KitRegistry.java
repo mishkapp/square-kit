@@ -1,5 +1,9 @@
 package com.mishkapp.minecraft.plugins.squarekit;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import org.bson.Document;
+
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -33,5 +37,15 @@ public class KitRegistry {
             instance = new KitRegistry();
         }
         return instance;
+    }
+
+    public void init() {
+        MongoCollection collection = SquareKit.getInstance().getMongoDb().getCollection("kits");
+        MongoCursor cursor = collection.find().iterator();
+
+        while (cursor.hasNext()){
+            Document kitDoc = (Document) cursor.next();
+            registerKit(kitDoc.getString("id"), Kit.fromDocument(kitDoc));
+        }
     }
 }

@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.mishkapp.minecraft.plugins.squarekit.areas.Area;
 import com.mishkapp.minecraft.plugins.squarekit.commands.*;
 import com.mishkapp.minecraft.plugins.squarekit.commands.area.*;
+import com.mishkapp.minecraft.plugins.squarekit.commands.reload.ReloadKitsCommand;
 import com.mishkapp.minecraft.plugins.squarekit.commands.reload.ReloadMessagesCommand;
 import com.mishkapp.minecraft.plugins.squarekit.commands.warp.*;
 import com.mishkapp.minecraft.plugins.squarekit.listeners.KitListener;
@@ -162,15 +163,20 @@ public class SquareKit{
 
         // /reload
         CommandSpec reloadMessages = CommandSpec.builder()
-                .description(Text.of("Get specified kit"))
+                .description(Text.of("Reload messages"))
                 .executor(new ReloadMessagesCommand())
                 .build();
 
+        CommandSpec reloadKits = CommandSpec.builder()
+                .description(Text.of("Reload kits"))
+                .executor(new ReloadKitsCommand())
+                .build();
 
         CommandSpec reloadCommand = CommandSpec.builder()
                 .description(Text.of("Reload command"))
                 .permission("squarekit.admin")
                 .child(reloadMessages, "messages")
+                .child(reloadKits, "kits")
                 .build();
 
         Sponge.getCommandManager().register(this, reloadCommand, "reload");
@@ -498,15 +504,7 @@ public class SquareKit{
     }
 
     private void registerKits(){
-            KitRegistry registry = getKitRegistry();
-
-            MongoCollection collection = mongoDb.getCollection("kits");
-            MongoCursor cursor = collection.find().iterator();
-
-            while (cursor.hasNext()){
-                Document kitDoc = (Document) cursor.next();
-                registry.registerKit(kitDoc.getString("id"), Kit.fromDocument(kitDoc));
-            }
+        getKitRegistry().init();
     }
 
     public static SquareKit getInstance() {
