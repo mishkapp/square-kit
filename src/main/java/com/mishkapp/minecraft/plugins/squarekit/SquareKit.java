@@ -48,7 +48,6 @@ import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.game.state.GameAboutToStartServerEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -60,6 +59,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 /**
@@ -108,7 +108,7 @@ public class SquareKit{
 //    }
 
     @Listener
-    public void onGameStarting(GameAboutToStartServerEvent event){
+    public void onGameStarting(GameStartingServerEvent event){
         initConfigs();
         saveConf();
         registerSuffixes();
@@ -119,11 +119,11 @@ public class SquareKit{
         initAreas();
         getPlayersRegistry().updateAllPlayers();
 
-//        Sponge.getScheduler().createTaskBuilder()
-//                .execute(r -> Sponge.getServer().setHasWhitelist(false))
-//                .async()
-//                .delay(5, TimeUnit.SECONDS)
-//                .submit(getPlugin());
+        Sponge.getScheduler().createTaskBuilder()
+                .execute(r -> initialized = true)
+                .async()
+                .delay(2, TimeUnit.SECONDS)
+                .submit(getPlugin());
     }
 
     @Listener

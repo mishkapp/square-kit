@@ -30,7 +30,7 @@ public class PlayersRegistry {
     public KitPlayer registerPlayer(UUID uuid){
         KitPlayer kitPlayer = KitPlayer.getKitPlayer(uuid);
         if(inactive.containsKey(uuid)){
-            pending.put(uuid, inactive.get(uuid));
+            pending.put(uuid, inactive.remove(uuid));
         } else {
             pending.put(uuid, kitPlayer);
         }

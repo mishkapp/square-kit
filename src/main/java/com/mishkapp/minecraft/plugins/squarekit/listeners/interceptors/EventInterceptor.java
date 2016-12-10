@@ -27,6 +27,7 @@ import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.text.Text;
 
 import java.util.Comparator;
 import java.util.List;
@@ -272,7 +273,15 @@ public class EventInterceptor {
     }
 
     @Listener
-    public void onLogin(ClientConnectionEvent.Join event, @First Player player){
+    public void onLogin(ClientConnectionEvent.Login event){
+        if(!SquareKit.getInstance().isInitialized()){
+            event.setMessage(Text.of("Сервер еще запускается, подождите"));
+            event.setCancelled(true);
+        }
+    }
+
+    @Listener
+    public void onJoin(ClientConnectionEvent.Join event, @First Player player){
         event.setMessageCancelled(true);
         PlayersRegistry.getInstance().initPlayer(player);
         KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player.getUniqueId());
