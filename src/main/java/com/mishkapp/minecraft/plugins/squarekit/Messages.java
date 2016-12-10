@@ -14,14 +14,18 @@ import static com.mongodb.client.model.Filters.eq;
 public class Messages {
 
 
-    private static HashMap<String, String> messages;
+    private static HashMap<String, String> messages = new HashMap<>();
 
     public static String get(String key){
-        return messages.getOrDefault(key, key);
+        if(messages.containsKey(key) && messages.get(key) != null){
+            return messages.get(key);
+        } else {
+            return key;
+        }
     }
 
     public static void init(){
-        messages = new HashMap<>();
+        HashMap<String, String> temp = new HashMap<>();
         MongoCollection collection = SquareKit.getInstance().getMongoDb().getCollection("configs");
         Document document = (Document) collection.find(eq("id", "messages")).first();
 
@@ -29,8 +33,12 @@ public class Messages {
             return;
         }
 
-        Set<String> keys = ((Document)document.get("messages")).keySet();
+        Document msgDoc = (Document)document.get("messages");
 
-        keys.forEach(k -> messages.put(k, document.getString(k)));
+        Set<String> keys = msgDoc.keySet();
+
+        keys.forEach(k -> temp.put(k, msgDoc.getString(k)));
+
+        messages = temp;
     }
 }
