@@ -273,6 +273,7 @@ public class EventInterceptor {
 
     @Listener
     public void onLogin(ClientConnectionEvent.Join event, @First Player player){
+        event.setMessageCancelled(true);
         PlayersRegistry.getInstance().initPlayer(player);
         KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player.getUniqueId());
         String kitId = kitPlayer.getCurrentKit();
@@ -281,6 +282,7 @@ public class EventInterceptor {
 
     @Listener
     public void onLogout(ClientConnectionEvent.Disconnect event, @First Player player){
+        event.setMessageCancelled(true);
         SquareKit.getPlayersRegistry().unregisterPlayer(player);
     }
 

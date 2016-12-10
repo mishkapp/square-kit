@@ -114,11 +114,16 @@ public class BattleInterceptor {
                         damager.getMcPlayer()
                 ));
             }
+            event.setCancelled(true);
         }
     }
 
     @Listener
     public void onEntityDamage(DamageEntityEvent event, @First DamageSource damageSource){
+        if (event.getFinalDamage() <= 0){
+            event.setCancelled(true);
+            return;
+        }
         if(damageSource instanceof IndirectEntityDamageSource){
             return;
         }
@@ -136,12 +141,13 @@ public class BattleInterceptor {
             return;
         }
 
-        if(event.getTargetEntity() instanceof Player){
+        if(event.getTargetEntity() instanceof Player && damageSource.getType().getName().equals(DamageTypes.CUSTOM.getName())){
             if(AreaRegistry.getInstance().isInSafeArea((Player) event.getTargetEntity())){
                 event.setCancelled(true);
                 return;
             }
             KitPlayer kitPlayer = SquareKit.getPlayersRegistry().getPlayer(event.getTargetEntity().getUniqueId());
+
             if(damageSource.isMagic()){
                 kitPlayer.addMagicDamage(event.getBaseDamage());
             } else if (damageSource.isAbsolute()){
@@ -150,6 +156,9 @@ public class BattleInterceptor {
                 kitPlayer.addPhysicalDamage(event.getBaseDamage());
             }
             event.setBaseDamage(0);
+            if(kitPlayer.getHealth() <= 0){
+                event.setCancelled(true);
+            }
         }
     }
 
@@ -169,7 +178,6 @@ public class BattleInterceptor {
                     event.getTargetEntity(),
                     event.getBaseDamage() / 10.0));
             event.setBaseDamage(0);
-            //TODO: REMOVE THIS SHIT
             event.setCancelled(true);
         }
     }
@@ -177,10 +185,7 @@ public class BattleInterceptor {
     @Listener
     public void onPlayerDeath(DestructEntityEvent.Death event, @Getter("getTargetEntity") Player player, @First DamageSource damageSource){
         event.setMessageCancelled(true);
-//        System.out.println("event = " + event);
-//        System.out.println("damageSource = " + damageSource);
-//        System.out.println("player = " + player.isRemoved());
-
+        System.out.println("devent = " + event);
 
         if(damageSource instanceof IndirectEntityDamageSource){
             IndirectEntityDamageSource ieds = (IndirectEntityDamageSource)damageSource;

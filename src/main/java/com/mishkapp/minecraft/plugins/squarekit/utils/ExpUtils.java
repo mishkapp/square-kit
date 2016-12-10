@@ -9,8 +9,8 @@ public class ExpUtils {
 
     public static int expReceived(KitPlayer killed, KitPlayer killer){
         int result = killed.getLevel();
-        result *= 10 + Math.min(0, killed.getCurrentKillstreak() - 10);
-        result *= Math.min(0, killer.getCurrentKillstreak() - 10) * 0.01;
+        result *= 10 + Math.max(0, killed.getCurrentKillstreak() - 10);
+        result *= (Math.max(0, killer.getCurrentKillstreak() - 10) * 0.01) + 1;
         return result;
     }
 

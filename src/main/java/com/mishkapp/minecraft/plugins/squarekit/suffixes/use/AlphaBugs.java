@@ -30,7 +30,7 @@ public class AlphaBugs extends UseSuffix {
     private ParticleEffect particleEffect = ParticleEffect.builder()
             .type(ParticleTypes.FOOTSTEP)
             .quantity(4)
-            .offset(new Vector3d(0, 1, 0))
+            .offset(new Vector3d(0, 0, 0))
             .build();
 
     private Random random = new Random();
@@ -103,7 +103,7 @@ public class AlphaBugs extends UseSuffix {
         for (int i = 0; i < 16; i++){
             world.spawnParticles(
                     particleEffect,
-                    player.getLocation().getPosition().add(random.nextGaussian()/3 + 0.1, random.nextGaussian(), random.nextGaussian()/3 + 0.1)
+                    player.getLocation().getPosition().add(random.nextGaussian()/3 + 0.1, random.nextGaussian(), random.nextDouble()/3 + 0.1)
             );
         }
     }
