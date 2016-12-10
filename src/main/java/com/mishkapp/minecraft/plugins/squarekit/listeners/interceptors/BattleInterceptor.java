@@ -102,7 +102,9 @@ public class BattleInterceptor {
 
             damaged.damage(
                     event.getFinalOutputDamage(),
-                    EntityDamageSource.builder().entity(damager.getMcPlayer()).type(SWEEPING_ATTACK).bypassesArmor().build());
+                    EntityDamageSource.builder().entity(damager.getMcPlayer())
+                            .type(SWEEPING_ATTACK)
+                            .bypassesArmor().build());
             event.setBaseOutputDamage(0);
             Sponge.getEventManager().post(new PlayerAttackEntityEvent(
                     damager,
@@ -120,10 +122,6 @@ public class BattleInterceptor {
 
     @Listener
     public void onEntityDamage(DamageEntityEvent event, @First DamageSource damageSource){
-        if (event.getFinalDamage() <= 0){
-            event.setCancelled(true);
-            return;
-        }
         if(damageSource instanceof IndirectEntityDamageSource){
             return;
         }
@@ -141,7 +139,7 @@ public class BattleInterceptor {
             return;
         }
 
-        if(event.getTargetEntity() instanceof Player && damageSource.getType().getName().equals(DamageTypes.CUSTOM.getName())){
+        if(event.getTargetEntity() instanceof Player){
             if(AreaRegistry.getInstance().isInSafeArea((Player) event.getTargetEntity())){
                 event.setCancelled(true);
                 return;
@@ -156,9 +154,6 @@ public class BattleInterceptor {
                 kitPlayer.addPhysicalDamage(event.getBaseDamage());
             }
             event.setBaseDamage(0);
-            if(kitPlayer.getHealth() <= 0){
-                event.setCancelled(true);
-            }
         }
     }
 
@@ -185,7 +180,6 @@ public class BattleInterceptor {
     @Listener
     public void onPlayerDeath(DestructEntityEvent.Death event, @Getter("getTargetEntity") Player player, @First DamageSource damageSource){
         event.setMessageCancelled(true);
-        System.out.println("devent = " + event);
 
         if(damageSource instanceof IndirectEntityDamageSource){
             IndirectEntityDamageSource ieds = (IndirectEntityDamageSource)damageSource;
@@ -219,8 +213,10 @@ public class BattleInterceptor {
             return;
         }
 
-        Sponge.getEventManager().post(new PlayerKilledEvent(
-                PlayersRegistry.getInstance().getPlayer(player.getUniqueId())
-        ));
+        if(!damageSource.getType().equals(DamageTypes.CUSTOM)){
+            Sponge.getEventManager().post(new PlayerKilledEvent(
+                    PlayersRegistry.getInstance().getPlayer(player.getUniqueId())
+            ));
+        }
     }
 }

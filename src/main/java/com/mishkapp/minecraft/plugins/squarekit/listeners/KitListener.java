@@ -1,6 +1,5 @@
 package com.mishkapp.minecraft.plugins.squarekit.listeners;
 
-import com.mishkapp.minecraft.plugins.squarekit.TopStreakerBar;
 import com.mishkapp.minecraft.plugins.squarekit.events.PlayerKilledByEntityEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.PlayerKilledByPlayerEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.PlayerKilledEvent;
