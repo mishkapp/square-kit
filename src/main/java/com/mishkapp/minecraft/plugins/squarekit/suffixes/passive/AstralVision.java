@@ -10,16 +10,21 @@ import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
+import org.spongepowered.api.effect.potion.PotionEffect;
+import org.spongepowered.api.effect.potion.PotionEffectTypes;
+import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.item.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
-import static java.lang.Math.PI;
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
+import static java.lang.Math.*;
 
 /**
  * Created by mishkapp on 08.12.2016.
@@ -68,6 +73,8 @@ public class AstralVision extends Suffix {
                 currentTick += 1;
             } else {
                 drawAreas();
+                drawSpawnPoints();
+                drawInvisiblePlayers();
                 currentTick = 0;
             }
         }
@@ -103,22 +110,26 @@ public class AstralVision extends Suffix {
 
     private void drawAreas() {
         List<Area> areas = AreaRegistry.getInstance().getNearbyAreas(kitPlayer.getMcPlayer(), 30);
-        if (areas.size() > 0) {
-            for (Area area : areas) {
-                area.getBoundPoints().stream()
-                        .filter(p ->
-                                (random.nextDouble() < 0.3
-                                        && kitPlayer.getMcPlayer().getLocation().getPosition().distance(p) < 30))
-                        .forEach(p ->
-                                kitPlayer.getMcPlayer().spawnParticles(
-                                        effect,
-                                        p.add(
-                                                random.nextGaussian() / 4,
-                                                random.nextGaussian() / 4,
-                                                random.nextGaussian() / 4)));
-            }
+        if (areas.size() == 0) {
+            return;
         }
 
+        for (Area area : areas) {
+            area.getBoundPoints().stream()
+                    .filter(p ->
+                            (random.nextDouble() < 0.3
+                                    && kitPlayer.getMcPlayer().getLocation().getPosition().distance(p) < 30))
+                    .forEach(p ->
+                            kitPlayer.getMcPlayer().spawnParticles(
+                                    effect,
+                                    p.add(
+                                            random.nextGaussian() / 4,
+                                            random.nextGaussian() / 4,
+                                            random.nextGaussian() / 4)));
+        }
+    }
+
+    private void drawSpawnPoints(){
         List<WarpZonesRegistry.WarpPoint> points = WarpZonesRegistry.getInstance().getNearbyPoints(kitPlayer.getMcPlayer(), 30);
         points.forEach(p -> {
             if(p == null){
@@ -133,10 +144,27 @@ public class AstralVision extends Suffix {
                                 0.7 * cos(i) + random.nextGaussian() / 10));
             }
         });
+    }
 
+    private void drawInvisiblePlayers() {
+        List<Entity> entities = kitPlayer.getMcPlayer().getNearbyEntities(30).parallelStream().filter(e -> e instanceof Living).collect(Collectors.toList());
+        entities.stream().forEach(e -> {
+            List<PotionEffect> effects = e.get(Keys.POTION_EFFECTS).orElse(new ArrayList<>());
 
-
-
+            if (effects.stream().filter(ef -> ef.getType().equals(PotionEffectTypes.INVISIBILITY)).count() > 0) {
+                for (double i = 0; i < 2; i += 0.25){
+                    for (double j = 0; j < PI * 2; j += PI/4){
+                        kitPlayer.getMcPlayer().spawnParticles(
+                                effect,
+                                e.getLocation().getPosition().add(
+                                        0.5 * sin(j + i) * cos(i - 1),
+                                        i,
+                                        0.5 * cos(j + i) * cos(i - 1)
+                                ));
+                    }
+                }
+            }
+        });
     }
 
     @Override
