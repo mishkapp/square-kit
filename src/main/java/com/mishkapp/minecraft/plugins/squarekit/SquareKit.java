@@ -86,6 +86,8 @@ public class SquareKit{
     @Inject
     private Game game;
 
+    private boolean initialized = false;
+
     @Listener
     public void onInit(GameInitializationEvent event){
         instance = this;
@@ -107,6 +109,8 @@ public class SquareKit{
         WarpZonesRegistry.getInstance().init();
         initAreas();
         getPlayersRegistry().updateAllPlayers();
+
+        initialized = true;
     }
 
     @Listener
@@ -419,6 +423,10 @@ public class SquareKit{
                 .build();
 
         Sponge.getCommandManager().register(this, areaCmd, "area");
+    }
+
+    public boolean isInitialized() {
+        return initialized;
     }
 
     public Path getConfigDir(){
