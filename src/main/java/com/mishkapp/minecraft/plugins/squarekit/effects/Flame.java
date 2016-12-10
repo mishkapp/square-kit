@@ -22,7 +22,7 @@ public class Flame extends Effect {
 
     private Random random = new Random();
 
-    private int currentTick = 0;
+    private int currentTick = 4;
     private int limitTick = 4;
 
     public Flame(KitPlayer kitPlayer, Suffix source, int level, long duration) {
@@ -35,7 +35,7 @@ public class Flame extends Effect {
         if(currentTick < limitTick){
             currentTick += 1;
         } else {
-            DamageSource source = EntityDamageSource.builder().entity(kitPlayer.getMcPlayer()).type(DamageTypes.FIRE).magical().bypassesArmor().build();
+            DamageSource source = EntityDamageSource.builder().entity(getSource().getPlayer().getMcPlayer()).type(DamageTypes.PROJECTILE).magical().bypassesArmor().build();
             kitPlayer.getMcPlayer().damage((level) * 1.5, source);
             drawEffect();
             currentTick = 0;

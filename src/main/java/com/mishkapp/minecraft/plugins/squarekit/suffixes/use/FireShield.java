@@ -2,6 +2,7 @@ package com.mishkapp.minecraft.plugins.squarekit.suffixes.use;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
+import com.mishkapp.minecraft.plugins.squarekit.PlayersRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.effects.Effect;
 import com.mishkapp.minecraft.plugins.squarekit.effects.Flame;
@@ -108,7 +109,10 @@ public class FireShield extends UseSuffix {
     }
 
     private void onAttack(PlayerAttackedByEntity event){
-        KitPlayer attacker = event.getPlayer();
+        if(!(event.getAttacker() instanceof Player)){
+            return;
+        }
+        KitPlayer attacker = PlayersRegistry.getInstance().getPlayer(event.getAttacker().getUniqueId());
 
         List<Effect> effects = attacker.getEffects();
 

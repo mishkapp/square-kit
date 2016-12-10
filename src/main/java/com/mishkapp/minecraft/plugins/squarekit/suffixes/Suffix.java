@@ -98,4 +98,8 @@ public abstract class Suffix {
         result = 31 * result + kitPlayer.hashCode();
         return result;
     }
+
+    public KitPlayer getPlayer() {
+        return kitPlayer;
+    }
 }
