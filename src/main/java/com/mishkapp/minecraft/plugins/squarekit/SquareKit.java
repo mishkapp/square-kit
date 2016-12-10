@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.mishkapp.minecraft.plugins.squarekit.areas.Area;
 import com.mishkapp.minecraft.plugins.squarekit.commands.*;
 import com.mishkapp.minecraft.plugins.squarekit.commands.area.*;
+import com.mishkapp.minecraft.plugins.squarekit.commands.reload.ReloadMessagesCommand;
 import com.mishkapp.minecraft.plugins.squarekit.commands.warp.*;
 import com.mishkapp.minecraft.plugins.squarekit.listeners.KitListener;
 import com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors.BattleInterceptor;
@@ -33,15 +34,12 @@ import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.GuiceObjectMapperFactory;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializerCollection;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 import org.bson.Document;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.asset.Asset;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
@@ -142,34 +140,7 @@ public class SquareKit{
     }
 
     private void initMessages(){
-        Path messagesPath = getConfigDir().resolve("messages.conf");
-
-        try {
-            Files.createDirectories(getConfigDir());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if(messagesPath.toFile().exists()){
-            messagesPath.toFile().delete();
-        }
-        Asset asset = game.getAssetManager().getAsset(plugin, "messages.conf").orElse(null);
-        try {
-            asset.copyToFile(messagesPath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        ConfigurationNode cn = null;
-        try {
-            cn = HoconConfigurationLoader.builder()
-                    .setPath(messagesPath)
-                    .build()
-                    .load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Messages.init(cn);
+        Messages.init();
     }
 
     private void initSerializers(){
@@ -188,6 +159,21 @@ public class SquareKit{
                 .build();
 
         Sponge.getCommandManager().register(this, kitCmd, "kit");
+
+        // /reload
+        CommandSpec reloadMessages = CommandSpec.builder()
+                .description(Text.of("Get specified kit"))
+                .executor(new ReloadMessagesCommand())
+                .build();
+
+
+        CommandSpec reloadCommand = CommandSpec.builder()
+                .description(Text.of("Reload command"))
+                .permission("squarekit.admin")
+                .child(reloadMessages, "messages")
+                .build();
+
+        Sponge.getCommandManager().register(this, reloadCommand, "reload");
 
         // /kits
         CommandSpec kitsCmd = CommandSpec.builder()
