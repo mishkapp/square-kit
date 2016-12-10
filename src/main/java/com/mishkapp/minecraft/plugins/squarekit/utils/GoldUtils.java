@@ -9,9 +9,9 @@ import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 public class GoldUtils {
 
     public static double goldReceived(KitPlayer killed, KitPlayer killer){
-        double result = killed.getLevel() * (10 + Math.max(0, killed.getCurrentKillstreak() - 10));
+        double result = killed.getLevel() * (Math.max(10, killed.getCurrentKillstreak()));
         if(killed.getLevel() != 1){
-            result += (killed.getMoney() * (0.02 + (Math.max(0, killed.getCurrentKillstreak() - 10)/2.0)));
+            result += (killed.getMoney() * (0.02 * (Math.max(0, killed.getCurrentKillstreak() - 10)/2.0)));
         }
         result += KitRegistry.getInstance().getKit(killed.getCurrentKit()).getPrice() / 10;
         result *= (Math.max(0, killer.getCurrentKillstreak() - 10) * 0.005) + 1;
