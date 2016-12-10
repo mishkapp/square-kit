@@ -32,9 +32,9 @@ import static java.lang.Math.*;
 public class AstralVision extends Suffix {
 
     private double evasion = 0.3;
-    private double speed = 0.2;
+    private double speed = 0.3;
     private double mpRegen = 0.125;
-    private double hpRegen = 0.05;
+    private double hpRegen = 0.125;
 
     private int drawDelay = 6;
     private int currentTick = 0;
