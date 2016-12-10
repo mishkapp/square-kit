@@ -54,6 +54,7 @@ public class KitPlayer {
     private double CRITICAL_CHANCE = 0.0;     // [0, 1]
     private double CRITICAL_POWER = 0.0;      // [0, ∞)
     private double EVASION = 0.0;             // [0, 1]
+    private double MONEY_MULTIPLIER = 1.0;    // [0, ∞)
 
     private HashMap<String, HashMap<Suffix, Double>> additions = new HashMap();
 
@@ -229,6 +230,18 @@ public class KitPlayer {
         }
     }
 
+    public double getMoneyMultiplier() {
+        double result = MONEY_MULTIPLIER;
+        for(double i : getMoneyMultiplierAdds().values()){
+            result += i;
+        }
+        if(result > 0){
+            return min(0, result);
+        } else {
+            return Math.max(0, result);
+        }
+    }
+
     public HashMap<Suffix, Double> getAdditions(String s){
         if(!additions.containsKey(s)){
             additions.put(s, new HashMap<>());
@@ -288,6 +301,9 @@ public class KitPlayer {
         return getAdditions("evasion");
     }
 
+    public HashMap<Suffix, Double> getMoneyMultiplierAdds() {
+        return getAdditions("money-multiplier");
+    }
 
     public double getCurrentMana() {
         return currentMana;
@@ -368,6 +384,7 @@ public class KitPlayer {
     }
 
     public void addMoney(double money, boolean silent){
+        money = money * getMoneyMultiplier();
         this.money += money;
         if(!silent){
             getMcPlayer().sendMessage(_text(Messages.get("money-gained").replace("%MONEY%", FormatUtils.unsignedRound(money))));
@@ -719,6 +736,14 @@ public class KitPlayer {
     public void addDefaultValues(){
         if(getMcPlayer().hasPermission("squarekit.alphatest")){
             COOLDOWN_RATE -= 0.1;
+        }
+
+        if(getMcPlayer().hasPermission("squarekit.grand")){
+            MONEY_MULTIPLIER += 0.3;
+        } else if(getMcPlayer().hasPermission("squarekit.premium")){
+            MONEY_MULTIPLIER += 0.2;
+        } else if(getMcPlayer().hasPermission("squarekit.vip")){
+            MONEY_MULTIPLIER += 0.1;
         }
     }
 }
