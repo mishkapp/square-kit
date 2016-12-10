@@ -235,11 +235,7 @@ public class KitPlayer {
         for(double i : getMoneyMultiplierAdds().values()){
             result += i;
         }
-        if(result > 0){
-            return min(0, result);
-        } else {
-            return Math.max(0, result);
-        }
+        return Math.max(0, result);
     }
 
     public HashMap<Suffix, Double> getAdditions(String s){

@@ -5,10 +5,7 @@ import com.google.inject.Inject;
 import com.mishkapp.minecraft.plugins.squarekit.areas.Area;
 import com.mishkapp.minecraft.plugins.squarekit.commands.*;
 import com.mishkapp.minecraft.plugins.squarekit.commands.area.*;
-import com.mishkapp.minecraft.plugins.squarekit.commands.warp.AddPoint;
-import com.mishkapp.minecraft.plugins.squarekit.commands.warp.Info;
-import com.mishkapp.minecraft.plugins.squarekit.commands.warp.RemovePoint;
-import com.mishkapp.minecraft.plugins.squarekit.commands.warp.Tp;
+import com.mishkapp.minecraft.plugins.squarekit.commands.warp.*;
 import com.mishkapp.minecraft.plugins.squarekit.listeners.KitListener;
 import com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors.BattleInterceptor;
 import com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors.EventInterceptor;
@@ -223,10 +220,37 @@ public class SquareKit{
         // /buildmode
         CommandSpec buildModeCmd = CommandSpec.builder()
                 .description(Text.of("Toggle build mode"))
+                .permission("squarekit.admin")
                 .executor(new BuildModeCommand())
                 .build();
 
         Sponge.getCommandManager().register(this, buildModeCmd, "buildmode");
+
+        // /addmoney
+        CommandSpec addMoneyCmd = CommandSpec.builder()
+                .description(Text.of("Adds money to player"))
+                .permission("squarekit.admin")
+                .arguments(
+                        GenericArguments.string(Text.of("playerName")),
+                        GenericArguments.integer(Text.of("amount"))
+                )
+                .executor(new AddMoneyCommand())
+                .build();
+
+        Sponge.getCommandManager().register(this, addMoneyCmd, "addMoney");
+
+        // /addexp
+        CommandSpec addExpCmd = CommandSpec.builder()
+                .description(Text.of("Adds experience to player"))
+                .permission("squarekit.admin")
+                .arguments(
+                        GenericArguments.string(Text.of("playerName")),
+                        GenericArguments.integer(Text.of("amount"))
+                )
+                .executor(new AddExpCommand())
+                .build();
+
+        Sponge.getCommandManager().register(this, addExpCmd, "addExp");
 
         // /warp
         CommandSpec warpAddPoint = CommandSpec.builder()
