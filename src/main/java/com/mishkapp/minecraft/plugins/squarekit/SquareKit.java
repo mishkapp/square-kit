@@ -49,7 +49,8 @@ import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -90,21 +91,25 @@ public class SquareKit{
     private Game game;
 
     @Listener
-    public void onServerStart(GameStartedServerEvent event) {
+    public void onInit(GameInitializationEvent event){
         instance = this;
         initMongo();
         initSerializers();
         initCmds();
-        initAreas();
-        initConfigs();
         initMessages();
         saveConf();
         registerSuffixes();
         registerListeners();
         registerKits();
-        getPlayersRegistry().updateAllPlayers();
+    }
+
+    @Listener
+    public void onGameStarting(GameStartingServerEvent event){
+        initConfigs();
         TopStreakerBar.getInstance().init();
         WarpZonesRegistry.getInstance().init();
+        initAreas();
+        getPlayersRegistry().updateAllPlayers();
     }
 
     private void initMongo(){
