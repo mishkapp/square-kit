@@ -672,7 +672,7 @@ public class KitPlayer {
         double health = hd.health().get();
         if(health <= 0 || health == getMaxHealth()) {return;}
         double newHealth = health + getHealthRegen();
-        if(newHealth > hd.maxHealth().get()) {newHealth = hd.maxHealth().get().intValue();}
+        if(newHealth > getMaxHealth()) {newHealth = getMaxHealth();}
         player.offer(Keys.HEALTH, newHealth);
     }
 
