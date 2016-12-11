@@ -40,7 +40,7 @@ public class AlphaBugs extends UseSuffix {
     public AlphaBugs(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
         super(kitPlayer, itemStack, level);
         duration = 10 * 20;
-        cooldown = 20 * 1000;
+        cooldown = 25 * 1000;
         manaCost = 30 - (level * 64.0/30);
     }
 

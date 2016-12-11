@@ -3,6 +3,7 @@ package com.mishkapp.minecraft.plugins.squarekit;
 import com.mishkapp.minecraft.plugins.squarekit.areas.Area;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.world.Location;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,8 +41,16 @@ public class AreaRegistry {
         return getApplicableAreas(player).parallelStream().filter(Area::isSafe).count() > 0;
     }
 
+    public boolean isInSafeArea(Location loc){
+        return getApplicableAreas(loc).parallelStream().filter(Area::isSafe).count() > 0;
+    }
+
     public List<Area> getApplicableAreas(Player player){
         return registry.values().parallelStream().filter(a -> a.isInside(player)).collect(Collectors.toList());
+    }
+
+    public List<Area> getApplicableAreas(Location loc){
+        return registry.values().parallelStream().filter(a -> a.isInside(loc)).collect(Collectors.toList());
     }
 
     public List<Area> getNearbyAreas(Player player, int distance){

@@ -69,12 +69,15 @@ public class KitPlayer {
     //here comes the model
     private UUID uuid;
     private String currentKit = "recruit";
+    private int bounty = 0;
     private double money = 0;
     private int level = 1;
     private int experience = 0;
     private int currentKillstreak;
     private PlayerStats playerStats = new PlayerStats();
     private KitsStats kitsStats = new KitsStats();
+
+    private boolean isDefaultsInitialized = false;
 
     private boolean isInBuildMode = false;
 
@@ -706,6 +709,7 @@ public class KitPlayer {
         if(currentKit == null){
             currentKit = "recruit";
         }
+        bounty = document.getInteger("bounty", 0);
         money = document.getDouble("money");
         level = document.getInteger("level", 0);
         experience = document.getInteger("experience", 0);
@@ -717,6 +721,7 @@ public class KitPlayer {
     private Document toDocument(){
         return new Document("uuid", uuid.toString())
                 .append("currentKit", currentKit)
+                .append("bounty", bounty)
                 .append("money", money)
                 .append("level", level)
                 .append("experience", experience)
@@ -730,7 +735,18 @@ public class KitPlayer {
     }
 
     public void addHealth(double hpAdd) {
+        if(getHealth() <= 0){
+            return;
+        }
         getMcPlayer().offer(Keys.HEALTH, min(getMaxHealth(), getMcPlayer().getHealthData().health().get() + hpAdd));
+    }
+
+    public int getBounty() {
+        return bounty;
+    }
+
+    public void setBounty(int bounty) {
+        this.bounty = bounty;
     }
 
     public List<Effect> getEffects(){
@@ -742,6 +758,9 @@ public class KitPlayer {
     }
 
     public void addDefaultValues(){
+        if(isDefaultsInitialized){
+            return;
+        }
         if(getMcPlayer().hasPermission("squarekit.alphatest")){
             COOLDOWN_RATE -= 0.1;
         }
@@ -753,6 +772,7 @@ public class KitPlayer {
         } else if(getMcPlayer().hasPermission("squarekit.vip")){
             MONEY_MULTIPLIER += 0.1;
         }
+        isDefaultsInitialized = true;
     }
 }
 

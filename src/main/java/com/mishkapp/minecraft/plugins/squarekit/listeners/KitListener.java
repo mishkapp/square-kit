@@ -1,5 +1,6 @@
 package com.mishkapp.minecraft.plugins.squarekit.listeners;
 
+import com.mishkapp.minecraft.plugins.squarekit.BountyHandler;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.PlayerKilledByEntityEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.PlayerKilledByPlayerEvent;
@@ -19,12 +20,14 @@ public class KitListener {
     @Exclude({PlayerKilledByEntityEvent.class, PlayerKilledByPlayerEvent.class})
     public void onDeath(PlayerKilledEvent event){
         event.getPlayer().onDeath();
+        BountyHandler.getInstance().denied(event.getPlayer());
     }
 
     @Listener
     @Exclude({PlayerKilledByPlayerEvent.class})
     public void onDeath(PlayerKilledByEntityEvent event){
         event.getPlayer().onDeath();
+        BountyHandler.getInstance().denied(event.getPlayer());
     }
 
     @Listener
@@ -34,10 +37,12 @@ public class KitListener {
         if(killer != killed){
             if(killed.getMcPlayer().getConnection().getAddress().getAddress().equals(killer.getMcPlayer().getConnection().getAddress().getAddress())){
                 killer.getMcPlayer().sendMessage(_text(Messages.get("error-kill-from-same-ip")));
+                BountyHandler.getInstance().denied(killed);
             } else {
                 killer.onKill(killed);
             }
         }
         killed.onDeath();
+        BountyHandler.getInstance().killed(killed, killer);
     }
 }

@@ -21,6 +21,9 @@ import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.entity.damage.DamageTypes;
+import org.spongepowered.api.event.cause.entity.damage.source.DamageSource;
+import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.scheduler.Task;
@@ -109,6 +112,15 @@ public class Dehydration extends UseSuffix {
             target.offer(Keys.POTION_EFFECTS, effects);
 
             int targetFood = player.getFoodData().foodLevel().get();
+
+
+            DamageSource ds = EntityDamageSource.builder()
+                    .entity(kitPlayer.getMcPlayer())
+                    .absolute()
+                    .bypassesArmor()
+                    .type(DamageTypes.PROJECTILE)
+                    .build();
+            target.damage(targetFood, ds);
 
             player.offer(Keys.FOOD_LEVEL, min(20, targetFood + foodLevel));
             foodLevel -= targetFood;

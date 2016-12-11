@@ -123,6 +123,10 @@ public class BattleInterceptor {
 
     @Listener
     public void onEntityDamage(DamageEntityEvent event, @First DamageSource damageSource){
+        if(AreaRegistry.getInstance().isInSafeArea(event.getTargetEntity().getLocation())){
+            event.setCancelled(true);
+            return;
+        }
         if(damageSource instanceof IndirectEntityDamageSource){
             return;
         }
@@ -141,10 +145,6 @@ public class BattleInterceptor {
         }
 
         if(event.getTargetEntity() instanceof Player){
-            if(AreaRegistry.getInstance().isInSafeArea((Player) event.getTargetEntity())){
-                event.setCancelled(true);
-                return;
-            }
             KitPlayer kitPlayer = SquareKit.getPlayersRegistry().getPlayer(event.getTargetEntity().getUniqueId());
 
             if(damageSource.isMagic()){
@@ -231,7 +231,7 @@ public class BattleInterceptor {
     public void onEntityDeath(DestructEntityEvent.Death event, @First DamageSource damageSource){
         event.setMessageCancelled(true);
 
-        KitPlayer owner = PlayersRegistry.getInstance().getPlayer(event.getTargetEntity().getCreator().get());
+        KitPlayer owner = PlayersRegistry.getInstance().getPlayer(event.getTargetEntity().getCreator().orElse(null));
 
         if(owner == null){
             return;

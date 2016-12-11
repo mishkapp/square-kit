@@ -5,6 +5,8 @@ import com.google.inject.Inject;
 import com.mishkapp.minecraft.plugins.squarekit.areas.Area;
 import com.mishkapp.minecraft.plugins.squarekit.commands.*;
 import com.mishkapp.minecraft.plugins.squarekit.commands.area.*;
+import com.mishkapp.minecraft.plugins.squarekit.commands.bounty.AddBounty;
+import com.mishkapp.minecraft.plugins.squarekit.commands.bounty.ListBounty;
 import com.mishkapp.minecraft.plugins.squarekit.commands.reload.ReloadKitsCommand;
 import com.mishkapp.minecraft.plugins.squarekit.commands.reload.ReloadMessagesCommand;
 import com.mishkapp.minecraft.plugins.squarekit.commands.warp.AddPoint;
@@ -115,7 +117,7 @@ public class SquareKit{
         registerSuffixes();
         registerListeners();
         registerKits();
-        TopStreakerBar.getInstance().init();
+        BountyHandler.getInstance().init();
         WarpZonesRegistry.getInstance().init();
         initAreas();
         getPlayersRegistry().updateAllPlayers();
@@ -306,6 +308,30 @@ public class SquareKit{
                 .build();
 
         Sponge.getCommandManager().register(this, warpCmd, "warp");
+
+        // /Bounty
+        CommandSpec bountyAdd = CommandSpec.builder()
+                .description(Text.of("Add bounty to player"))
+                .executor(new AddBounty())
+                .arguments(
+                        GenericArguments.player(Text.of("player")),
+                        GenericArguments.integer(Text.of("bounty"))
+                )
+                .build();
+
+        CommandSpec bountyList = CommandSpec.builder()
+                .description(Text.of("List bounties"))
+                .executor(new ListBounty())
+                .build();
+
+        CommandSpec bountyCmd = CommandSpec.builder()
+                .description(Text.of("Bounty command"))
+                .child(bountyAdd, "add")
+                .child(bountyList, "list")
+                .build();
+
+        Sponge.getCommandManager().register(this, bountyCmd, "bounty");
+
 
 //        // /setspawn
 //        CommandSpec setSpawnCmd = CommandSpec.builder()
