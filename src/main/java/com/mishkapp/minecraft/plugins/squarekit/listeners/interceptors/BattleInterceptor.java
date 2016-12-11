@@ -22,6 +22,7 @@ import org.spongepowered.api.event.cause.entity.damage.source.IndirectEntityDama
 import org.spongepowered.api.event.entity.AttackEntityEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
+import org.spongepowered.api.event.entity.HarvestEntityEvent;
 import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.util.Tuple;
@@ -178,6 +179,12 @@ public class BattleInterceptor {
     }
 
     @Listener
+    public void onHarvest(HarvestEntityEvent event){
+        event.setCancelled(true);
+        event.setExperience(0);
+    }
+
+    @Listener
     public void onPlayerDeath(DestructEntityEvent.Death event, @Getter("getTargetEntity") Player player, @First DamageSource damageSource){
         event.setMessageCancelled(true);
 
@@ -217,6 +224,40 @@ public class BattleInterceptor {
             Sponge.getEventManager().post(new PlayerKilledEvent(
                     PlayersRegistry.getInstance().getPlayer(player.getUniqueId())
             ));
+        }
+    }
+
+    @Listener
+    public void onEntityDeath(DestructEntityEvent.Death event, @First DamageSource damageSource){
+        event.setMessageCancelled(true);
+
+        KitPlayer owner = PlayersRegistry.getInstance().getPlayer(event.getTargetEntity().getCreator().get());
+
+        if(owner == null){
+            return;
+        }
+
+        if(damageSource instanceof IndirectEntityDamageSource){
+            IndirectEntityDamageSource ieds = (IndirectEntityDamageSource)damageSource;
+            Sponge.getEventManager().post(
+                    new EntityKilledEvent(owner, ieds.getIndirectSource())
+            );
+            return;
+        }
+
+        if(damageSource instanceof EntityDamageSource){
+            EntityDamageSource eds = (EntityDamageSource)damageSource;
+            Sponge.getEventManager().post(
+                    new EntityKilledEvent(owner, eds.getSource())
+            );
+            return;
+        }
+
+        if(damageSource.getType().equals(DamageTypes.CUSTOM)){
+            Sponge.getEventManager().post(
+                    new EntityKilledEvent(owner, null)
+            );
+            return;
         }
     }
 }

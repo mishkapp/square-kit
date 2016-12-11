@@ -1,23 +1,26 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.active;
 
 import com.flowpowered.math.vector.Vector3d;
-import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.ItemUsedEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
+import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.item.EnchantmentData;
+import org.spongepowered.api.data.meta.ItemEnchantment;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.item.Enchantments;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.Slot;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -42,7 +45,9 @@ public class HideShadow extends Suffix {
     }
 
     @Override
-    public void register() {}
+    public void register() {
+        deactivateItem();
+    }
 
     @Override
     public void handle(KitEvent event) {
@@ -85,7 +90,10 @@ public class HideShadow extends Suffix {
 
     private void activateItem(){
         isActive = true;
-        itemStack.offer(Keys.ITEM_ENCHANTMENTS, Collections.EMPTY_LIST);
+        List<ItemEnchantment> enchantments = new ArrayList<>();
+        enchantments.add(new ItemEnchantment(Enchantments.INFINITY, 1));
+        itemStack.offer(Keys.ITEM_ENCHANTMENTS, enchantments);
+        itemStack.offer(Keys.HIDE_ENCHANTMENTS, true);
         HashMap<Suffix, Double> adds = kitPlayer.getHealthRegenAdds();
         adds.put(this, regenerationBonus);
         updateSlot();

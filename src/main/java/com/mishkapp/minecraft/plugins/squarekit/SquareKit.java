@@ -514,6 +514,8 @@ public class SquareKit{
         registry.registerSuffix("3I", CholesterolExplosion.class);
         registry.registerSuffix("3J", Obesity.class);
         registry.registerSuffix("3K", Dehydration.class);
+        registry.registerSuffix("3L", Dummy.class);
+
 
 
         registry.registerSuffix("4G", FlameableLiquid.class);
