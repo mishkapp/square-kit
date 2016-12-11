@@ -61,7 +61,7 @@ public class CholesterolExplosion extends UseSuffix {
 
             lastUse = System.currentTimeMillis();
 
-            List<Entity> entities = player.getNearbyEntities(10).parallelStream().filter(e -> e instanceof Living).collect(Collectors.toList());
+            List<Entity> entities = player.getNearbyEntities(10).parallelStream().filter(e -> e instanceof Living && e != player).collect(Collectors.toList());
 
             int entitiesCount = entities.size();
             int foodLevel = player.getFoodData().foodLevel().get();
