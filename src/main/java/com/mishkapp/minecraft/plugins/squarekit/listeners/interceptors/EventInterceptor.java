@@ -213,6 +213,18 @@ public class EventInterceptor {
 
     @Listener
     public void onEntityCollideEntity(CollideEntityEvent.Impact event, @First final Entity entity){
+        UUID creatorId = entity.getCreator().orElse(null);
+        if(creatorId == null){
+            return;
+        }
+
+
+        List<Entity> entities = event.getEntities();
+        if(entities.stream().filter(e -> e.getUniqueId().equals(creatorId)).count() > 0){
+            event.setCancelled(true);
+            return;
+        }
+
         KitPlayer tempPlayer = SquareKit.getPlayersRegistry().getPlayer(entity.getCreator().orElse(null));
 
         if(tempPlayer == null){
@@ -220,11 +232,6 @@ public class EventInterceptor {
         }
 
         final KitPlayer kitPlayer = tempPlayer;
-        List<Entity> entities = event.getEntities();
-        if(entities.contains(kitPlayer.getMcPlayer())){
-            event.setCancelled(true);
-            return;
-        }
         entities.forEach(e -> Sponge.getEventManager().post(new EntityCollideEntityEvent(kitPlayer, entity, e)));
     }
 

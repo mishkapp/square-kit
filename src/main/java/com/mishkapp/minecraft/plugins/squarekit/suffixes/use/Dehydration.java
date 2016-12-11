@@ -36,7 +36,7 @@ import static java.lang.StrictMath.sin;
 /**
  * Created by mishkapp on 11.12.2016.
  */
-public class Obesity extends UseSuffix {
+public class Dehydration extends UseSuffix {
     private double hSpeed = 0.6;
     private double vSpeed = 0.6;
 
@@ -45,9 +45,9 @@ public class Obesity extends UseSuffix {
     private int time = 10;
     private int duration = 20;
 
-    private PotionEffect slowness = PotionEffect.builder()
+    private PotionEffect fatigue = PotionEffect.builder()
             .particles(true)
-            .potionType(PotionEffectTypes.SLOWNESS)
+            .potionType(PotionEffectTypes.MINING_FATIGUE)
             .duration(duration * 20)
             .amplifier(1)
             .build();
@@ -63,7 +63,7 @@ public class Obesity extends UseSuffix {
 
     private int foodLevel = 0;
 
-    public Obesity(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
+    public Dehydration(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
         super(kitPlayer, itemStack, level);
 
         cooldown = 20 * 1000;
@@ -82,11 +82,11 @@ public class Obesity extends UseSuffix {
             if(playersEntity != lastEntity){
                 return;
             }
-            onCollide(entityCollideEntityEvent.getAffectedEntity());
             lastEntity.remove();
         }
         if(event instanceof ItemUsedOnTargetEvent){
             Player player = kitPlayer.getMcPlayer();
+            Entity target = ((ItemUsedOnTargetEvent) event).getTarget();
 
             if(!isItemInHand(((ItemUsedEvent) event).getHandType())){
                 return;
@@ -98,12 +98,28 @@ public class Obesity extends UseSuffix {
 
             lastUse = System.currentTimeMillis();
 
-            foodLevel = player.getFoodData().foodLevel().get();
-            player.offer(Keys.FOOD_LEVEL, 0);
+            if(target instanceof Player){
+                foodLevel = ((Player)target).getFoodData().foodLevel().get();
+                target.offer(Keys.FOOD_LEVEL, 0);
+            }
+
+
+            List<PotionEffect> effects = target.get(Keys.POTION_EFFECTS).orElse(new ArrayList<>());
+            effects.add(fatigue);
+            target.offer(Keys.POTION_EFFECTS, effects);
+
+            int targetFood = player.getFoodData().foodLevel().get();
+
+            player.offer(Keys.FOOD_LEVEL, min(20, targetFood + foodLevel));
+            foodLevel -= targetFood;
+
+            if(foodLevel > 0){
+                player.offer(Keys.SATURATION, foodLevel + player.getFoodData().saturation().get());
+            }
 
             World world = player.getWorld();
 
-            Vector3d spawnLoc = player.getLocation().getPosition();
+            Vector3d spawnLoc = target.getLocation().getPosition();
             Vector3d lookVec = player.getHeadRotation();
             Vector3d thrustVec = new Vector3d(1, 1, 1);
 
@@ -124,7 +140,7 @@ public class Obesity extends UseSuffix {
             entity.setVelocity(thrustVec);
 
             entity.offer(Keys.HAS_GRAVITY, false);
-            entity.setCreator(player.getUniqueId());
+            entity.setCreator(target.getUniqueId());
             lastEntity = entity;
 
             world.spawnEntity(entity,
@@ -137,7 +153,7 @@ public class Obesity extends UseSuffix {
                     .execute(o ->
                     {
                         addTrailEffect(entity);
-                        correctThrust(entity, ((ItemUsedOnTargetEvent) event).getTarget());
+                        correctThrust(entity, player);
                     })
                     .submit(SquareKit.getInstance());
 
@@ -151,29 +167,6 @@ public class Obesity extends UseSuffix {
                         entity.remove();
                     })
                     .submit(SquareKit.getInstance());
-        }
-    }
-
-    private void onCollide(Entity affected){
-        addCollideEffect(affected);
-
-        List<PotionEffect> effects = affected.get(Keys.POTION_EFFECTS).orElse(new ArrayList<>());
-        effects.add(slowness);
-        affected.offer(Keys.POTION_EFFECTS, effects);
-
-        if(!(affected instanceof Player)){
-            return;
-        }
-
-        Player player = (Player) affected;
-
-        int targetFood = player.getFoodData().foodLevel().get();
-
-        player.offer(Keys.FOOD_LEVEL, min(20, targetFood + foodLevel));
-        foodLevel -= targetFood;
-
-        if(foodLevel > 0){
-            player.offer(Keys.SATURATION, foodLevel + player.getFoodData().saturation().get());
         }
     }
 
@@ -231,20 +224,9 @@ public class Obesity extends UseSuffix {
                 .submit(SquareKit.getInstance().getPlugin());
     }
 
-    private void addCollideEffect(Entity entity){
-        if(trailEffect == null || entity == null || entity.isRemoved() || entity.isOnGround()){
-            return;
-        }
-        for(int i = 0; i < 25; i++)
-            entity.getWorld().spawnParticles(
-                    trailEffect,
-                    entity.getLocation().getPosition().add(random.nextGaussian() * 1.2, random.nextGaussian() * 1.2, random.nextGaussian() * 1.2)
-            );
-    }
-
     @Override
     public String getLoreEntry() {
-        return Messages.get("obesity-suffix")
+        return Messages.get("dehydration-suffix")
                 .replace("%DURATION%", FormatUtils.unsignedRound(duration))
                 + super.getLoreEntry();
     }

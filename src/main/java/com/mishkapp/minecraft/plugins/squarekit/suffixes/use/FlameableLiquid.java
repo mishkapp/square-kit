@@ -178,9 +178,9 @@ public class FlameableLiquid extends UseSuffix {
         double y0 = entity.getLocation().getY();
         double z0 = entity.getLocation().getZ();
 
-        double x = target.getLocation().getX() - x0;
-        double y = target.getLocation().getY() - y0;
-        double z = target.getLocation().getZ() - z0;
+        double x = target.getBoundingBox().get().getCenter().getX() - x0;
+        double y = target.getBoundingBox().get().getCenter().getY() - y0;
+        double z = target.getBoundingBox().get().getCenter().getZ() - z0;
 
         double r = Math.sqrt((x * x) + (y * y) + (z * z));
 
