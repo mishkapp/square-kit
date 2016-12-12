@@ -2,7 +2,7 @@ package com.mishkapp.minecraft.plugins.squarekit.commands;
 
 import com.mishkapp.minecraft.plugins.squarekit.*;
 import com.mishkapp.minecraft.plugins.squarekit.areas.Area;
-import com.mishkapp.minecraft.plugins.squarekit.areas.handlers.ChangeKitHandler;
+import com.mishkapp.minecraft.plugins.squarekit.comparators.KitComparator;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.utils.ItemUtils;
 import org.spongepowered.api.command.CommandException;
@@ -24,7 +24,6 @@ import org.spongepowered.api.item.inventory.transaction.SlotTransaction;
 import org.spongepowered.api.item.inventory.type.GridInventory;
 import org.spongepowered.api.text.Text;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -43,9 +42,7 @@ public class KitsCommand implements CommandExecutor {
             Player player = (Player)src;
             List<Area> areas = AreaRegistry.getInstance().getApplicableAreas(player);
 
-            int c = (int) areas.parallelStream()
-                    .filter(a -> a.getHandlers().parallelStream()
-                            .filter(h -> h instanceof ChangeKitHandler).count() > 0).count();
+            int c = (int) areas.parallelStream().filter(Area::isSafe).count();
             if(c <= 0){
                 player.sendMessage(_text(Messages.get("kit-bad-area")));
                 return CommandResult.empty();
@@ -53,7 +50,7 @@ public class KitsCommand implements CommandExecutor {
 
             List<Kit> kits = SquareKit.getKitRegistry().getKitList().stream()
                     .filter(k -> player.hasPermission(k.getPermission()))
-                    .sorted(Comparator.comparingInt(Kit::getPrice))
+                    .sorted(new KitComparator())
                     .collect(Collectors.toList());
 
             HashMap<ItemStack, Kit> itemKitMap = new HashMap<>();
