@@ -12,13 +12,13 @@ import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.effect.potion.PotionEffectTypes;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
-import org.spongepowered.api.event.cause.entity.damage.DamageTypes;
-import org.spongepowered.api.event.cause.entity.damage.source.DamageSource;
-import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.mishkapp.minecraft.plugins.squarekit.utils.DamageUtils.magicDamage;
+import static com.mishkapp.minecraft.plugins.squarekit.utils.DamageUtils.physicalDamage;
 
 /**
  * Created by mishkapp on 13.10.2016.
@@ -60,10 +60,8 @@ public class IceRock extends LaunchProjectileSuffix {
         List<PotionEffect> effects = entity.get(Keys.POTION_EFFECTS).orElse(new ArrayList<>());
         effects.add(potionEffect);
         entity.offer(Keys.POTION_EFFECTS, effects);
-        DamageSource source = EntityDamageSource.builder().entity(kitPlayer.getMcPlayer()).type(DamageTypes.PROJECTILE).magical().bypassesArmor().build();
-        entity.damage(mDamage, source);
-        source = EntityDamageSource.builder().entity(kitPlayer.getMcPlayer()).type(DamageTypes.PROJECTILE).bypassesArmor().build();
-        entity.damage(pDamage, source);
+        entity.damage(mDamage, magicDamage(kitPlayer.getMcPlayer()));
+        entity.damage(pDamage, physicalDamage(kitPlayer.getMcPlayer()));
     }
 
     @Override
