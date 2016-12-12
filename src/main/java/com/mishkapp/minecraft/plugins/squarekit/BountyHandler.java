@@ -1,6 +1,7 @@
 package com.mishkapp.minecraft.plugins.squarekit;
 
 import com.flowpowered.math.vector.Vector3d;
+import com.mishkapp.minecraft.plugins.squarekit.comparators.BountyComparator;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.boss.BossBarColors;
@@ -140,21 +141,9 @@ public class BountyHandler {
     }
 
     public List<KitPlayer> getList() {
-        List<KitPlayer> result = PlayersRegistry.getInstance().getPlayers().stream()
-                .sorted((p1, p2) -> -1 * Integer.compare(p1.getBounty(), p2.getBounty())).collect(Collectors.toList());
-        if(result.size() < 10){
-            List<KitPlayer> streak = PlayersRegistry.getInstance().getPlayers().stream()
-                    .sorted((p1, p2) -> -1 * Integer.compare(p1.getCurrentKillstreak(), p2.getCurrentKillstreak())).collect(Collectors.toList());
-            streak.removeIf(result::contains);
-            int size = result.size();
-            for(int i = 0; i < 10 - size; i++){
-                if((i + 1) > streak.size()){
-                    return result;
-                }
-                result.add(streak.get(i));
-            }
-        }
-        return result;
+        return PlayersRegistry.getInstance().getPlayers().stream()
+                .sorted(new BountyComparator())
+                .collect(Collectors.toList());
     }
 
     public void killed(KitPlayer killed, KitPlayer killer) {
