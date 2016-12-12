@@ -80,6 +80,7 @@ public class KitPlayer {
     private boolean isDefaultsInitialized = false;
 
     private boolean isInBuildMode = false;
+    private boolean isInBattleMode = false;
 
     public KitPlayer(UUID uuid) {
         this.uuid = uuid;
@@ -377,8 +378,6 @@ public class KitPlayer {
             effects.forEach(Effect::tick);
             tickRegens();
             updateScoreboard();
-        } else {
-            SquareKit.getPlayersRegistry().unregisterPlayer(getMcPlayer());
         }
     }
 
@@ -480,6 +479,7 @@ public class KitPlayer {
         subtractMoney(GoldUtils.goldPenalty(this), false);
         resetKillstreak();
         recalculateKDRatio();
+        currentKit = "recruit";
     }
 
     private void resetKillstreak(){
@@ -773,6 +773,10 @@ public class KitPlayer {
             MONEY_MULTIPLIER += 0.1;
         }
         isDefaultsInitialized = true;
+    }
+
+    public boolean isInBattleMode() {
+        return isInBattleMode;
     }
 }
 

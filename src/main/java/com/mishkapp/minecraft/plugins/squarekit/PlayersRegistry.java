@@ -5,8 +5,14 @@ import com.mishkapp.minecraft.plugins.squarekit.events.TickEvent;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.utils.SpongeUtils;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.entity.EntityTypes;
+import org.spongepowered.api.entity.living.Human;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.scheduler.Task;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.world.World;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +30,8 @@ public class PlayersRegistry {
     private HashMap<UUID, KitPlayer> inactive = new HashMap<>();
 
     private HashMap<UUID, KitPlayer> pending = new HashMap<>();
+
+    private HashMap<UUID, Human> dummies = new HashMap<>();
 
     private HashMap<UUID, Ticker> tickers = new HashMap<>();
 
@@ -48,7 +56,10 @@ public class PlayersRegistry {
     }
 
     public void unregisterPlayer(Player player){
-        UUID uuid = player.getUniqueId();
+        unregisterPlayer(player.getUniqueId());
+    }
+
+    public void unregisterPlayer(UUID uuid){
         if(players.containsKey(uuid)){
             inactive.put(uuid, players.remove(uuid));
             inactive.get(uuid).saveKitPlayer();
@@ -58,6 +69,23 @@ public class PlayersRegistry {
             tickers.remove(uuid);
         }
     }
+
+
+    public void prepareForUnregistrationPlayer(Player player) {
+        final UUID uuid = player.getUniqueId();
+        dummies.put(uuid, createDummy(player));
+        Sponge.getScheduler().createTaskBuilder()
+                .delayTicks(10 * 20)
+                .execute(r -> {
+                    Human dummy = dummies.remove(uuid);
+                    if(dummy != null){
+                        dummy.remove();
+                    }
+                    unregisterPlayer(uuid);
+                })
+                .submit(SquareKit.getInstance().getPlugin());
+    }
+
 
     public void updateAllPlayers(){
         players.values().forEach(p -> Sponge.getEventManager().post(new PlayerUpdateRequestEvent(p)));
@@ -100,6 +128,35 @@ public class PlayersRegistry {
         } else {
             return null;
         }
+    }
+
+    public Human createDummy(Player player){
+        World world = player.getWorld();
+        Human dummy = (Human) world.createEntity(EntityTypes.HUMAN, player.getLocation().getPosition());
+        dummy.setHelmet(player.getHelmet().orElse(null));
+        dummy.setChestplate(player.getChestplate().orElse(null));
+        dummy.setLeggings(player.getLeggings().orElse(null));
+        dummy.setBoots(player.getBoots().orElse(null));
+        dummy.setCreator(player.getUniqueId());
+        dummy.offer(Keys.DISPLAY_NAME, Text.of(player.getName()));
+        dummy.offer(Keys.CUSTOM_NAME_VISIBLE, true);
+        dummy.offer(Keys.HEALTH, 10.0);
+
+        world.spawnEntity(
+                dummy,
+                Cause.builder()
+                        .owner(SquareKit.getInstance())
+                        .build()
+        );
+        return dummy;
+    }
+
+    public boolean hasDummy(Human dummy) {
+        return dummies.values().contains(dummy);
+    }
+
+    public boolean hasDummy(UUID uuid){
+        return dummies.containsKey(uuid);
     }
 
     private class Ticker implements Runnable {

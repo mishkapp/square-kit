@@ -143,6 +143,7 @@ public class BountyHandler {
     public List<KitPlayer> getList() {
         return PlayersRegistry.getInstance().getPlayers().stream()
                 .sorted(new BountyComparator())
+                .limit(10)
                 .collect(Collectors.toList());
     }
 

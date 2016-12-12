@@ -256,9 +256,7 @@ public class EventInterceptor {
 
     @Listener
     public void onItemDrop(DropItemEvent event, @Root EntitySpawnCause escause) {
-        if (escause.getEntity() instanceof Player) {
-            event.setCancelled(true);
-        }
+        event.setCancelled(true);
     }
 
     @Listener
@@ -279,6 +277,11 @@ public class EventInterceptor {
             event.setMessage(Text.of("Сервер еще запускается, подождите"));
             event.setCancelled(true);
         }
+        UUID uuid = event.getProfile().getUniqueId();
+        if(PlayersRegistry.getInstance().hasDummy(uuid)){
+            event.setMessage(Text.of("Вы слишком часто перезаходите"));
+            event.setCancelled(true);
+        }
     }
 
     @Listener
@@ -293,7 +296,7 @@ public class EventInterceptor {
     @Listener
     public void onLogout(ClientConnectionEvent.Disconnect event, @First Player player){
         event.setMessageCancelled(true);
-        SquareKit.getPlayersRegistry().unregisterPlayer(player);
+        SquareKit.getPlayersRegistry().prepareForUnregistrationPlayer(player);
     }
 
     //TODO: event not implemented

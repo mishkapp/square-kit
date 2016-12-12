@@ -10,6 +10,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.living.Human;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.projectile.arrow.Arrow;
 import org.spongepowered.api.event.Listener;
@@ -28,6 +29,7 @@ import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.util.Tuple;
 
 import java.util.Random;
+import java.util.UUID;
 import java.util.function.Function;
 
 import static org.spongepowered.api.event.cause.entity.damage.DamageTypes.SWEEPING_ATTACK;
@@ -223,6 +225,63 @@ public class BattleInterceptor {
         if(!damageSource.getType().equals(DamageTypes.CUSTOM)){
             Sponge.getEventManager().post(new PlayerKilledEvent(
                     PlayersRegistry.getInstance().getPlayer(player)
+            ));
+        }
+    }
+
+    @Listener
+    public void onDummyDeath(DestructEntityEvent.Death event, @Getter("getTargetEntity") Human dummy, @First DamageSource damageSource){
+        event.setMessageCancelled(true);
+        UUID creator = dummy.getCreator().orElse(null);
+        if(creator == null){
+            return;
+        }
+        KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(creator);
+        if(kitPlayer == null){
+            return;
+        }
+        if(kitPlayer.getMcPlayer().isOnline()){
+            return;
+        }
+        if(!PlayersRegistry.getInstance().hasDummy(dummy)){
+            return;
+        }
+
+        if(damageSource instanceof IndirectEntityDamageSource){
+            IndirectEntityDamageSource ieds = (IndirectEntityDamageSource)damageSource;
+            if(ieds.getIndirectSource() instanceof Player){
+                Sponge.getEventManager().post(new DummyKilledByPlayerEvent(
+                        kitPlayer,
+                        PlayersRegistry.getInstance().getPlayer(ieds.getIndirectSource().getUniqueId())
+                ));
+            } else {
+                Sponge.getEventManager().post(new DummyKilledByEntityEvent(
+                        kitPlayer,
+                        ieds.getIndirectSource()
+                ));
+            }
+            return;
+        }
+
+        if(damageSource instanceof EntityDamageSource){
+            EntityDamageSource eds = (EntityDamageSource)damageSource;
+            if(eds.getSource() instanceof Player){
+                Sponge.getEventManager().post(new DummyKilledByPlayerEvent(
+                        kitPlayer,
+                        PlayersRegistry.getInstance().getPlayer(eds.getSource().getUniqueId())
+                ));
+            } else {
+                Sponge.getEventManager().post(new DummyKilledByEntityEvent(
+                        kitPlayer,
+                        eds.getSource()
+                ));
+            }
+            return;
+        }
+
+        if(!damageSource.getType().equals(DamageTypes.CUSTOM)){
+            Sponge.getEventManager().post(new DummyKilledEvent(
+                    kitPlayer
             ));
         }
     }
