@@ -4,6 +4,7 @@ import com.flowpowered.math.vector.Vector3d;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.areas.handlers.Handler;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
+import com.mishkapp.minecraft.plugins.squarekit.utils.PlayerUtils;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
@@ -41,7 +42,9 @@ public abstract class Area {
 
     public List<Player> getPlayers() {
         return Sponge.getServer().getOnlinePlayers().stream()
-                .filter(this::isInside).collect(Collectors.toList());
+                .filter(p -> isInside(p)
+                        && !(PlayerUtils.isInSpectatorMode(p) || PlayerUtils.isInCreativeMode(p)))
+                .collect(Collectors.toList());
     }
 
     public boolean isInside(KitPlayer p){
