@@ -5,7 +5,6 @@ import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.player.LevelTable;
 import com.mishkapp.minecraft.plugins.squarekit.player.PlayerStats;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -27,13 +26,8 @@ public class StatsCommand implements CommandExecutor {
         if(!(src instanceof Player)) {
             return CommandResult.empty();
         }
-        Player player = (Player)src;
-        String targetName = args.getOne("player").orElse(player.getName()).toString();
-        Player target = Sponge.getServer().getPlayer(targetName).orElse(null);
-        if(target == null){
-            player.sendMessage(Text.of("Игрок " + targetName + " не в сети"));
-            return CommandResult.empty();
-        }
+        Player player = (Player) src;
+        Player target = (Player) args.getOne("player").get();
 
         KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(target);
         PlayerStats playerStats = kitPlayer.getPlayerStats();
@@ -76,6 +70,12 @@ public class StatsCommand implements CommandExecutor {
         b.append(Text.of("Опыт: "));
         b.append(Text.of(kitPlayer.getExperience() + "/" + LevelTable.experiences[kitPlayer.getLevel() - 1]));
         b.append(Text.NEW_LINE);
+
+        if(player.hasPermission("squarekit.admin")){
+            b.append(Text.of("Опыт: "));
+            b.append(Text.of(kitPlayer.getMoney()));
+            b.append(Text.NEW_LINE);
+        }
 
         b.append(Text.of("================================"));
 

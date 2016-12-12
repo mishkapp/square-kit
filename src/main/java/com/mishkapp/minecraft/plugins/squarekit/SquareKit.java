@@ -223,7 +223,7 @@ public class SquareKit{
                 .description(Text.of("Get stats for player"))
                 .executor(new StatsCommand())
                 .arguments(
-                        GenericArguments.string(Text.of("player"))
+                        GenericArguments.player(Text.of("player"))
                 )
                 .build();
 
@@ -243,7 +243,7 @@ public class SquareKit{
                 .description(Text.of("Adds money to player"))
                 .permission("squarekit.admin")
                 .arguments(
-                        GenericArguments.string(Text.of("playerName")),
+                        GenericArguments.player(Text.of("player")),
                         GenericArguments.integer(Text.of("amount"))
                 )
                 .executor(new AddMoneyCommand())
@@ -256,7 +256,7 @@ public class SquareKit{
                 .description(Text.of("Adds experience to player"))
                 .permission("squarekit.admin")
                 .arguments(
-                        GenericArguments.string(Text.of("playerName")),
+                        GenericArguments.player(Text.of("player")),
                         GenericArguments.integer(Text.of("amount"))
                 )
                 .executor(new AddExpCommand())
