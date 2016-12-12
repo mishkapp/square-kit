@@ -41,6 +41,7 @@ import static java.lang.StrictMath.sin;
 public class FlameableLiquid extends UseSuffix {
     private double hSpeed = 0.5;
     private double vSpeed = 0.5;
+    private double correctionFactor = 0.15;
 
     private double damage = 10.0;
     private int liveTime = 7 * 20;
@@ -53,13 +54,15 @@ public class FlameableLiquid extends UseSuffix {
 
     private Entity lastEntity = null;
 
+    private Vector3d lastVelocity;
+
     private Random random = new Random();
 
     public FlameableLiquid(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
         super(kitPlayer, itemStack, level);
 
         cooldown = 3.5 * 1000;
-        manaCost = 10 - (level * 64.0/10);
+        manaCost = 12 - (level * 64.0/12);
     }
 
     @Override
@@ -102,7 +105,7 @@ public class FlameableLiquid extends UseSuffix {
 
             Vector3d spawnLoc = player.getLocation().getPosition();
             Vector3d lookVec = player.getHeadRotation();
-            Vector3d thrustVec = new Vector3d(1, 1, 1);
+            Vector3d velocity = new Vector3d(1, 1, 1);
 
             spawnLoc = spawnLoc.add(
                     0,
@@ -110,7 +113,7 @@ public class FlameableLiquid extends UseSuffix {
                     0
             );
 
-            thrustVec = thrustVec.mul(
+            velocity = velocity.mul(
                     hSpeed * -1 * sin(toRadians(lookVec.getY())),
                     vSpeed * tan(toRadians(-1 * lookVec.getX())),
                     hSpeed * cos(toRadians(lookVec.getY()))
@@ -118,7 +121,8 @@ public class FlameableLiquid extends UseSuffix {
 
             final Entity entity = player.getWorld().createEntity(EntityTypes.FIREBALL, spawnLoc);
 
-            entity.setVelocity(thrustVec);
+            entity.setVelocity(velocity);
+            lastVelocity = velocity;
 
             entity.offer(Keys.HAS_GRAVITY, false);
             entity.setCreator(player.getUniqueId());
@@ -134,7 +138,7 @@ public class FlameableLiquid extends UseSuffix {
                     .execute(o ->
                     {
                         addTrailEffect(entity);
-                        correctThrust(entity, ((ItemUsedOnTargetEvent) event).getTarget());
+                        correctVelocity(entity, ((ItemUsedOnTargetEvent) event).getTarget());
                     })
                     .submit(SquareKit.getInstance());
 
@@ -152,6 +156,7 @@ public class FlameableLiquid extends UseSuffix {
     }
 
     private void onCollide(Entity affected){
+        lastVelocity = null;
         addCollideEffect(affected);
         DamageSource source = EntityDamageSource.builder().entity(kitPlayer.getMcPlayer()).type(DamageTypes.PROJECTILE).magical().bypassesArmor().build();
         affected.damage(damage, source);
@@ -173,7 +178,10 @@ public class FlameableLiquid extends UseSuffix {
         }
     }
 
-    private void correctThrust(Entity entity, Entity target){
+    private void correctVelocity(Entity entity, Entity target){
+        if(lastVelocity == null){
+            return;
+        }
         double x0 = entity.getLocation().getX();
         double y0 = entity.getLocation().getY();
         double z0 = entity.getLocation().getZ();
@@ -197,12 +205,21 @@ public class FlameableLiquid extends UseSuffix {
             phi = phi * (-1);
         }
 
-        Vector3d thrustVec = new Vector3d(1, 1, 1).mul(
+        Vector3d newVelocity = new Vector3d(1, 1, 1).mul(
                 hSpeed * -1 * sin(toRadians(phi)),
                 vSpeed * tan(toRadians(-1 * theta)),
                 hSpeed * cos(toRadians(phi))
         );
-        entity.setVelocity(thrustVec);
+
+        newVelocity = lastVelocity.add(
+                correctionFactor * (newVelocity.getX() - lastVelocity.getX()),
+                correctionFactor * (newVelocity.getY() - lastVelocity.getY()),
+                correctionFactor * (newVelocity.getZ() - lastVelocity.getZ())
+        );
+
+        entity.setVelocity(newVelocity);
+
+        lastVelocity = newVelocity;
     }
 
     private void addTrailEffect(Entity entity){

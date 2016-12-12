@@ -1,12 +1,12 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.use;
 
 import com.flowpowered.math.vector.Vector3d;
-import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.events.EntityCollideEntityEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.ItemUsedEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
+import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.utils.SpongeUtils;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.particle.ParticleEffect;
@@ -21,9 +21,7 @@ import org.spongepowered.api.world.World;
 
 import java.util.Random;
 
-import static java.lang.Math.cos;
-import static java.lang.Math.tan;
-import static java.lang.Math.toRadians;
+import static java.lang.Math.*;
 import static java.lang.StrictMath.sin;
 
 /**
