@@ -17,7 +17,7 @@ public class UpdateCommand implements CommandExecutor {
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         if(src instanceof Player){
             Player player = (Player)src;
-            SquareKit.getPlayersRegistry().getPlayer(player.getUniqueId()).forceUpdate();
+            SquareKit.getPlayersRegistry().getPlayer(player).forceUpdate();
         }
         return CommandResult.empty();
     }

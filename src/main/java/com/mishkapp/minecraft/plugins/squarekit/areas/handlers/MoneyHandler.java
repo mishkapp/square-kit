@@ -41,7 +41,7 @@ public class MoneyHandler extends Handler {
         bossBar.addPlayers(players);
         double moneyAdd = ((moneyPerTick * (1 + (0.025 * (players.size() - 1))))/(players.size()));
         bossBar.setName(Text.builder().color(GOLD).append(Text.of("Деньги: " + FormatUtils.hundredth(moneyAdd) + "/сек")).build());
-        players.forEach(p -> PlayersRegistry.getInstance().getPlayer(p.getUniqueId()).addMoney(moneyAdd, true));
+        players.forEach(p -> PlayersRegistry.getInstance().getPlayer(p).addMoney(moneyAdd, true));
     }
 
     @Override

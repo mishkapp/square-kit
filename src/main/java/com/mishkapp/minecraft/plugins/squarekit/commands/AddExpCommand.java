@@ -28,7 +28,7 @@ public class AddExpCommand implements CommandExecutor{
             return CommandResult.empty();
         }
 
-        KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player.getUniqueId());
+        KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player);
         kitPlayer.addExp(amount);
 
         src.sendMessage(_text("&aВы выдали игроку " + playerName + " опыт в размере " + amount));

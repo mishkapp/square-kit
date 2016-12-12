@@ -55,7 +55,7 @@ public class KitsCommand implements CommandExecutor {
 
             HashMap<ItemStack, Kit> itemKitMap = new HashMap<>();
 
-            KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player.getUniqueId());
+            KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player);
             Inventory inventory = Inventory.builder()
                     .property(InventoryDimension.PROPERTY_NAME, InventoryDimension.of(9, 6))
                     .property(InventoryTitle.PROPERTY_NAME, InventoryTitle.of(Text.of("Киты")))
@@ -101,7 +101,7 @@ public class KitsCommand implements CommandExecutor {
     }
 
     private void applyKit(Player player, Kit kit){
-        KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player.getUniqueId());
+        KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player);
         if(kitPlayer.getMoney() < kit.getPrice()){
             player.sendMessage(_text(Messages.get("kit-too-expensive").replace("%KIT%", kit.getName())));
             return;

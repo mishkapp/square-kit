@@ -50,6 +50,6 @@ public class WorldChangeListener {
     }
 
     private boolean isInBuildMode(Player player){
-        return PlayersRegistry.getInstance().getPlayer(player.getUniqueId()).isInBuildMode();
+        return PlayersRegistry.getInstance().getPlayer(player).isInBuildMode();
     }
 }

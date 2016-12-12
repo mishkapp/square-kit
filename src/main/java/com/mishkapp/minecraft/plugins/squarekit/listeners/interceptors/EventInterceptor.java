@@ -113,7 +113,7 @@ public class EventInterceptor {
         }
 
         if(Utils.isKitItem(usedItem)){
-            Sponge.getEventManager().post(new ItemUsedOnTargetEvent(SquareKit.getPlayersRegistry().getPlayer(player.getUniqueId()), handType, event.getTargetEntity()));
+            Sponge.getEventManager().post(new ItemUsedOnTargetEvent(SquareKit.getPlayersRegistry().getPlayer(player), handType, event.getTargetEntity()));
         }
     }
 
@@ -162,9 +162,9 @@ public class EventInterceptor {
         if(Utils.isKitItem(usedItem)){
             Entity target = getTarget(event, player);
             if(target != null){
-                Sponge.getEventManager().post(new ItemUsedOnTargetEvent(SquareKit.getPlayersRegistry().getPlayer(player.getUniqueId()), handType, target));
+                Sponge.getEventManager().post(new ItemUsedOnTargetEvent(SquareKit.getPlayersRegistry().getPlayer(player), handType, target));
             } else {
-                Sponge.getEventManager().post(new ItemUsedEvent(SquareKit.getPlayersRegistry().getPlayer(player.getUniqueId()), handType));
+                Sponge.getEventManager().post(new ItemUsedEvent(SquareKit.getPlayersRegistry().getPlayer(player), handType));
                 
             }
         }
@@ -285,7 +285,7 @@ public class EventInterceptor {
     public void onJoin(ClientConnectionEvent.Join event, @First Player player){
         event.setMessageCancelled(true);
         PlayersRegistry.getInstance().initPlayer(player);
-        KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player.getUniqueId());
+        KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player);
         String kitId = kitPlayer.getCurrentKit();
         KitRegistry.getInstance().getKit(kitId).applyToPlayer(kitPlayer);
     }
@@ -308,6 +308,6 @@ public class EventInterceptor {
     }
 
     private boolean isInBuildMode(Player player){
-        return PlayersRegistry.getInstance().getPlayer(player.getUniqueId()).isInBuildMode();
+        return PlayersRegistry.getInstance().getPlayer(player).isInBuildMode();
     }
 }

@@ -167,7 +167,7 @@ public class BattleInterceptor {
         Arrow arrow = (Arrow)source.getSource();
         if (source.getIndirectSource() instanceof Player) {
             Player player = (Player) source.getIndirectSource();
-            KitPlayer kitPlayer = SquareKit.getPlayersRegistry().getPlayer(player.getUniqueId());
+            KitPlayer kitPlayer = SquareKit.getPlayersRegistry().getPlayer(player);
             Sponge.getEventManager().post(new ArrowHitEntityEvent(
                     kitPlayer,
                     arrow,
@@ -192,12 +192,12 @@ public class BattleInterceptor {
             IndirectEntityDamageSource ieds = (IndirectEntityDamageSource)damageSource;
             if(ieds.getIndirectSource() instanceof Player){
                 Sponge.getEventManager().post(new PlayerKilledByPlayerEvent(
-                        PlayersRegistry.getInstance().getPlayer(player.getUniqueId()),
+                        PlayersRegistry.getInstance().getPlayer(player),
                         PlayersRegistry.getInstance().getPlayer(ieds.getIndirectSource().getUniqueId())
                 ));
             } else {
                 Sponge.getEventManager().post(new PlayerKilledByEntityEvent(
-                        PlayersRegistry.getInstance().getPlayer(player.getUniqueId()),
+                        PlayersRegistry.getInstance().getPlayer(player),
                         ieds.getIndirectSource()
                 ));
             }
@@ -208,12 +208,12 @@ public class BattleInterceptor {
             EntityDamageSource eds = (EntityDamageSource)damageSource;
             if(eds.getSource() instanceof Player){
                 Sponge.getEventManager().post(new PlayerKilledByPlayerEvent(
-                        PlayersRegistry.getInstance().getPlayer(player.getUniqueId()),
+                        PlayersRegistry.getInstance().getPlayer(player),
                         PlayersRegistry.getInstance().getPlayer(eds.getSource().getUniqueId())
                 ));
             } else {
                 Sponge.getEventManager().post(new PlayerKilledByEntityEvent(
-                        PlayersRegistry.getInstance().getPlayer(player.getUniqueId()),
+                        PlayersRegistry.getInstance().getPlayer(player),
                         eds.getSource()
                 ));
             }
@@ -222,7 +222,7 @@ public class BattleInterceptor {
 
         if(!damageSource.getType().equals(DamageTypes.CUSTOM)){
             Sponge.getEventManager().post(new PlayerKilledEvent(
-                    PlayersRegistry.getInstance().getPlayer(player.getUniqueId())
+                    PlayersRegistry.getInstance().getPlayer(player)
             ));
         }
     }

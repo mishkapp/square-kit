@@ -41,7 +41,7 @@ public class HealthHandler extends Handler {
         bossBar.addPlayers(players);
         double hpAdd = ((baseHp * (1 + (0.025 * (players.size() - 1))))/(players.size()));
         bossBar.setName(Text.builder().color(LIGHT_PURPLE).append(Text.of("Здоровье: " + FormatUtils.hundredth(hpAdd) + "/сек")).build());
-        players.forEach(p -> PlayersRegistry.getInstance().getPlayer(p.getUniqueId()).addHealth(hpAdd));
+        players.forEach(p -> PlayersRegistry.getInstance().getPlayer(p).addHealth(hpAdd));
     }
 
     @Override

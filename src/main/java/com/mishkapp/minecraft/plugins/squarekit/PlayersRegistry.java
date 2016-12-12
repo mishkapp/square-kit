@@ -90,6 +90,10 @@ public class PlayersRegistry {
         return new ArrayList<>(players.values());
     }
 
+    public KitPlayer getPlayer(Player player) {
+        return getPlayer(player.getUniqueId());
+    }
+
     public KitPlayer getPlayer(UUID uuid) {
         if(players.containsKey(uuid)){
             return players.get(uuid);

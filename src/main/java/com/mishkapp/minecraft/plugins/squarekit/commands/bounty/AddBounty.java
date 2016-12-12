@@ -29,8 +29,8 @@ public class AddBounty implements CommandExecutor {
         Player targetPlayer = (Player) args.getOne("player").get();
         int bountyAdd = (int) args.getOne("bounty").get();
 
-        KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player.getUniqueId());
-        KitPlayer target = PlayersRegistry.getInstance().getPlayer(targetPlayer.getUniqueId());
+        KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player);
+        KitPlayer target = PlayersRegistry.getInstance().getPlayer(targetPlayer);
 
         if(kitPlayer.getMoney() < bountyAdd || bountyAdd < 0){
             player.sendMessage(_text(Messages.get("bounty-no-money")

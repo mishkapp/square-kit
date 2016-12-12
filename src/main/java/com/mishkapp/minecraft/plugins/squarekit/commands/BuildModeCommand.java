@@ -18,7 +18,7 @@ public class BuildModeCommand implements CommandExecutor {
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         if(src instanceof Player){
             Player player = (Player)src;
-            KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player.getUniqueId());
+            KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player);
             kitPlayer.setInBuildMode(!kitPlayer.isInBuildMode());
 
             if(kitPlayer.isInBuildMode()){

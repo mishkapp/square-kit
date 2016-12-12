@@ -21,7 +21,7 @@ public class KitCommand implements CommandExecutor {
             Player player = (Player)src;
             String s = (String)args.getOne("kitId").orElse("");
             Kit kit = KitRegistry.getInstance().getKit(s);
-            kit.applyToPlayer(PlayersRegistry.getInstance().getPlayer(player.getUniqueId()));
+            kit.applyToPlayer(PlayersRegistry.getInstance().getPlayer(player));
         }
         return CommandResult.empty();
     }

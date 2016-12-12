@@ -35,7 +35,7 @@ public class StatsCommand implements CommandExecutor {
             return CommandResult.empty();
         }
 
-        KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(target.getUniqueId());
+        KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(target);
         PlayerStats playerStats = kitPlayer.getPlayerStats();
 
         Text.Builder b = Text.builder();
