@@ -17,12 +17,17 @@ public class KitCommand implements CommandExecutor {
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-        if(src instanceof Player){
-            Player player = (Player)src;
-            String s = (String)args.getOne("kitId").orElse("");
-            Kit kit = KitRegistry.getInstance().getKit(s);
-            kit.applyToPlayer(PlayersRegistry.getInstance().getPlayer(player));
+        if(!(src instanceof Player)) {
+            return CommandResult.empty();
         }
+
+        Player player = (Player)src;
+        String s = (String)args.getOne("kitId").orElse("");
+        Kit kit = KitRegistry.getInstance().getKit(s);
+        if(kit == null){
+            return CommandResult.empty();
+        }
+        kit.applyToPlayer(PlayersRegistry.getInstance().getPlayer(player));
         return CommandResult.empty();
     }
 }
