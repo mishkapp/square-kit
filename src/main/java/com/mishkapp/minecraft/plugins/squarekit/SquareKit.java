@@ -19,6 +19,7 @@ import com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors.EventInte
 import com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors.WorldChangeListener;
 import com.mishkapp.minecraft.plugins.squarekit.serializers.ItemStackSerializer;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.active.HideShadow;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.attack.AntimagicBlade;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.attack.MagicImbueWeapon;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.attack.ShadowCloud;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.attack.SpiritsBurden;
@@ -528,6 +529,7 @@ public class SquareKit{
         registry.registerSuffix("1B", ShadowCloud.class);
         registry.registerSuffix("1C", MagicImbueWeapon.class);
         registry.registerSuffix("1D", SpiritsBurden.class);
+        registry.registerSuffix("1E", AntimagicBlade.class);
 
         registry.registerSuffix("3A", Shelter.class);
         registry.registerSuffix("3B", IceGrowth.class);
@@ -541,6 +543,8 @@ public class SquareKit{
         registry.registerSuffix("3J", Obesity.class);
         registry.registerSuffix("3K", Dehydration.class);
         registry.registerSuffix("3L", Dummy.class);
+        registry.registerSuffix("3M", MagicLeech.class);
+        registry.registerSuffix("3N", MagicFlow.class);
 
 
 
