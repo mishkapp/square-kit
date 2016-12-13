@@ -1,6 +1,7 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.use;
 
 import com.flowpowered.math.vector.Vector3d;
+import com.mishkapp.minecraft.plugins.squarekit.AreaRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.PlayersRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
@@ -78,6 +79,10 @@ public class MagicLeech extends UseSuffix {
             Player player = kitPlayer.getMcPlayer();
 
             if(!isItemInHand(((ItemUsedEvent) event).getHandType())){
+                return;
+            }
+
+            if(AreaRegistry.getInstance().isInSafeArea(player)){
                 return;
             }
 

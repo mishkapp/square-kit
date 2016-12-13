@@ -31,7 +31,6 @@ public class AntimagicBlade extends Suffix {
                 .quantity(3)
                 .offset(new Vector3d(0, 1, 0))
                 .build();
-        damage = level;
     }
 
     @Override
@@ -39,7 +38,7 @@ public class AntimagicBlade extends Suffix {
 
     @Override
     public void handle(KitEvent event) {
-        double dmg = kitPlayer.getCurrentMana() / 5.0;
+        double dmg = kitPlayer.getCurrentMana() * damage;
         if(event instanceof SuffixTickEvent){
             HashMap<Suffix, Double> adds = kitPlayer.getPhysicalDamageAdds();
             if(isItemHolding()){
@@ -66,6 +65,6 @@ public class AntimagicBlade extends Suffix {
     @Override
     public String getLoreEntry() {
         return Messages.get("antimagic-blade-suffix")
-                .replace("%DAMAGE%", FormatUtils.unsignedRound(damage * 100));
+                .replace("%DAMAGE%", FormatUtils.unsignedRound(damage * 100.0));
     }
 }

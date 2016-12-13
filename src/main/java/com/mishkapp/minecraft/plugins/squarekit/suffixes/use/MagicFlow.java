@@ -1,6 +1,7 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.use;
 
 import com.flowpowered.math.vector.Vector3d;
+import com.mishkapp.minecraft.plugins.squarekit.AreaRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.PlayersRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
@@ -63,6 +64,9 @@ public class MagicFlow extends UseSuffix {
                 return;
             }
 
+            if(AreaRegistry.getInstance().isInSafeArea(player)){
+                return;
+            }
             if(((ItemUsedOnTargetEvent) event).getTarget().getLocation().getPosition().distance(player.getLocation().getPosition()) > 10){
                 return;
             }

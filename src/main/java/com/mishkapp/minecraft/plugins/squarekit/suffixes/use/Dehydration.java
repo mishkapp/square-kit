@@ -1,6 +1,7 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.use;
 
 import com.flowpowered.math.vector.Vector3d;
+import com.mishkapp.minecraft.plugins.squarekit.AreaRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.events.EntityCollideEntityEvent;
@@ -88,6 +89,10 @@ public class Dehydration extends UseSuffix {
             Entity target = ((ItemUsedOnTargetEvent) event).getTarget();
 
             if(!isItemInHand(((ItemUsedEvent) event).getHandType())){
+                return;
+            }
+
+            if(AreaRegistry.getInstance().isInSafeArea(player)){
                 return;
             }
 

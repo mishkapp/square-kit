@@ -63,6 +63,7 @@ public class KitListener {
     public void onDeath(DummyKilledByPlayerEvent event){
         KitPlayer killed = event.getPlayer();
         KitPlayer killer = event.getKiller();
+        killed.getMcPlayer().sendMessage(_text(Messages.get("killed-by-player").replace("%KILLER%", killer.getMcPlayer().getName())));
         if(killer != killed){
             if(killed.getMcPlayer().getConnection().getAddress().getAddress().equals(killer.getMcPlayer().getConnection().getAddress().getAddress())){
                 killer.getMcPlayer().sendMessage(_text(Messages.get("error-kill-from-same-ip")));
