@@ -39,7 +39,7 @@ public class MagicLeech extends UseSuffix {
 
     private double damage = 10.0;
     private int liveTime = 5 * 20;
-    private int time = 10;
+    private int time = 18;
 
     private ParticleEffect trailEffect = ParticleEffect.builder()
             .quantity(1)
@@ -56,7 +56,7 @@ public class MagicLeech extends UseSuffix {
         super(kitPlayer, itemStack, level);
 
         cooldown = 15 * 1000;
-        manaCost = 0 - (level * 64.0/0);
+        manaCost = 0;
     }
 
     @Override
@@ -113,7 +113,7 @@ public class MagicLeech extends UseSuffix {
                     hSpeed * cos(toRadians(lookVec.getY()))
             );
 
-            final Entity entity = player.getWorld().createEntity(EntityTypes.FIREBALL, spawnLoc);
+            final Entity entity = player.getWorld().createEntity(EntityTypes.ENDERMITE, spawnLoc);
 
             entity.setVelocity(velocity);
             lastVelocity = velocity;
@@ -161,18 +161,20 @@ public class MagicLeech extends UseSuffix {
         Double manaRegen = affectedPlayer.getManaRegen();
 
         if(manaRegen > 0){
-            manaRegen *= -2;
-            affectedPlayer.getManaRegenAdds().put(this, manaRegen);
+            manaRegen *= -1;
+            affectedPlayer.getManaRegenAdds().put(this, manaRegen * 2);
             Sponge.getScheduler().createTaskBuilder()
-                    .delayTicks(5 * 20)
-                    .execute(r -> affectedPlayer.getManaRegenAdds().remove(this));
+                    .delayTicks(time * 20)
+                    .execute(r -> affectedPlayer.getManaRegenAdds().remove(this))
+                    .submit(SquareKit.getInstance().getPlugin());
         }
 
-        if(manaRegen < 0){
+        if(manaRegen <= 0){
             affectedPlayer.getHealthRegenAdds().put(this, manaRegen);
             Sponge.getScheduler().createTaskBuilder()
-                    .delayTicks(5 * 20)
-                    .execute(r -> affectedPlayer.getHealthRegenAdds().remove(this));
+                    .delayTicks(time * 20)
+                    .execute(r -> affectedPlayer.getHealthRegenAdds().remove(this))
+                    .submit(SquareKit.getInstance().getPlugin());
         }
     }
 
@@ -244,7 +246,6 @@ public class MagicLeech extends UseSuffix {
     @Override
     public String getLoreEntry() {
         return Messages.get("magic-leech-suffix")
-                .replace("%DAMAGE%", FormatUtils.unsignedRound(damage))
                 .replace("%TIME%", FormatUtils.unsignedTenth(time))
                 + super.getLoreEntry();
     }

@@ -2,23 +2,19 @@ package com.mishkapp.minecraft.plugins.squarekit.suffixes.attack;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
-import com.mishkapp.minecraft.plugins.squarekit.PlayersRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
-import com.mishkapp.minecraft.plugins.squarekit.events.PlayerAttackEntityEvent;
+import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.world.World;
 
+import java.util.HashMap;
 import java.util.Random;
-
-import static org.spongepowered.api.event.cause.entity.damage.DamageTypes.MAGIC;
 
 /**
  * Created by mishkapp on 13.12.2016.
@@ -43,21 +39,16 @@ public class AntimagicBlade extends Suffix {
 
     @Override
     public void handle(KitEvent event) {
-        if(event instanceof PlayerAttackEntityEvent){
-            PlayerAttackEntityEvent attackEvent = (PlayerAttackEntityEvent)event;
-            if(!isWeaponInHand()){
-                return;
+        double dmg = kitPlayer.getCurrentMana() / 5.0;
+        if(event instanceof SuffixTickEvent){
+            HashMap<Suffix, Double> adds = kitPlayer.getPhysicalDamageAdds();
+            if(isItemHolding()){
+                adds.put(this, dmg);
+            } else {
+                adds.remove(this);
             }
-            if(!(attackEvent.getAttacked() instanceof Player)){
-                return;
-            }
-            KitPlayer attacked = PlayersRegistry.getInstance().getPlayer(attackEvent.getAttacked().getUniqueId());
-
-            attacked.getMcPlayer().damage(
-                    attacked.getCurrentMana() * damage,
-                    EntityDamageSource.builder().entity(kitPlayer.getMcPlayer()).magical().bypassesArmor().type(MAGIC).build());
-            addEffect(attacked.getMcPlayer());
         }
+        kitPlayer.updateStats();
     }
 
     private void addEffect(Entity entity){
@@ -75,6 +66,6 @@ public class AntimagicBlade extends Suffix {
     @Override
     public String getLoreEntry() {
         return Messages.get("antimagic-blade-suffix")
-                .replace("%DAMAGE%", FormatUtils.round(damage));
+                .replace("%DAMAGE%", FormatUtils.unsignedRound(damage * 100));
     }
 }

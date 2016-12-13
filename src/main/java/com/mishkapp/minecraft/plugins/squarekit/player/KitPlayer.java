@@ -310,6 +310,15 @@ public class KitPlayer {
     }
 
     public void setCurrentMana(double currentMana) {
+        if(currentMana > getMaxMana()){
+            this.currentMana = getMaxMana();
+            return;
+        }
+
+        if(currentMana <= 0){
+            this.currentMana = 0;
+            return;
+        }
         this.currentMana = currentMana;
     }
 

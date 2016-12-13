@@ -21,9 +21,6 @@ import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.entity.damage.DamageTypes;
-import org.spongepowered.api.event.cause.entity.damage.source.DamageSource;
-import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.scheduler.Task;
@@ -33,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static com.mishkapp.minecraft.plugins.squarekit.utils.DamageUtils.pureDamage;
 import static java.lang.Math.*;
 import static java.lang.StrictMath.sin;
 
@@ -63,8 +61,6 @@ public class Dehydration extends UseSuffix {
     private Entity lastEntity = null;
 
     private Random random = new Random();
-
-    private int foodLevel = 0;
 
     public Dehydration(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
         super(kitPlayer, itemStack, level);
@@ -101,27 +97,21 @@ public class Dehydration extends UseSuffix {
 
             lastUse = System.currentTimeMillis();
 
-            if(target instanceof Player){
-                foodLevel = ((Player)target).getFoodData().foodLevel().get();
-                target.offer(Keys.FOOD_LEVEL, 0);
+
+            if(!(target instanceof Player)){
+                return;
             }
 
+            int targetFood = ((Player)target).getFoodData().foodLevel().get();
+            target.offer(Keys.FOOD_LEVEL, 0);
 
             List<PotionEffect> effects = target.get(Keys.POTION_EFFECTS).orElse(new ArrayList<>());
             effects.add(fatigue);
             target.offer(Keys.POTION_EFFECTS, effects);
 
-            int targetFood = player.getFoodData().foodLevel().get();
+            target.damage(targetFood, pureDamage(player));
 
-
-            DamageSource ds = EntityDamageSource.builder()
-                    .entity(kitPlayer.getMcPlayer())
-                    .absolute()
-                    .bypassesArmor()
-                    .type(DamageTypes.PROJECTILE)
-                    .build();
-            target.damage(targetFood, ds);
-
+            int foodLevel = player.getFoodData().foodLevel().get();
             player.offer(Keys.FOOD_LEVEL, min(20, targetFood + foodLevel));
             foodLevel -= targetFood;
 

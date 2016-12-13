@@ -10,8 +10,8 @@ import com.mishkapp.minecraft.plugins.squarekit.utils.Utils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.type.HandType;
 import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.projectile.Projectile;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
@@ -172,7 +172,7 @@ public class EventInterceptor {
 
     private Entity getTarget(InteractBlockEvent.Secondary event, Player player) {
         List<Entity> list = player.getNearbyEntities(30).stream().filter(e -> {
-            if(e == player || !(e instanceof Living)){
+            if(e == player || !(e instanceof Player)){
                 return false;
             }
 
@@ -212,7 +212,34 @@ public class EventInterceptor {
     }
 
     @Listener
-    public void onEntityCollideEntity(CollideEntityEvent.Impact event, @First final Entity entity){
+    public void onEntityCollideEntity(CollideEntityEvent.Impact event, @First final Projectile entity){
+        UUID creatorId = entity.getCreator().orElse(null);
+        if(creatorId == null){
+            return;
+        }
+
+
+        List<Entity> entities = event.getEntities();
+        if(entities.stream().filter(e -> e.getUniqueId().equals(creatorId)).count() > 0){
+            event.setCancelled(true);
+            return;
+        }
+
+        KitPlayer tempPlayer = SquareKit.getPlayersRegistry().getPlayer(entity.getCreator().orElse(null));
+
+        if(tempPlayer == null){
+            return;
+        }
+
+        final KitPlayer kitPlayer = tempPlayer;
+        entities.forEach(e -> Sponge.getEventManager().post(new EntityCollideEntityEvent(kitPlayer, entity, e)));
+    }
+
+    @Listener
+    public void onEntityCollideEntity(CollideEntityEvent event, @First final Entity entity){
+        if(entity instanceof Projectile){
+            return;
+        }
         UUID creatorId = entity.getCreator().orElse(null);
         if(creatorId == null){
             return;

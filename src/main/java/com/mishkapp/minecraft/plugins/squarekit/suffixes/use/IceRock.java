@@ -25,8 +25,8 @@ import static com.mishkapp.minecraft.plugins.squarekit.utils.DamageUtils.physica
  */
 public class IceRock extends LaunchProjectileSuffix {
     private int duration;
-    private double pDamage = 15;
-    private double mDamage = 15;
+    private double pDamage = 0;
+    private double mDamage = 30;
     private PotionEffect potionEffect;
 
     public IceRock(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {

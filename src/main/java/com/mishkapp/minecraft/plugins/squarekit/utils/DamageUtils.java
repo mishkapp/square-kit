@@ -19,6 +19,6 @@ public class DamageUtils {
     }
 
     public static DamageSource physicalDamage(Entity e){
-        return EntityDamageSource.builder().entity(e).type(DamageTypes.ATTACK).bypassesArmor().build();
+        return EntityDamageSource.builder().entity(e).type(DamageTypes.CUSTOM).bypassesArmor().build();
     }
 }
