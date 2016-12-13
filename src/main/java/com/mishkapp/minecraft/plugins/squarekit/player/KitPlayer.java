@@ -659,7 +659,8 @@ public class KitPlayer {
         double maxMana = getMaxMana();
         double manaDelta = maxMana - currentMana;
         double manaRegen = getManaRegen();
-        if(maxMana == currentMana){
+        if(currentMana + manaRegen <= 0){
+            currentMana = 0;
             return;
         }
         if(manaDelta < manaRegen){
@@ -673,9 +674,10 @@ public class KitPlayer {
         Player player = getMcPlayer();
         HealthData hd = player.getHealthData();
         double health = player.health().get();
-        if(health <= 0 || health == getMaxHealth()) {return;}
+        if(health <= 0) {return;}
         double newHealth = health + getHealthRegen();
         if(newHealth > getMaxHealth()) {newHealth = getMaxHealth();}
+        if(newHealth <= 1){newHealth = 1;}
         player.offer(Keys.HEALTH, newHealth);
     }
 
