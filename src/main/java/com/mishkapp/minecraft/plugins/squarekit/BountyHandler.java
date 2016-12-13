@@ -56,19 +56,11 @@ public class BountyHandler {
             return;
         }
         currentTick = 0;
-        List<KitPlayer> players = PlayersRegistry.getInstance().getPlayers();
-        KitPlayer kitPlayer = players.stream()
-                .sorted((p1, p2) -> -1 * Integer.compare(p1.getBounty(), p2.getBounty()))
-                .findFirst().orElse(null);
-        if(kitPlayer == null){
-            kitPlayer = players.stream()
-                    .sorted((p1, p2) -> -1 * Integer.compare(p1.getCurrentKillstreak(), p2.getCurrentKillstreak()))
-                    .findFirst().orElse(null);
-            if(kitPlayer == null){
-                return;
-            }
+        List<KitPlayer> players = getList();
+        if(players.size() == 0){
+            return;
         }
-
+        KitPlayer kitPlayer = players.get(0);
         int bounty = kitPlayer.getBounty();
         lastPlayer = kitPlayer;
 
