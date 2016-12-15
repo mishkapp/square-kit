@@ -42,8 +42,7 @@ public abstract class Area {
 
     public List<Player> getPlayers() {
         return Sponge.getServer().getOnlinePlayers().stream()
-                .filter(p -> isInside(p)
-                        && !(PlayerUtils.isInSpectatorMode(p) || PlayerUtils.isInCreativeMode(p)))
+                .filter(p -> isInside(p))
                 .collect(Collectors.toList());
     }
 
@@ -52,7 +51,7 @@ public abstract class Area {
     }
 
     public boolean isInside(Player p){
-        return isInside(p.getLocation());
+        return isInside(p.getLocation()) && !(PlayerUtils.isInSpectatorMode(p) || PlayerUtils.isInCreativeMode(p)) && !p.isRemoved();
     }
 
     public abstract boolean isInside(Location l);
