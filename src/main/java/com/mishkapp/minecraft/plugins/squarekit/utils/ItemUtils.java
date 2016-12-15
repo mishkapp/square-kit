@@ -47,6 +47,13 @@ public class ItemUtils {
                 && a.get(Keys.ITEM_LORE).equals(b.get(Keys.ITEM_LORE));
     }
 
+    public static ItemStack clearCopy(ItemStack is){
+        if(is == null) return null;
+        ItemStack result = is.copy();
+        setLore(result, new ArrayList<>());
+        return result;
+    }
+
     public static boolean isArmor(ItemStack i){
         return (i.getItem() == ItemTypes.LEATHER_BOOTS
                 || i.getItem() == ItemTypes.LEATHER_CHESTPLATE

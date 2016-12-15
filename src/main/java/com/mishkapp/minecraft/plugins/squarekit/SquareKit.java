@@ -36,6 +36,7 @@ import com.mishkapp.minecraft.plugins.squarekit.suffixes.passive.Panic;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.*;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.holding.*;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.use.*;
+import com.mishkapp.minecraft.plugins.squarekit.utils.LivingMine;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
@@ -545,7 +546,9 @@ public class SquareKit{
         registry.registerSuffix("3L", Dummy.class);
         registry.registerSuffix("3M", MagicLeech.class);
         registry.registerSuffix("3N", MagicFlow.class);
-
+        registry.registerSuffix("3O", Disguise.class);
+        registry.registerSuffix("3P", LivingMine.class);
+        registry.registerSuffix("3Q", Cloak.class);
 
 
         registry.registerSuffix("4G", FlameableLiquid.class);

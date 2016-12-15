@@ -49,7 +49,7 @@ public class KitsCommand implements CommandExecutor {
             }
 
             List<Kit> kits = SquareKit.getKitRegistry().getKitList().stream()
-                    .filter(k -> player.hasPermission(k.getPermission()))
+                    .filter(k -> (player.hasPermission(k.getPermission()) || (!player.hasPermission(k.getPermission()) && k.getConditionMessage() != null)))
                     .sorted(new KitComparator())
                     .collect(Collectors.toList());
 
@@ -85,7 +85,7 @@ public class KitsCommand implements CommandExecutor {
             int i = 0;
             for(Kit k : kits){
                 ItemStack menuItem = k.getMenuItem();
-                if(kitPlayer.getMoney() < k.getPrice() || kitPlayer.getLevel() < k.getMinLevel()){
+                if(kitPlayer.getMoney() < k.getPrice() || kitPlayer.getLevel() < k.getMinLevel() || !kitPlayer.getMcPlayer().hasPermission(k.getPermission())){
                     menuItem = ItemStack.builder().from(menuItem).itemType(ItemTypes.BARRIER).build();
                 }
                 itemKitMap.put(menuItem, k);
@@ -102,6 +102,11 @@ public class KitsCommand implements CommandExecutor {
 
     private void applyKit(Player player, Kit kit){
         KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player);
+        if(!kitPlayer.getMcPlayer().hasPermission(kit.getPermission())){
+            player.sendMessage(_text(kit.getConditionMessage()));
+            return;
+        }
+
         if(kitPlayer.getMoney() < kit.getPrice()){
             player.sendMessage(_text(Messages.get("kit-too-expensive").replace("%KIT%", kit.getName())));
             return;

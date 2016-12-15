@@ -34,6 +34,7 @@ public class Kit {
     private ItemStack boots;
     private ItemStack offhand;
     private List<ItemStack> items = new ArrayList<>();
+    private String conditionMessage;
 
     private Kit(){}
 
@@ -132,6 +133,7 @@ public class Kit {
         kit.description = document.getString("description");
         kit.price = document.getInteger("price");
         kit.permission = document.getString("permission");
+        kit.conditionMessage = document.getString("conditionMessage");
 
         if(document.containsKey("minLevel")){
             kit.minLevel = document.getInteger("minLevel");
@@ -149,6 +151,9 @@ public class Kit {
         ItemUtils.addLore(kit.menuItem, "&eСтоимость: " + kit.price);
         if(kit.minLevel > 1){
             ItemUtils.addLore(kit.menuItem, "&6Требуемый уровень: " + kit.minLevel);
+        }
+        if(kit.conditionMessage != null){
+            ItemUtils.addLore(kit.menuItem, kit.conditionMessage);
         }
         ItemUtils.addLore(kit.menuItem, kit.description);
 
@@ -169,5 +174,9 @@ public class Kit {
         }
 
         return kit;
+    }
+
+    public String getConditionMessage() {
+        return conditionMessage;
     }
 }
