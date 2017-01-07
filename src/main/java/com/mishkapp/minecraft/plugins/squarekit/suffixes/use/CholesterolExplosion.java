@@ -77,7 +77,7 @@ public class CholesterolExplosion extends UseSuffix {
                             .build();
                     entity.damage((double)foodLevel / (double)entitiesCount, ds);
                     if(entity instanceof Player){
-                        entity.offer(Keys.FOOD_LEVEL, foodLevel/entitiesCount);
+                        entity.offer(Keys.FOOD_LEVEL, Math.min(20, entity.get(Keys.FOOD_LEVEL).get() + (foodLevel/entitiesCount)));
                     }
 
                 });

@@ -17,12 +17,6 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.entity.HealthData;
 import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.scoreboard.Scoreboard;
-import org.spongepowered.api.scoreboard.critieria.Criteria;
-import org.spongepowered.api.scoreboard.displayslot.DisplaySlots;
-import org.spongepowered.api.scoreboard.objective.Objective;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +26,6 @@ import java.util.UUID;
 import static com.mishkapp.minecraft.plugins.squarekit.utils.Utils._text;
 import static com.mongodb.client.model.Filters.eq;
 import static java.lang.Math.min;
-import static org.spongepowered.api.text.format.TextColors.*;
 
 /**
  * Created by mishkapp on 27.04.2016.
@@ -63,8 +56,6 @@ public class KitPlayer {
     private double currentMana = 0.0;
 
     private Player player;
-    private Scoreboard scoreboard;
-    private Objective statsObj;
 
     //here comes the model
     private UUID uuid;
@@ -76,11 +67,12 @@ public class KitPlayer {
     private int currentKillstreak;
     private PlayerStats playerStats = new PlayerStats();
     private KitsStats kitsStats = new KitsStats();
+    private PlayerSettings playerSettings;
+    private StatsPanel statsPanel;
 
     private boolean isDefaultsInitialized = false;
 
     private boolean isInBuildMode = false;
-    private boolean isInBattleMode = false;
 
     public KitPlayer(UUID uuid) {
         this.uuid = uuid;
@@ -88,22 +80,8 @@ public class KitPlayer {
     }
 
     public void init(){
-        initScoreboard();
+        statsPanel = new StatsPanel(this);
         addDefaultValues();
-    }
-
-    private void initScoreboard(){
-        scoreboard = Scoreboard.builder()
-                .build();
-
-        statsObj = Objective.builder()
-                .name("stats")
-                .criterion(Criteria.DUMMY)
-                .displayName(Text.builder().color(TextColors.GRAY).append(Text.of("Параметры")).build())
-                .build();
-        scoreboard.addObjective(statsObj);
-        updateScoreboard();
-        getMcPlayer().setScoreboard(scoreboard);
     }
 
     public boolean isInBuildMode() {
@@ -386,7 +364,7 @@ public class KitPlayer {
             effects.removeIf(e -> !e.isRunning());
             effects.forEach(Effect::tick);
             tickRegens();
-            updateScoreboard();
+            statsPanel.update();
         }
     }
 
@@ -585,57 +563,13 @@ public class KitPlayer {
         additions = new HashMap<>();
     }
 
-    private void updateScoreboard(){
-        for(Text t : statsObj.getScores().keySet()){
-            statsObj.removeScore(t);
-        }
-
-        statsObj.getOrCreateScore(getPhysicalResistText()).setScore(5);
-        statsObj.getOrCreateScore(getMagicResistText()).setScore(4);
-        statsObj.getOrCreateScore(getManaScoreText()).setScore(3);
-        statsObj.getOrCreateScore(getMoneyText()).setScore(2);
-        statsObj.getOrCreateScore(getStreakText()).setScore(1);
-        statsObj.getOrCreateScore(getLevelText()).setScore(0);
-
-        scoreboard.updateDisplaySlot(statsObj, DisplaySlots.SIDEBAR);
+    public PlayerSettings getPlayerSettings() {
+        return playerSettings;
     }
 
-    private Text getManaScoreText() {
-        return Text.builder("Мана: " + FormatUtils.unsignedRound(currentMana) + "/" + FormatUtils.unsignedRound(getMaxMana()))
-                .color(BLUE)
-                .build();
+    public double getKdRatio(){
+        return getPlayerStats().getKdRatio();
     }
-
-    private Text getPhysicalResistText(){
-        return Text.builder("Ф.Сопр: " + FormatUtils.unsignedTenth(getPhysicalResist() * 100) + "%")
-                .color(GOLD)
-                .build();
-    }
-
-    private Text getMagicResistText(){
-        return Text.builder("М.Сопр: " + FormatUtils.unsignedTenth(getMagicResist() * 100) + "%")
-                .color(DARK_BLUE)
-                .build();
-    }
-
-    private Text getMoneyText(){
-        return Text.builder("Деньги: " + FormatUtils.unsignedRound(getMoney()))
-                .color(YELLOW)
-                .build();
-    }
-
-    private Text getStreakText(){
-        return Text.builder("Серия убийств: " + currentKillstreak)
-                .color(RED)
-                .build();
-    }
-
-    private Text getLevelText(){
-        return Text.builder("Уровень: " + level)
-                .color(GREEN)
-                .build();
-    }
-
 
     public void updateStats(){
         if(getHealth() <= 0){
@@ -725,6 +659,11 @@ public class KitPlayer {
         level = document.getInteger("level", 0);
         experience = document.getInteger("experience", 0);
         currentKillstreak = document.getInteger("currentKillstreak", 0);
+        if(document.containsKey("settings")){
+            playerSettings = PlayerSettings.fromDocument(document.get("settings", Document.class));
+        } else {
+            playerSettings = new PlayerSettings();
+        }
         playerStats = PlayerStats.fromDocument(document.get("playerStats", Document.class));
         kitsStats = KitsStats.fromDocument(document.get("kitsStats", Document.class));
     }
@@ -737,6 +676,7 @@ public class KitPlayer {
                 .append("level", level)
                 .append("experience", experience)
                 .append("currentKillstreak", currentKillstreak)
+                .append("settings", playerSettings.toDocument())
                 .append("playerStats", playerStats.toDocument())
                 .append("kitsStats", kitsStats.toDocument());
     }
@@ -784,10 +724,6 @@ public class KitPlayer {
             MONEY_MULTIPLIER += 0.1;
         }
         isDefaultsInitialized = true;
-    }
-
-    public boolean isInBattleMode() {
-        return isInBattleMode;
     }
 }
 

@@ -72,7 +72,7 @@ public class StatsCommand implements CommandExecutor {
         b.append(Text.NEW_LINE);
 
         if(player.hasPermission("squarekit.admin")){
-            b.append(Text.of("Опыт: "));
+            b.append(Text.of("Деньги: "));
             b.append(Text.of(kitPlayer.getMoney()));
             b.append(Text.NEW_LINE);
         }

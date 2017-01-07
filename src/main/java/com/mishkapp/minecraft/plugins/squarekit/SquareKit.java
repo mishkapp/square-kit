@@ -9,6 +9,7 @@ import com.mishkapp.minecraft.plugins.squarekit.commands.bounty.AddBounty;
 import com.mishkapp.minecraft.plugins.squarekit.commands.bounty.ListBounty;
 import com.mishkapp.minecraft.plugins.squarekit.commands.reload.ReloadKitsCommand;
 import com.mishkapp.minecraft.plugins.squarekit.commands.reload.ReloadMessagesCommand;
+import com.mishkapp.minecraft.plugins.squarekit.commands.statspanel.*;
 import com.mishkapp.minecraft.plugins.squarekit.commands.warp.AddPoint;
 import com.mishkapp.minecraft.plugins.squarekit.commands.warp.Info;
 import com.mishkapp.minecraft.plugins.squarekit.commands.warp.RemovePoint;
@@ -333,6 +334,61 @@ public class SquareKit{
                 .build();
 
         Sponge.getCommandManager().register(this, bountyCmd, "bounty");
+
+        // /statspanel
+        CommandSpec panelAdd = CommandSpec.builder()
+                .description(Text.of("Open menu to add entries to panel"))
+                .executor(new AddCommand())
+                .build();
+
+        CommandSpec entryAdd = CommandSpec.builder()
+                .description(Text.of("Add entry to panel"))
+                .executor(new AddEntryCommand())
+                .arguments(
+                        GenericArguments.string(Text.of("entry"))
+                )
+                .build();
+
+        CommandSpec entryRemove = CommandSpec.builder()
+                .description(Text.of("Remove entry from panel"))
+                .executor(new RemoveEntryCommand())
+                .arguments(
+                        GenericArguments.integer(Text.of("index"))
+                )
+                .build();
+
+        CommandSpec entryUp = CommandSpec.builder()
+                .description(Text.of("Move entry up in panel"))
+                .executor(new EntryUpCommand())
+                .arguments(
+                        GenericArguments.integer(Text.of("index"))
+                )
+                .build();
+
+        CommandSpec entryDown = CommandSpec.builder()
+                .description(Text.of("Move entry down in panel"))
+                .executor(new EntryDownCommand())
+                .arguments(
+                        GenericArguments.integer(Text.of("index"))
+                )
+                .build();
+
+        CommandSpec entrySetup = CommandSpec.builder()
+                .description(Text.of("Setup panel"))
+                .executor(new SetupCommand())
+                .build();
+
+        CommandSpec statsPanelCmd = CommandSpec.builder()
+                .description(Text.of("Stats panel command"))
+                .child(panelAdd, "add")
+                .child(entryAdd, "addentry")
+                .child(entryRemove, "remove")
+                .child(entryUp, "up")
+                .child(entryDown, "down")
+                .child(entrySetup, "setup")
+                .build();
+
+        Sponge.getCommandManager().register(this, statsPanelCmd, "statspanel");
 
 
 //        // /setspawn

@@ -39,6 +39,25 @@ public class Messages {
 
         keys.forEach(k -> temp.put(k, msgDoc.getString(k)));
 
+        addMessages(temp, "stats");
+
         messages = temp;
+    }
+
+    private static void addMessages(HashMap<String, String> messages, String id){
+
+        MongoCollection collection = SquareKit.getInstance().getMongoDb().getCollection("messages");
+        Document document = (Document) collection.find(eq("id", id)).first();
+
+        if(document == null){
+            return;
+        }
+
+        Document msgDoc = (Document)document.get("messages");
+
+        Set<String> keys = msgDoc.keySet();
+
+        keys.forEach(k -> messages.put(id + "." + k, msgDoc.getString(k)));
+
     }
 }
