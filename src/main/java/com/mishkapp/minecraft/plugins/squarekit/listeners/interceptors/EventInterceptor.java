@@ -24,6 +24,7 @@ import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
+import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
@@ -75,35 +76,33 @@ public class EventInterceptor {
         ItemStack mainHand = player.getItemInHand(MAIN_HAND).orElse(null);
         ItemStack offHand = player.getItemInHand(OFF_HAND).orElse(null);
 
-        if(mainHand.getItem().getId().equals("minecraft:air") &&
-                offHand.getItem().getId().equals("minecraft:air")){
+        if(mainHand == null &&
+                offHand == null){
             return;
         }
-        if(offHand.getItem().getId().equals("minecraft:air") &&
-                event instanceof InteractEntityEvent.Secondary.OffHand){
-            return;
-        }
-
-        if(mainHand.getItem().getId().equals("minecraft:air") &&
-                event instanceof InteractEntityEvent.Secondary.MainHand){
+        if(offHand == null &&
+                event instanceof InteractBlockEvent.Secondary.OffHand){
             return;
         }
 
-        if(!mainHand.getItem().getId().equals("minecraft:air") &&
-                !offHand.getItem().getId().equals("minecraft:air") &&
-                event instanceof InteractEntityEvent.Secondary.MainHand){
+        if(mainHand == null &&
+                event instanceof InteractBlockEvent.Secondary.MainHand){
+            return;
+        }
+
+        if(offHand != null && event instanceof InteractBlockEvent.Secondary.MainHand){
             return;
         }
 
         ItemStack usedItem;
         HandType handType;
 
-        if (!mainHand.getItem().getId().equals("minecraft:air") &&
-                !offHand.getItem().getId().equals("minecraft:air")){
+        if (mainHand != null &&
+                offHand != null){
             usedItem = offHand;
             handType = OFF_HAND;
         } else {
-            if(!mainHand.getItem().getId().equals("minecraft:air")){
+            if(mainHand != null){
                 usedItem = mainHand;
                 handType = MAIN_HAND;
             } else {
@@ -122,35 +121,33 @@ public class EventInterceptor {
         ItemStack mainHand = player.getItemInHand(MAIN_HAND).orElse(null);
         ItemStack offHand = player.getItemInHand(OFF_HAND).orElse(null);
 
-        if(mainHand.getItem().getId().equals("minecraft:air") &&
-                offHand.getItem().getId().equals("minecraft:air")){
+        if(mainHand == null &&
+                offHand == null){
             return;
         }
-        if(offHand.getItem().getId().equals("minecraft:air") &&
+        if(offHand == null &&
                 event instanceof InteractBlockEvent.Secondary.OffHand){
             return;
         }
 
-        if(mainHand.getItem().getId().equals("minecraft:air") &&
+        if(mainHand == null &&
                 event instanceof InteractBlockEvent.Secondary.MainHand){
             return;
         }
 
-        if(!mainHand.getItem().getId().equals("minecraft:air") &&
-                !offHand.getItem().getId().equals("minecraft:air") &&
-                event instanceof InteractBlockEvent.Secondary.MainHand){
+        if(offHand != null && event instanceof InteractBlockEvent.Secondary.MainHand){
             return;
         }
 
         ItemStack usedItem;
         HandType handType;
 
-        if (!mainHand.getItem().getId().equals("minecraft:air") &&
-                !offHand.getItem().getId().equals("minecraft:air")){
+        if (mainHand != null &&
+                offHand != null){
             usedItem = offHand;
             handType = OFF_HAND;
         } else {
-            if(!mainHand.getItem().getId().equals("minecraft:air")){
+            if(mainHand != null){
                 usedItem = mainHand;
                 handType = MAIN_HAND;
             } else {
@@ -284,6 +281,12 @@ public class EventInterceptor {
     @Listener
     public void onItemDrop(DropItemEvent event, @Root EntitySpawnCause escause) {
         event.setCancelled(true);
+    }
+
+    @Listener
+    private void onFoodEated(UseItemStackEvent event){
+        System.out.println("event = " + event);
+        System.out.println("cause = " + event.getCause().all());
     }
 
     @Listener
