@@ -15,13 +15,13 @@ import java.util.HashMap;
 public class MaxMana extends Suffix {
     private double mana;
 
-    public MaxMana(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
-        if(level > 32){
-            mana = -1 * (level - 31);
-        } else {
-            mana = level;
+    public MaxMana(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length == 0){
+            mana = 0;
+            return;
         }
+        mana = Double.parseDouble(args[0]);
     }
 
     @Override

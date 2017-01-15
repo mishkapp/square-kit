@@ -1,12 +1,8 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.use;
 
 import com.flowpowered.math.vector.Vector3d;
-import com.mishkapp.minecraft.plugins.squarekit.AreaRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
-import com.mishkapp.minecraft.plugins.squarekit.events.EntityCollideEntityEvent;
-import com.mishkapp.minecraft.plugins.squarekit.events.ItemUsedEvent;
-import com.mishkapp.minecraft.plugins.squarekit.events.ItemUsedOnTargetEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
@@ -24,35 +20,26 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import static com.mishkapp.minecraft.plugins.squarekit.utils.DamageUtils.pureDamage;
+import static com.mishkapp.minecraft.plugins.squarekit.utils.PlayerUtils.applyEffects;
 import static java.lang.Math.*;
 import static java.lang.StrictMath.sin;
 
 /**
  * Created by mishkapp on 11.12.2016.
  */
-public class Dehydration extends UseSuffix {
+public class Dehydration extends TargetedSuffix {
     private double hSpeed = 0.6;
     private double vSpeed = 0.6;
+    private int liveTime = 7 * 1000;
 
-    private double damage = 10.0;
-    private int liveTime = 7 * 20;
-    private int time = 10;
-    private int duration = 20;
+    private double duration = 200;
 
-    private PotionEffect fatigue = PotionEffect.builder()
-            .particles(true)
-            .potionType(PotionEffectTypes.MINING_FATIGUE)
-            .duration(duration * 20)
-            .amplifier(1)
-            .build();
+    private PotionEffect fatigue;
 
     private ParticleEffect trailEffect = ParticleEffect.builder()
             .quantity(1)
@@ -63,11 +50,18 @@ public class Dehydration extends UseSuffix {
 
     private Random random = new Random();
 
-    public Dehydration(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
+    public Dehydration(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length > 2){
+            duration = Double.parseDouble(args[2]);
+        }
 
-        cooldown = 20 * 1000;
-        manaCost = 0;
+        fatigue = PotionEffect.builder()
+                .particles(true)
+                .potionType(PotionEffectTypes.MINING_FATIGUE)
+                .duration((int) (duration * 20))
+                .amplifier(1)
+                .build();
     }
 
     @Override
@@ -76,105 +70,78 @@ public class Dehydration extends UseSuffix {
     @Override
     public void handle(KitEvent event) {
         super.handle(event);
-        if(event instanceof EntityCollideEntityEvent){
-            EntityCollideEntityEvent entityCollideEntityEvent = (EntityCollideEntityEvent)event;
-            Entity playersEntity = entityCollideEntityEvent.getPlayersEntity();
-            if(playersEntity != lastEntity){
-                return;
-            }
-            lastEntity.remove();
+    }
+
+    @Override
+    protected void onUse(Entity target) {
+        if(!(target instanceof Player)){
+            return;
         }
-        if(event instanceof ItemUsedOnTargetEvent){
-            Player player = kitPlayer.getMcPlayer();
-            Entity target = ((ItemUsedOnTargetEvent) event).getTarget();
 
-            if(!isItemInHand(((ItemUsedEvent) event).getHandType())){
-                return;
-            }
+        Player player = kitPlayer.getMcPlayer();
 
-            if(AreaRegistry.getInstance().isInSafeArea(player)){
-                return;
-            }
+        int targetFood = ((Player)target).getFoodData().foodLevel().get();
+        target.offer(Keys.FOOD_LEVEL, 0);
 
-            if(!isCooldowned(kitPlayer)){
-                return;
-            }
+        applyEffects(player, fatigue);
 
-            lastUse = System.currentTimeMillis();
+        target.damage(targetFood, pureDamage(player));
 
+        int foodLevel = player.getFoodData().foodLevel().get();
+        player.offer(Keys.FOOD_LEVEL, min(20, targetFood + foodLevel));
+        foodLevel -= targetFood;
 
-            if(!(target instanceof Player)){
-                return;
-            }
+        if(foodLevel > 0){
+            player.offer(Keys.SATURATION, foodLevel + player.getFoodData().saturation().get());
+        }
 
-            int targetFood = ((Player)target).getFoodData().foodLevel().get();
-            target.offer(Keys.FOOD_LEVEL, 0);
+        World world = player.getWorld();
 
-            List<PotionEffect> effects = target.get(Keys.POTION_EFFECTS).orElse(new ArrayList<>());
-            effects.add(fatigue);
-            target.offer(Keys.POTION_EFFECTS, effects);
+        Vector3d spawnLoc = target.getLocation().getPosition();
+        Vector3d lookVec = player.getHeadRotation();
+        Vector3d thrustVec = new Vector3d(1, 1, 1);
 
-            target.damage(targetFood, pureDamage(player));
+        spawnLoc = spawnLoc.add(
+                0,
+                1.75,
+                0
+        );
 
-            int foodLevel = player.getFoodData().foodLevel().get();
-            player.offer(Keys.FOOD_LEVEL, min(20, targetFood + foodLevel));
-            foodLevel -= targetFood;
+        thrustVec = thrustVec.mul(
+                hSpeed * -1 * sin(toRadians(lookVec.getY())),
+                vSpeed * tan(toRadians(-1 * lookVec.getX())),
+                hSpeed * cos(toRadians(lookVec.getY()))
+        );
 
-            if(foodLevel > 0){
-                player.offer(Keys.SATURATION, foodLevel + player.getFoodData().saturation().get());
-            }
+        final Entity entity = player.getWorld().createEntity(EntityTypes.SNOWBALL, spawnLoc);
 
-            World world = player.getWorld();
+        entity.setVelocity(thrustVec);
 
-            Vector3d spawnLoc = target.getLocation().getPosition();
-            Vector3d lookVec = player.getHeadRotation();
-            Vector3d thrustVec = new Vector3d(1, 1, 1);
+        entity.offer(Keys.HAS_GRAVITY, false);
+        entity.setCreator(target.getUniqueId());
+        lastEntity = entity;
 
-            spawnLoc = spawnLoc.add(
-                    0,
-                    1.75,
-                    0
-            );
+        world.spawnEntity(entity,
+                Cause.builder()
+                        .owner(SquareKit.getInstance())
+                        .build());
 
-            thrustVec = thrustVec.mul(
-                    hSpeed * -1 * sin(toRadians(lookVec.getY())),
-                    vSpeed * tan(toRadians(-1 * lookVec.getX())),
-                    hSpeed * cos(toRadians(lookVec.getY()))
-            );
-
-            final Entity entity = player.getWorld().createEntity(EntityTypes.SNOWBALL, spawnLoc);
-
-            entity.setVelocity(thrustVec);
-
-            entity.offer(Keys.HAS_GRAVITY, false);
-            entity.setCreator(target.getUniqueId());
-            lastEntity = entity;
-
-            world.spawnEntity(entity,
-                    Cause.builder()
-                            .owner(SquareKit.getInstance())
-                            .build());
-
-            final Task effectTask = SpongeUtils.getTaskBuilder()
-                    .intervalTicks(1)
-                    .execute(o ->
-                    {
-                        addTrailEffect(entity);
-                        correctThrust(entity, player);
-                    })
-                    .submit(SquareKit.getInstance());
-
-            SpongeUtils.getTaskBuilder()
-                    .delayTicks(liveTime)
-                    .execute(o -> {
-                        effectTask.cancel();
-                        if(entity.isRemoved()){
-                            return;
-                        }
+        long launchTime = System.currentTimeMillis();
+        SpongeUtils.getTaskBuilder()
+                .intervalTicks(1)
+                .execute(t ->
+                {
+                    if(entity.isRemoved()){
+                        t.cancel();
+                    }
+                    if((System.currentTimeMillis() - launchTime) >  liveTime){
                         entity.remove();
-                    })
-                    .submit(SquareKit.getInstance());
-        }
+                        t.cancel();
+                    }
+                    addTrailEffect(entity);
+                    correctThrust(entity, player);
+                })
+                .submit(SquareKit.getInstance());
     }
 
     private void correctThrust(Entity entity, Entity target){

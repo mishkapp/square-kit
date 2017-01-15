@@ -15,15 +15,13 @@ import java.util.HashMap;
 public class Speed extends Suffix {
     private double speed;
 
-    public Speed(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
-        if(level > 32){
-            speed = -1 * (level - 31) * 3;
-        } else {
-            speed = 3 * level;
+    public Speed(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length == 0){
+            speed = 0;
+            return;
         }
-
-        speed /= 100.0;
+        speed = Double.parseDouble(args[0]);
     }
 
     @Override

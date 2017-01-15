@@ -50,7 +50,7 @@ public class MongoUtils {
                     break;
                 }
                 case "suffixes": {
-                    setLore(result, Utils.CODE_PREFIX + document.getString(s));
+                    setLore(result, Utils.CODE_PREFIX + "&k" + document.getString(s));
                     break;
                 }
                 case "color": {

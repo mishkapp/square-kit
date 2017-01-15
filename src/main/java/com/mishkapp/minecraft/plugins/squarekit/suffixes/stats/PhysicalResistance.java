@@ -15,15 +15,13 @@ import java.util.HashMap;
 public class PhysicalResistance extends Suffix {
     private double resistance;
 
-    public PhysicalResistance(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
-        if(level > 32){
-            resistance = -1 * (level - 31);
-        } else {
-            resistance = level;
+    public PhysicalResistance(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length == 0){
+            resistance = 0;
+            return;
         }
-
-        resistance /= 100;
+        resistance = Double.parseDouble(args[0]);
     }
 
     @Override

@@ -6,39 +6,43 @@ import com.mishkapp.minecraft.plugins.squarekit.PlayersRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.effects.Effect;
 import com.mishkapp.minecraft.plugins.squarekit.effects.Flame;
-import com.mishkapp.minecraft.plugins.squarekit.events.*;
+import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
+import com.mishkapp.minecraft.plugins.squarekit.events.PlayerAttackedByEntity;
+import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.world.World;
 
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import static com.mishkapp.minecraft.plugins.squarekit.utils.SpongeUtils.getTaskBuilder;
 import static java.lang.Math.*;
 
 /**
  * Created by mishkapp on 09.12.2016.
  */
 public class FireShield extends UseSuffix {
-    private long duration;
     private boolean isActive = false;
     private ParticleEffect particleEffect;
     private Random random = new Random();
 
-    private int time = 10;
+    private double duration = 5.0;
+    private long time = 10;
 
-    public FireShield(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
-        duration = 30 * 20;
-        cooldown = 90 * 1000;
-        manaCost = 60 - (level * 64.0/60);
+    public FireShield(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if (args.length > 2) {
+            duration = Double.parseDouble(args[2]);
+        }
+        if(args.length > 3){
+            time = Long.parseLong(args[3]);
+        }
 
         particleEffect = ParticleEffect.builder()
                 .type(ParticleTypes.FLAME)
@@ -60,36 +64,16 @@ public class FireShield extends UseSuffix {
                 onAttack((PlayerAttackedByEntity) event);
             }
         }
-        if(event instanceof ItemUsedEvent){
-            Player player = kitPlayer.getMcPlayer();
+    }
 
-            if(!isItemInHand(((ItemUsedEvent) event).getHandType())){
-                return;
-            }
+    @Override
+    protected void onUse() {
+        isActive = true;
 
-
-            double currentMana = kitPlayer.getCurrentMana();
-
-            if(currentMana < manaCost){
-                player.sendMessage(TextSerializers.FORMATTING_CODE.deserialize(Messages.get("nomana")));
-                return;
-            }
-            if(!isCooldowned(kitPlayer)){
-                return;
-            }
-
-            lastUse = System.currentTimeMillis();
-
-            kitPlayer.setCurrentMana(currentMana - manaCost);
-
-            isActive = true;
-
-            getTaskBuilder().execute(() -> {
-                isActive = false;
-            }).
-                    delayTicks(duration).
-                    submit(SquareKit.getInstance());
-        }
+        Sponge.getScheduler().createTaskBuilder()
+                .execute(() -> isActive = false)
+                .delayTicks((long) (duration * 20))
+                .submit(SquareKit.getInstance());
     }
 
     private void addEffect(){
@@ -121,16 +105,16 @@ public class FireShield extends UseSuffix {
         if(flames.size() > 0){
             Flame flame = (Flame) flames.get(0);
             flame.setRunning(false);
-            attacker.addEffect(new Flame(attacker, this, Math.min(flame.getLevel() + 1, 5), time * 1000));
+            attacker.addEffect(new Flame(attacker, this, Math.min(flame.getLevel() + 1, 5), time * 50));
         } else {
-            attacker.addEffect(new Flame(attacker, this, 1, time * 1000));
+            attacker.addEffect(new Flame(attacker, this, 1, time * 50));
         }
     }
 
     @Override
     public String getLoreEntry() {
         return Messages.get("fire-shield-suffix")
-                .replace("%TIME%", FormatUtils.unsignedTenth(duration/20))
+                .replace("%TIME%", FormatUtils.unsignedTenth(duration))
                 + super.getLoreEntry();
     }
 }

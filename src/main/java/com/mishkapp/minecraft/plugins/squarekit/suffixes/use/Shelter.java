@@ -1,44 +1,46 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes.use;
 
 import com.flowpowered.math.vector.Vector3d;
-import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
-import com.mishkapp.minecraft.plugins.squarekit.events.ItemUsedEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
+import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.world.World;
 
 import java.util.HashMap;
 import java.util.Random;
 
-import static com.mishkapp.minecraft.plugins.squarekit.utils.SpongeUtils.getTaskBuilder;
-
 /**
  * Created by mishkapp on 08.10.2016.
  */
 public class Shelter extends UseSuffix {
-    private long duration;
     private boolean isActive = false;
     private ParticleEffect particleEffect;
     private Random random = new Random();
 
+    private double duration = 7.0;
     private double pRes = 0.8;
     private double fallDamage = 3;
 
-    public Shelter(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
-        duration = 7 * 20;
-        cooldown = 35 * 1000;
-        manaCost = 100 - (level * 64.0/100);
-
+    public Shelter(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length > 2){
+            duration = Double.parseDouble(args[2]);
+        }
+        if(args.length > 3){
+            pRes = Double.parseDouble(args[3]);
+        }
+        if(args.length > 4){
+            fallDamage = Double.parseDouble(args[4]);
+        }
         particleEffect = ParticleEffect.builder()
                 .type(ParticleTypes.SLIME)
                 .quantity(2)
@@ -54,47 +56,30 @@ public class Shelter extends UseSuffix {
                 addEffect();
             }
         }
-        if(event instanceof ItemUsedEvent){
-            Player player = kitPlayer.getMcPlayer();
+    }
 
-            if(!isItemInHand(((ItemUsedEvent) event).getHandType())){
-                return;
-            }
+    @Override
+    protected void onUse() {
+        isActive = true;
 
+        HashMap<Suffix, Double> dmgAdds = kitPlayer.getPhysicalDamageAdds();
+        HashMap<Suffix, Double> pResAdds = kitPlayer.getPhysicalResistAdds();
 
-            double currentMana = kitPlayer.getCurrentMana();
+        double damage = kitPlayer.getAttackDamage();
 
-            if(currentMana < manaCost){
-                player.sendMessage(TextSerializers.FORMATTING_CODE.deserialize(Messages.get("nomana")));
-                return;
-            }
-            if(!isCooldowned(kitPlayer)){
-                return;
-            }
+        dmgAdds.put(this, -1 * (damage - fallDamage));
+        pResAdds.put(this, pRes);
+        kitPlayer.updateStats();
 
-            lastUse = System.currentTimeMillis();
-
-            kitPlayer.setCurrentMana(currentMana - manaCost);
-
-            isActive = true;
-
-            HashMap<Suffix, Double> dmgAdds = kitPlayer.getPhysicalDamageAdds();
-            HashMap<Suffix, Double> pResAdds = kitPlayer.getPhysicalResistAdds();
-
-            double damage = kitPlayer.getAttackDamage();
-
-            dmgAdds.put(this, -1 * (damage - fallDamage));
-            pResAdds.put(this, pRes);
-            kitPlayer.updateStats();
-
-            getTaskBuilder().execute(() -> {
-                isActive = false;
-                dmgAdds.put(this, 0.0);
-                pResAdds.put(this, 0.0);
-                kitPlayer.updateStats();}).
-                    delayTicks(duration).
-                    submit(SquareKit.getInstance());
-        }
+        Sponge.getScheduler().createTaskBuilder()
+                .execute(t -> {
+                    isActive = false;
+                    dmgAdds.put(this, 0.0);
+                    pResAdds.put(this, 0.0);
+                    kitPlayer.updateStats();
+                })
+                .delayTicks((long) (duration * 20))
+                .submit(SquareKit.getInstance());
     }
 
     private void addEffect(){
@@ -113,7 +98,7 @@ public class Shelter extends UseSuffix {
         return Messages.get("shelter-suffix")
                 .replace("%PRES%", FormatUtils.unsignedRound(pRes * 100))
                 .replace("%ATTACK%", FormatUtils.unsignedRound(fallDamage))
-                .replace("%TIME%", FormatUtils.unsignedTenth(duration/20))
+                .replace("%TIME%", FormatUtils.unsignedTenth(duration))
                 + super.getLoreEntry();
     }
 }

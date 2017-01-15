@@ -9,7 +9,7 @@ import static org.spongepowered.api.effect.potion.PotionEffectTypes.JUMP_BOOST;
  * Created by mishkapp on 08.10.2016.
  */
 public class HoldingJumpBoost extends HoldingEffectSuffix {
-    public HoldingJumpBoost(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level, JUMP_BOOST);
+    public HoldingJumpBoost(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args, JUMP_BOOST);
     }
 }

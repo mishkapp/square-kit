@@ -3,7 +3,6 @@ package com.mishkapp.minecraft.plugins.squarekit.suffixes.use;
 import com.flowpowered.math.vector.Vector3d;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
-import com.mishkapp.minecraft.plugins.squarekit.events.ItemUsedEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import org.spongepowered.api.Sponge;
@@ -39,49 +38,44 @@ public class CholesterolExplosion extends UseSuffix {
 
     private int itemLiveTime = 4;
 
-    public CholesterolExplosion(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
-        cooldown = 40 * 1000;
-        manaCost = 0;
+    public CholesterolExplosion(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length > 2){
+            radius = Double.parseDouble(args[2]);
+        }
     }
 
     @Override
     public void handle(KitEvent event) {
         super.handle(event);
-        if(event instanceof ItemUsedEvent){
-            Player player = kitPlayer.getMcPlayer();
+    }
 
-            if(!isItemInHand(((ItemUsedEvent) event).getHandType())){
-                return;
-            }
+    @Override
+    protected void onUse() {
+        Player player = kitPlayer.getMcPlayer();
+        List<Entity> entities = player.getNearbyEntities(radius)
+                .parallelStream()
+                .filter(e -> e instanceof Living && e != player)
+                .collect(Collectors.toList());
 
-            if(!isCooldowned(kitPlayer)){
-                return;
-            }
+        int entitiesCount = entities.size();
+        int food = player.getFoodData().foodLevel().get();
+        player.offer(Keys.FOOD_LEVEL, 0);
+        if(entitiesCount > 0){
+            addEffect();
+            entities.forEach(entity -> {
+                DamageSource ds = EntityDamageSource.builder()
+                        .entity(kitPlayer.getMcPlayer())
+                        .absolute()
+                        .bypassesArmor()
+                        .type(DamageTypes.ATTACK)
+                        .build();
+                entity.damage((double)food / (double)entitiesCount, ds);
+                if(entity instanceof Player){
+                    entity.offer(Keys.FOOD_LEVEL, Math.min(20, entity.get(Keys.FOOD_LEVEL).get() + (food/entitiesCount)));
+                }
 
-            lastUse = System.currentTimeMillis();
-
-            List<Entity> entities = player.getNearbyEntities(10).parallelStream().filter(e -> e instanceof Living && e != player).collect(Collectors.toList());
-
-            int entitiesCount = entities.size();
-            int foodLevel = player.getFoodData().foodLevel().get();
-            player.offer(Keys.FOOD_LEVEL, 0);
-            if(entitiesCount > 0){
-                addEffect();
-                entities.forEach(entity -> {
-                    DamageSource ds = EntityDamageSource.builder()
-                            .entity(kitPlayer.getMcPlayer())
-                            .absolute()
-                            .bypassesArmor()
-                            .type(DamageTypes.PROJECTILE)
-                            .build();
-                    entity.damage((double)foodLevel / (double)entitiesCount, ds);
-                    if(entity instanceof Player){
-                        entity.offer(Keys.FOOD_LEVEL, Math.min(20, entity.get(Keys.FOOD_LEVEL).get() + (foodLevel/entitiesCount)));
-                    }
-
-                });
-            }
+            });
         }
     }
 

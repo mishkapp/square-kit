@@ -8,7 +8,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
  * Created by mishkapp on 03.10.2016.
  */
 public class HoldingInvisibility extends HoldingEffectSuffix {
-    public HoldingInvisibility(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level, PotionEffectTypes.INVISIBILITY);
+    public HoldingInvisibility(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args, PotionEffectTypes.INVISIBILITY);
     }
 }

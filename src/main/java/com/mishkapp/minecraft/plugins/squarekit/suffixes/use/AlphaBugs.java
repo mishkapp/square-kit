@@ -3,29 +3,25 @@ package com.mishkapp.minecraft.plugins.squarekit.suffixes.use;
 import com.flowpowered.math.vector.Vector3d;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
-import com.mishkapp.minecraft.plugins.squarekit.events.ItemUsedEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.world.World;
 
 import java.util.HashMap;
 import java.util.Random;
 
-import static com.mishkapp.minecraft.plugins.squarekit.utils.SpongeUtils.getTaskBuilder;
-
 /**
  * Created by mishkapp on 09.12.2016.
  */
 public class AlphaBugs extends UseSuffix {
-    private long duration;
     private boolean isActive = false;
     private ParticleEffect particleEffect = ParticleEffect.builder()
             .type(ParticleTypes.FOOTSTEP)
@@ -35,13 +31,17 @@ public class AlphaBugs extends UseSuffix {
 
     private Random random = new Random();
 
+    private double duration = 10.0;
     private double speed = 1.0;
 
-    public AlphaBugs(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
-        duration = 10 * 20;
-        cooldown = 25 * 1000;
-        manaCost = 30 - (level * 64.0/30);
+    public AlphaBugs(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length > 2){
+            duration = Double.parseDouble(args[2]);
+        }
+        if(args.length > 3){
+            speed = Double.parseDouble(args[3]);
+        }
     }
 
     @Override
@@ -52,49 +52,33 @@ public class AlphaBugs extends UseSuffix {
                 addEffect();
             }
         }
-        if(event instanceof ItemUsedEvent){
-            Player player = kitPlayer.getMcPlayer();
+    }
 
-            if(!isItemInHand(((ItemUsedEvent) event).getHandType())){
-                return;
-            }
+    @Override
+    protected void onUse() {
+        isActive = true;
 
+        HashMap<Suffix, Double> speedAdds = kitPlayer.getSpeedAdds();
+        HashMap<Suffix, Double> regenAdds = kitPlayer.getHealthRegenAdds();
 
-            double currentMana = kitPlayer.getCurrentMana();
+        int nearbyPlayers = (int) kitPlayer.getMcPlayer().getNearbyEntities(20)
+                .stream()
+                .filter(e -> e instanceof Player)
+                .count();
 
-            if(currentMana < manaCost){
-                player.sendMessage(TextSerializers.FORMATTING_CODE.deserialize(Messages.get("nomana")));
-                return;
-            }
-            if(!isCooldowned(kitPlayer)){
-                return;
-            }
+        speedAdds.put(this, speed);
+        regenAdds.put(this, (nearbyPlayers * 0.2) * kitPlayer.getHealthRegen());
+        kitPlayer.updateStats();
 
-            lastUse = System.currentTimeMillis();
-
-            kitPlayer.setCurrentMana(currentMana - manaCost);
-
-            isActive = true;
-
-            HashMap<Suffix, Double> speedAdds = kitPlayer.getSpeedAdds();
-            HashMap<Suffix, Double> regenAdds = kitPlayer.getHealthRegenAdds();
-
-            double damage = kitPlayer.getAttackDamage();
-
-            int nearbyPlayers = (int) player.getNearbyEntities(20).stream().filter(e -> e instanceof Player).count();
-
-            speedAdds.put(this, speed);
-            regenAdds.put(this, (nearbyPlayers * 0.2) * kitPlayer.getHealthRegen());
-            kitPlayer.updateStats();
-
-            getTaskBuilder().execute(() -> {
-                isActive = false;
-                speedAdds.put(this, 0.0);
-                regenAdds.put(this, 0.0);
-                kitPlayer.updateStats();}).
-                    delayTicks(duration).
-                    submit(SquareKit.getInstance());
-        }
+        Sponge.getScheduler().createTaskBuilder()
+                .execute(t -> {
+                    isActive = false;
+                    speedAdds.put(this, 0.0);
+                    regenAdds.put(this, 0.0);
+                    kitPlayer.updateStats();
+                })
+                .delayTicks((long) (duration * 20))
+                .submit(SquareKit.getInstance());
     }
 
     private void addEffect(){
@@ -112,7 +96,7 @@ public class AlphaBugs extends UseSuffix {
     public String getLoreEntry() {
         return Messages.get("alpha-bugs-suffix")
                 .replace("%SPEED%", FormatUtils.unsignedRound(speed * 100))
-                .replace("%TIME%", FormatUtils.unsignedTenth(duration/20))
+                .replace("%TIME%", FormatUtils.unsignedTenth(duration))
                 + super.getLoreEntry();
     }
 }

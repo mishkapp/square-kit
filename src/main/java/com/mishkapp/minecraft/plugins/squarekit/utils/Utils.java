@@ -33,8 +33,10 @@ public class Utils {
             return false;
         }
         Optional<List<Text>> optionalLore = i.get(Keys.ITEM_LORE);
-        boolean result = optionalLore.isPresent();
-        return result && optionalLore.get().get(0).toPlain().startsWith(CODE_PREFIX);
+        if(!optionalLore.isPresent()){
+            return false;
+        }
+        return optionalLore.get().get(0).toPlain().startsWith(CODE_PREFIX);
     }
 
     public static boolean isKitItem(ItemStackSnapshot i){
@@ -43,7 +45,10 @@ public class Utils {
         }
         Optional<List<Text>> optionalLore = i.get(Keys.ITEM_LORE);
         boolean result = optionalLore.isPresent();
-        return result && optionalLore.get().get(0).toPlain().startsWith(CODE_PREFIX);
+        if(result){
+            return false;
+        }
+        return optionalLore.get().get(0).toPlain().startsWith(CODE_PREFIX);
     }
 
     public static String getItemCode(ItemStack i){
@@ -73,12 +78,12 @@ public class Utils {
         return -1;
     }
 
-    public static Suffix instantiateSuffix(Class<? extends Suffix> clazz, KitPlayer kitPlayer, ItemStack i, int level){
+    public static Suffix instantiateSuffix(Class<? extends Suffix> clazz, KitPlayer kitPlayer, ItemStack i, String[] args){
         try{
-            return clazz.getConstructor(KitPlayer.class, ItemStack.class, Integer.class).newInstance(
+            return clazz.getConstructor(KitPlayer.class, ItemStack.class, String[].class).newInstance(
                     kitPlayer,
                     i,
-                    level
+                    args
             );
         } catch (Exception e){
             e.printStackTrace();

@@ -15,15 +15,13 @@ import java.util.HashMap;
 public class KnockbackResistance extends Suffix {
     private double resistance;
 
-    public KnockbackResistance(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
-        if(level > 32){
-            resistance = -2 * (level - 31);
-        } else {
-            resistance = level * 2;
+    public KnockbackResistance(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length == 0){
+            resistance = 0;
+            return;
         }
-
-        resistance /= 100;
+        resistance = Double.parseDouble(args[0]);
     }
 
     @Override

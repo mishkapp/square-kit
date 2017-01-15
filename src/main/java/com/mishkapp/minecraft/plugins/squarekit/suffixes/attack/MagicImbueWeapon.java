@@ -24,16 +24,19 @@ import static org.spongepowered.api.event.cause.entity.damage.DamageTypes.MAGIC;
 public class MagicImbueWeapon extends Suffix{
     private ParticleEffect effect;
     private Random rnd = new Random();
-    private double damage;
 
-    public MagicImbueWeapon(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
+    private double damage = 1;
+
+    public MagicImbueWeapon(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length > 0){
+            damage = Double.parseDouble(args[0]);
+        }
         effect = ParticleEffect.builder()
                 .type(ParticleTypes.WATER_SPLASH)
                 .quantity(3)
                 .offset(new Vector3d(0, 1, 0))
                 .build();
-        damage = level;
     }
 
     @Override

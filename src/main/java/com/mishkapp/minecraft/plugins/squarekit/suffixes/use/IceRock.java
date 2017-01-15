@@ -2,10 +2,8 @@ package com.mishkapp.minecraft.plugins.squarekit.suffixes.use;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
-import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
-import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.effect.potion.PotionEffect;
@@ -14,33 +12,39 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.mishkapp.minecraft.plugins.squarekit.utils.DamageUtils.magicDamage;
 import static com.mishkapp.minecraft.plugins.squarekit.utils.DamageUtils.physicalDamage;
+import static com.mishkapp.minecraft.plugins.squarekit.utils.PlayerUtils.applyEffects;
 
 /**
  * Created by mishkapp on 13.10.2016.
  */
 public class IceRock extends LaunchProjectileSuffix {
-    private int duration;
+    private PotionEffect slow;
+
+    private double duration = 10.0;
     private double pDamage = 0;
     private double mDamage = 30;
-    private PotionEffect potionEffect;
 
-    public IceRock(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level, EntityTypes.SNOWBALL);
-        duration = 10 * 20;
-        cooldown = 4 * 1000;
-        manaCost = 40 - (level * 64.0/40);
+    public IceRock(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length > 2){
+            duration = Double.parseDouble(args[2]);
+        }
+        if(args.length > 3){
+            pDamage = Double.parseDouble(args[3]);
+        }
+        if(args.length > 4){
+            mDamage = Double.parseDouble(args[4]);
+        }
+
         hSpeed = 1.3;
         vSpeed = 1.3;
 
-        potionEffect = PotionEffect.builder()
+        slow = PotionEffect.builder()
                 .potionType(PotionEffectTypes.SLOWNESS)
-                .duration(duration)
                 .amplifier(2)
+                .duration((int) (duration * 20))
                 .build();
 
         trailEffect = ParticleEffect.builder()
@@ -51,17 +55,15 @@ public class IceRock extends LaunchProjectileSuffix {
     }
 
     @Override
-    public void handle(KitEvent event) {
-        super.handle(event);
+    protected Entity prepareEntity() {
+        return kitPlayer.getMcPlayer().getWorld().createEntity(EntityTypes.SNOWBALL, kitPlayer.getMcPlayer().getLocation().getPosition().add(0, 1.75, 0));
     }
 
     @Override
     protected void onCollide(Entity entity){
-        List<PotionEffect> effects = entity.get(Keys.POTION_EFFECTS).orElse(new ArrayList<>());
-        effects.add(potionEffect);
-        entity.offer(Keys.POTION_EFFECTS, effects);
         entity.damage(mDamage, magicDamage(kitPlayer.getMcPlayer()));
         entity.damage(pDamage, physicalDamage(kitPlayer.getMcPlayer()));
+        applyEffects(entity, slow);
     }
 
     @Override
@@ -69,6 +71,7 @@ public class IceRock extends LaunchProjectileSuffix {
         return Messages.get("ice-rock-suffix")
                 .replace("%MDAMAGE%", FormatUtils.unsignedRound(mDamage))
                 .replace("%PDAMAGE%", FormatUtils.unsignedRound(pDamage))
+                .replace("%DURATION%", FormatUtils.unsignedRound(duration))
                 + super.getLoreEntry();
     }
 }

@@ -16,14 +16,13 @@ import java.util.HashMap;
 public class HoldingManaRegen extends Suffix{
     private double manaRegen;
 
-    public HoldingManaRegen(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
-
-        if(level > 32){
-            manaRegen = -1 * (level - 31) * 0.025;
-        } else {
-            manaRegen = 0.025 * level;
+    public HoldingManaRegen(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length == 0){
+            manaRegen = 0;
+            return;
         }
+        manaRegen = Double.parseDouble(args[0]);
     }
 
     @Override
@@ -34,7 +33,7 @@ public class HoldingManaRegen extends Suffix{
         if(event instanceof SuffixTickEvent){
             HashMap<Suffix, Double> adds = kitPlayer.getManaRegenAdds();
             if(isItemHolding()){
-                adds.put(this, manaRegen);
+                adds.put(this, manaRegen / 4);
             } else {
                 adds.remove(this);
             }
@@ -44,6 +43,6 @@ public class HoldingManaRegen extends Suffix{
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("holding-mana-regen-suffix").replace("%REGEN%", FormatUtils.tenth(manaRegen * 4));
+        return Messages.get("holding-mana-regen-suffix").replace("%REGEN%", FormatUtils.tenth(manaRegen));
     }
 }

@@ -15,15 +15,13 @@ import java.util.HashMap;
 public class MagicResistance extends Suffix {
     private double magicResistance;
 
-    public MagicResistance(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
-        if(level > 32){
-            magicResistance = -1 * (level - 31);
-        } else {
-            magicResistance = level;
+    public MagicResistance(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length == 0){
+            magicResistance = 0;
+            return;
         }
-
-        magicResistance /= 100;
+        magicResistance = Double.parseDouble(args[0]);
     }
 
     @Override

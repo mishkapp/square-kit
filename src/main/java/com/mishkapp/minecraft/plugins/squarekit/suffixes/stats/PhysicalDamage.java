@@ -15,13 +15,13 @@ import java.util.HashMap;
 public class PhysicalDamage extends Suffix {
     private double damage;
 
-    public PhysicalDamage(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
-        if(level > 32){
-            damage = -1 * (level - 31);
-        } else {
-            damage = level;
+    public PhysicalDamage(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length == 0){
+            damage = 0;
+            return;
         }
+        damage = Double.parseDouble(args[0]);
     }
 
     @Override

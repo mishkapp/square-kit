@@ -15,21 +15,20 @@ import java.util.HashMap;
 public class HealthRegen extends Suffix {
     private double healthRegen;
 
-    public HealthRegen(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
-
-        if(level > 32){
-            healthRegen = -1 * (level - 31) * 0.025;
-        } else {
-            healthRegen = 0.025 * level;
+    public HealthRegen(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length == 0){
+            healthRegen = 0;
+            return;
         }
+        healthRegen = Double.parseDouble(args[0]);
     }
 
     @Override
     public void register() {
         HashMap<Suffix, Double> adds = kitPlayer.getHealthRegenAdds();
         if(!adds.containsKey(this)){
-            adds.put(this, healthRegen);
+            adds.put(this, healthRegen / 4);
         }
     }
 
@@ -38,6 +37,6 @@ public class HealthRegen extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("health-regen-suffix").replace("%REGEN%", FormatUtils.tenth(healthRegen * 4));
+        return Messages.get("health-regen-suffix").replace("%REGEN%", FormatUtils.tenth(healthRegen));
     }
 }

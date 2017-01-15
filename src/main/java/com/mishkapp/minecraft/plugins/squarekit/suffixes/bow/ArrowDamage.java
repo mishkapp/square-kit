@@ -15,11 +15,13 @@ import org.spongepowered.api.item.inventory.ItemStack;
  */
 public class ArrowDamage extends Suffix {
 
-    private double damage;
+    private int damage;
 
-    public ArrowDamage(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
-        damage = level;
+    public ArrowDamage(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length > 0){
+            damage = Integer.parseInt(args[0]);
+        }
     }
 
     @Override

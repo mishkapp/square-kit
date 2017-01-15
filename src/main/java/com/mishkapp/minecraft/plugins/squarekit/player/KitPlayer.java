@@ -1,9 +1,6 @@
 package com.mishkapp.minecraft.plugins.squarekit.player;
 
-import com.mishkapp.minecraft.plugins.squarekit.KitItem;
-import com.mishkapp.minecraft.plugins.squarekit.Messages;
-import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
-import com.mishkapp.minecraft.plugins.squarekit.SuffixFactory;
+import com.mishkapp.minecraft.plugins.squarekit.*;
 import com.mishkapp.minecraft.plugins.squarekit.effects.Effect;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
@@ -724,6 +721,10 @@ public class KitPlayer {
             MONEY_MULTIPLIER += 0.1;
         }
         isDefaultsInitialized = true;
+    }
+
+    public boolean isInSafeZone() {
+        return AreaRegistry.getInstance().isInSafeArea(getMcPlayer());
     }
 }
 

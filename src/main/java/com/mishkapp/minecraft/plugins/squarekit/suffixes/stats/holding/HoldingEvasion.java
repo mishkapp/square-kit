@@ -16,15 +16,13 @@ import java.util.HashMap;
 public class HoldingEvasion extends Suffix {
     private double evasion;
 
-    public HoldingEvasion(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
-        if(level > 32){
-            evasion = -1 * (level - 31) * 3;
-        } else {
-            evasion = 3 * level;
+    public HoldingEvasion(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length == 0){
+            evasion = 0;
+            return;
         }
-
-        evasion /= 100.0;
+        evasion = Double.parseDouble(args[0]);
     }
 
     @Override

@@ -31,9 +31,17 @@ public class ShadowCloud extends Suffix {
     private ParticleEffect effect;
     private Random rnd = new Random();
 
+    private double chance = 0.05;
+    private double duration = 2;
 
-    public ShadowCloud(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
+    public ShadowCloud(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length > 0){
+            chance = Double.parseDouble(args[0]);
+        }
+        if(args.length > 1){
+            duration = Double.parseDouble(args[1]);
+        }
         effect = ParticleEffect.builder()
                 .type(ParticleTypes.LARGE_SMOKE)
                 .quantity(4)
@@ -43,7 +51,7 @@ public class ShadowCloud extends Suffix {
         potionEffect = PotionEffect.builder()
                 .potionType(PotionEffectTypes.BLINDNESS)
                 .amplifier(1)
-                .duration(2 * 20)
+                .duration((int) (duration * 20))
                 .build();
     }
 
@@ -58,7 +66,7 @@ public class ShadowCloud extends Suffix {
                 return;
             }
             Entity attacked = attackEvent.getAttacked();
-            if(rnd.nextDouble() < 0.05){
+            if(rnd.nextDouble() < chance){
                 List<PotionEffect> list = attacked.get(Keys.POTION_EFFECTS).orElse(new ArrayList<>());
                 list.add(potionEffect);
                 attacked.offer(Keys.POTION_EFFECTS, list);

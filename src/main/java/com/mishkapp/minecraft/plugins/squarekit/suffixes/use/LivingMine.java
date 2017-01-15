@@ -1,15 +1,14 @@
-package com.mishkapp.minecraft.plugins.squarekit.utils;
+package com.mishkapp.minecraft.plugins.squarekit.suffixes.use;
 
 import com.flowpowered.math.vector.Vector3d;
-import com.mishkapp.minecraft.plugins.squarekit.AreaRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.PlayersRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.events.EntityCollideEntityEvent;
-import com.mishkapp.minecraft.plugins.squarekit.events.ItemUsedEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.use.UseSuffix;
+import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
+import com.mishkapp.minecraft.plugins.squarekit.utils.SpongeUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.particle.ParticleEffect;
@@ -23,7 +22,6 @@ import org.spongepowered.api.entity.living.monster.Silverfish;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.world.World;
 
 import java.util.ArrayList;
@@ -38,33 +36,47 @@ import static java.lang.Math.sin;
  */
 public class LivingMine extends UseSuffix {
 
-
-    private double damage = 15;
-    private int liveTime = 30 * 20;
-    private int time = 10;
-    private double speedReduction = 0.2;
-    private int activationTime = 3;
-
     private ParticleEffect smoke = ParticleEffect.builder()
             .quantity(1)
             .type(ParticleTypes.LARGE_SMOKE)
             .build();
 
-    private PotionEffect blindness = PotionEffect.builder()
-            .potionType(PotionEffectTypes.BLINDNESS)
-            .duration(time * 20)
-            .amplifier(1)
-            .build();
+    private PotionEffect blindness;
 
-    private List<Silverfish> mines = new ArrayList<>();
+    private List<Entity> mines = new ArrayList<>();
 
     private Random random = new Random();
 
-    public LivingMine(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
+    private double damage = 15;
+    private double liveTime = 30;
+    private double duration = 10;
+    private double speedReduction = 0.2;
+    private double activationTime = 3;
 
-        cooldown = 10 * 1000;
-        manaCost = 15;
+    public LivingMine(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+
+        if(args.length > 2){
+            damage = Double.parseDouble(args[2]);
+        }
+        if(args.length > 3){
+            liveTime = Double.parseDouble(args[3]);
+        }
+        if(args.length > 4){
+            duration = Double.parseDouble(args[4]);
+        }
+        if(args.length > 5){
+            speedReduction = Double.parseDouble(args[5]);
+        }
+        if(args.length > 6){
+            activationTime = Double.parseDouble(args[6]);
+        }
+
+        blindness = PotionEffect.builder()
+                .potionType(PotionEffectTypes.BLINDNESS)
+                .duration((int) (duration * 20))
+                .amplifier(1)
+                .build();
     }
 
     @Override
@@ -83,64 +95,43 @@ public class LivingMine extends UseSuffix {
             playersEntity.remove();
             mines.remove(playersEntity);
         }
-        if(event instanceof ItemUsedEvent){
-            Player player = kitPlayer.getMcPlayer();
+    }
 
-            if(!isItemInHand(((ItemUsedEvent) event).getHandType())){
-                return;
-            }
+    @Override
+    protected void onUse() {
+        Player player = kitPlayer.getMcPlayer();
+        World world = player.getWorld();
 
-            if(AreaRegistry.getInstance().isInSafeArea(player)){
-                return;
-            }
+        Vector3d spawnLoc = player.getLocation().getPosition();
 
-            double currentMana = kitPlayer.getCurrentMana();
+        final Silverfish mine = (Silverfish) player.getWorld().createEntity(EntityTypes.SILVERFISH, spawnLoc);
 
-            if(currentMana < manaCost){
-                player.sendMessage(TextSerializers.FORMATTING_CODE.deserialize(Messages.get("nomana")));
-                return;
-            }
-            if(!isCooldowned(kitPlayer)){
-                return;
-            }
+        mine.setCreator(player.getUniqueId());
+        mine.offer(Keys.WALKING_SPEED, 0.2);
 
-            lastUse = System.currentTimeMillis();
+        mine.offer(Keys.AI_ENABLED, false);
 
-            kitPlayer.setCurrentMana(currentMana - manaCost);
+        Sponge.getScheduler().createTaskBuilder()
+                .delayTicks((long) (activationTime * 20))
+                .execute(t -> mine.offer(Keys.AI_ENABLED, true))
+                .submit(SquareKit.getInstance().getPlugin());
 
-            World world = player.getWorld();
+        mines.add(mine);
 
-            Vector3d spawnLoc = player.getLocation().getPosition();
+        world.spawnEntity(mine,
+                Cause.builder()
+                        .owner(SquareKit.getInstance())
+                        .build());
 
-            final Silverfish mine = (Silverfish) player.getWorld().createEntity(EntityTypes.SILVERFISH, spawnLoc);
-
-            mine.setCreator(player.getUniqueId());
-            mine.offer(Keys.WALKING_SPEED, 0.2);
-
-            mine.offer(Keys.AI_ENABLED, false);
-
-            Sponge.getScheduler().createTaskBuilder()
-                    .delayTicks(activationTime * 20)
-                    .execute(t -> mine.offer(Keys.AI_ENABLED, true))
-                    .submit(SquareKit.getInstance().getPlugin());
-
-            mines.add(mine);
-
-            world.spawnEntity(mine,
-                    Cause.builder()
-                            .owner(SquareKit.getInstance())
-                            .build());
-
-            SpongeUtils.getTaskBuilder()
-                    .delayTicks(liveTime)
-                    .execute(o -> {
-                        if(mine.isRemoved()){
-                            return;
-                        }
-                        mine.remove();
-                    })
-                    .submit(SquareKit.getInstance());
-        }
+        SpongeUtils.getTaskBuilder()
+                .delayTicks((long) (liveTime * 20))
+                .execute(o -> {
+                    if(mine.isRemoved()){
+                        return;
+                    }
+                    mine.remove();
+                })
+                .submit(SquareKit.getInstance());
     }
 
     private void onCollide(Entity affected){
@@ -164,10 +155,10 @@ public class LivingMine extends UseSuffix {
 
         if(affected instanceof Player){
             KitPlayer affectedPlayer = PlayersRegistry.getInstance().getPlayer(affected.getUniqueId());
-            affectedPlayer.getSpeedAdds().put(this, -1 * speedReduction);
+            affectedPlayer.getSpeedAdds().put(this, speedReduction);
             affectedPlayer.updateStats();
             Sponge.getScheduler().createTaskBuilder()
-                    .delayTicks(time * 20)
+                    .delayTicks((long) (duration * 20))
                     .execute(r -> {
                         affectedPlayer.getSpeedAdds().remove(this);
                         affectedPlayer.updateStats();
@@ -182,7 +173,7 @@ public class LivingMine extends UseSuffix {
                 .replace("%DAMAGE%", FormatUtils.unsignedRound(damage))
                 .replace("%SPEEDREDUCTION%", FormatUtils.unsignedRound(speedReduction * 100))
                 .replace("%ACTIVATIONTIME%", FormatUtils.unsignedRound(activationTime))
-                .replace("%TIME%", FormatUtils.unsignedTenth(time))
+                .replace("%TIME%", FormatUtils.unsignedTenth(duration))
                 .replace("%LIVETIME%", FormatUtils.unsignedRound(damage))
                 + super.getLoreEntry();
     }

@@ -18,7 +18,7 @@ public class SuffixRegistry {
 
     public void registerSuffix(int id, Class<? extends Suffix> s){
         if(suffixes.containsKey(id)){
-            throw new RuntimeException("Ability with given id (" + id + ") already presents in registry!");
+            throw new RuntimeException("Suffix with given id (" + id + ") already presents in registry!");
         } else {
             suffixes.put(id, s);
         }

@@ -16,13 +16,11 @@ import static org.spongepowered.api.data.type.HandTypes.OFF_HAND;
 public abstract class Suffix {
 
     protected ItemStack itemStack;
-    protected int level;
     protected KitPlayer kitPlayer;
 
-    public Suffix(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
+    public Suffix(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
         this.kitPlayer = kitPlayer;
         this.itemStack = itemStack;
-        this.level = level;
     }
 
     public boolean isItemHolding(){
@@ -85,7 +83,6 @@ public abstract class Suffix {
 
         Suffix suffix = (Suffix) o;
 
-        if (level != suffix.level) return false;
         if (!itemStack.equals(suffix.itemStack)) return false;
         return kitPlayer.equals(suffix.kitPlayer);
 
@@ -94,7 +91,6 @@ public abstract class Suffix {
     @Override
     public int hashCode() {
         int result = itemStack.hashCode();
-        result = 31 * result + level;
         result = 31 * result + kitPlayer.hashCode();
         return result;
     }

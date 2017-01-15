@@ -15,13 +15,13 @@ import java.util.HashMap;
 public class MaxHealth extends Suffix {
     private double health;
 
-    public MaxHealth(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
-        if(level > 32){
-            health = -1 * (level - 31) * 2;
-        } else {
-            health = level * 2;
+    public MaxHealth(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length == 0){
+            health = 0;
+            return;
         }
+        health = Double.parseDouble(args[0]);
     }
 
     @Override

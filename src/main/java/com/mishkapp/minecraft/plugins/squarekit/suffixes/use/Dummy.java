@@ -4,9 +4,9 @@ import com.flowpowered.math.vector.Vector3d;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.events.EntityKilledEvent;
-import com.mishkapp.minecraft.plugins.squarekit.events.ItemUsedEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
+import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.particle.ParticleEffect;
@@ -22,7 +22,6 @@ import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.world.World;
 
 import java.util.Collection;
@@ -36,9 +35,6 @@ import static java.lang.Math.*;
  */
 public class Dummy extends UseSuffix {
     private Human lastDummy = null;
-    private int duration = 30;
-    private int radius = 10;
-    private int damage = 30;
 
     private ParticleEffect smoke = ParticleEffect.builder()
             .quantity(1)
@@ -47,11 +43,21 @@ public class Dummy extends UseSuffix {
 
     private Random random = new Random();
 
-    public Dummy(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
+    private double duration = 30.0;
+    private double radius = 10.0;
+    private int damage = 30;
 
-        cooldown = 30 * 1000;
-        manaCost = 40;
+    public Dummy(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length > 2){
+            duration = Double.parseDouble(args[2]);
+        }
+        if(args.length > 3){
+            radius = Double.parseDouble(args[3]);
+        }
+        if(args.length > 4){
+            damage = Integer.parseInt(args[4]);
+        }
     }
 
     @Override
@@ -65,34 +71,16 @@ public class Dummy extends UseSuffix {
                 onDummyKilled(((EntityKilledEvent) event).getKiller());
             }
         }
-        if(event instanceof ItemUsedEvent){
-            Player player = kitPlayer.getMcPlayer();
+    }
 
-            if(!isItemInHand(((ItemUsedEvent) event).getHandType())){
-                return;
-            }
-
-            double currentMana = kitPlayer.getCurrentMana();
-
-            if(currentMana < manaCost){
-                player.sendMessage(TextSerializers.FORMATTING_CODE.deserialize(Messages.get("nomana")));
-                return;
-            }
-            if(!isCooldowned(kitPlayer)){
-                return;
-            }
-
-            lastUse = System.currentTimeMillis();
-
-            kitPlayer.setCurrentMana(currentMana - manaCost);
-
-            if(lastDummy != null){
-                lastDummy.remove();
-                lastDummy = null;
-            }
-
-            createDummy();
+    @Override
+    protected void onUse() {
+        if(lastDummy != null){
+            lastDummy.remove();
+            lastDummy = null;
         }
+
+        createDummy();
     }
 
 
@@ -122,7 +110,7 @@ public class Dummy extends UseSuffix {
         );
 
         Sponge.getScheduler().createTaskBuilder()
-                .delayTicks(duration * 20)
+                .delayTicks((long) (duration * 20))
                 .execute(r -> {
                     if(dummy.isRemoved()){
                         return;
@@ -214,9 +202,9 @@ public class Dummy extends UseSuffix {
     @Override
     public String getLoreEntry() {
         return Messages.get("dummy-suffix")
-                .replace("%DURATION%", duration + "")
-                .replace("%DAMAGE%", damage + "")
-                .replace("%RADIUS%", radius + "")
+                .replace("%DURATION%", FormatUtils.unsignedRound(duration))
+                .replace("%DAMAGE%", FormatUtils.unsignedRound(damage))
+                .replace("%RADIUS%", FormatUtils.unsignedRound(radius))
                 + super.getLoreEntry();
     }
 }

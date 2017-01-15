@@ -16,14 +16,13 @@ import java.util.HashMap;
 public class HoldingHealthRegen extends Suffix{
     private double healthRegen;
 
-    public HoldingHealthRegen(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
-
-        if(level > 32){
-            healthRegen = -1 * (level - 31) * 0.025;
-        } else {
-            healthRegen = 0.025 * level;
+    public HoldingHealthRegen(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length == 0){
+            healthRegen = 0;
+            return;
         }
+        healthRegen = Double.parseDouble(args[0]);
     }
 
     @Override
@@ -34,7 +33,7 @@ public class HoldingHealthRegen extends Suffix{
         if(event instanceof SuffixTickEvent){
             HashMap<Suffix, Double> adds = kitPlayer.getHealthRegenAdds();
             if(isItemHolding()){
-                adds.put(this, healthRegen);
+                adds.put(this, healthRegen / 4);
             } else {
                 adds.remove(this);
             }
@@ -44,6 +43,6 @@ public class HoldingHealthRegen extends Suffix{
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("holding-health-regen-suffix").replace("%REGEN%", FormatUtils.tenth(healthRegen * 4));
+        return Messages.get("holding-health-regen-suffix").replace("%REGEN%", FormatUtils.tenth(healthRegen));
     }
 }

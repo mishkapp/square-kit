@@ -47,13 +47,13 @@ public class SetupCommand implements CommandExecutor {
                     TextActions.showText(_text(Messages.get("stats.tip-up"))),
                     TextActions.runCommand("/statspanel up " + i),
                     TextColors.GREEN,
-                    Text.of("[↑]")));
+                    Text.of("[⬆]")));
             b.append(_text(" "));
             b.append(Text.of(
                     TextActions.showText(_text(Messages.get("stats.tip-down"))),
                     TextActions.runCommand("/statspanel down " + i),
                     TextColors.GREEN,
-                    Text.of("[↓]")));
+                    Text.of("[⬇]")));
             b.append(_text(" "));
             b.append(Text.of(
                     TextActions.showText(_text(Messages.get("stats.tip-remove"))),

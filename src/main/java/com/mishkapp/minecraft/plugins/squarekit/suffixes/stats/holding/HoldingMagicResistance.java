@@ -16,16 +16,13 @@ import java.util.HashMap;
 public class HoldingMagicResistance extends Suffix {
     private double resistance;
 
-    public HoldingMagicResistance(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
-
-        if(level > 32){
-            resistance = -1 * (level - 31);
-        } else {
-            resistance = level;
+    public HoldingMagicResistance(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length == 0){
+            resistance = 0;
+            return;
         }
-
-        resistance /= 100.0;
+        resistance = Double.parseDouble(args[0]);
     }
 
     @Override

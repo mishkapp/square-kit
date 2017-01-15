@@ -45,8 +45,20 @@ public class AstralVision extends Suffix {
             .type(ParticleTypes.END_ROD)
             .build();
 
-    public AstralVision(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
+    public AstralVision(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length > 0){
+            evasion = Double.parseDouble(args[0]);
+        }
+        if(args.length > 1){
+            speed = Double.parseDouble(args[1]);
+        }
+        if(args.length > 2){
+            mpRegen = Double.parseDouble(args[2]);
+        }
+        if(args.length > 3){
+            hpRegen = Double.parseDouble(args[3]);
+        }
     }
 
     @Override

@@ -22,10 +22,14 @@ import java.util.Random;
 public class AntimagicBlade extends Suffix {
     private ParticleEffect effect;
     private Random rnd = new Random();
+
     private double damage = 0.2;
 
-    public AntimagicBlade(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
+    public AntimagicBlade(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length > 0){
+            damage = Double.parseDouble(args[0]);
+        }
         effect = ParticleEffect.builder()
                 .type(ParticleTypes.WATER_SPLASH)
                 .quantity(3)

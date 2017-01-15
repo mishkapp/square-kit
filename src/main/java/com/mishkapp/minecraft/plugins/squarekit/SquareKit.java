@@ -31,13 +31,13 @@ import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.Invisibility;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.HoldingInvisibility;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.HoldingJumpBoost;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.HoldingNightVision;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.passive.ArrowGenerator;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.passive.ItemGenerator;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.passive.AstralVision;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.passive.Panic;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.*;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.holding.*;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.use.*;
-import com.mishkapp.minecraft.plugins.squarekit.utils.LivingMine;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.use.LivingMine;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
@@ -128,7 +128,7 @@ public class SquareKit{
         Sponge.getScheduler().createTaskBuilder()
                 .execute(r -> initialized = true)
                 .async()
-                .delay(2, TimeUnit.SECONDS)
+                .delay(3, TimeUnit.SECONDS)
                 .submit(getPlugin());
     }
 
@@ -140,9 +140,9 @@ public class SquareKit{
     private void initMongo(){
         mongoClient = new MongoClient(
                 new ServerAddress("s7.squareland.ru", 27017),
-                Collections.singletonList(MongoCredential.createScramSha1Credential("squarekit", "squarekit", "Pcy7F7Y9BBEgqzrA".toCharArray()))
+                Collections.singletonList(MongoCredential.createScramSha1Credential("squarekit_test", "squarekit_test", "Pcy7F7Y9BBEgqzrA".toCharArray()))
         );
-        mongoDb = mongoClient.getDatabase("squarekit");
+        mongoDb = mongoClient.getDatabase("squarekit_test");
     }
 
 //    public void onServer() {
@@ -610,7 +610,7 @@ public class SquareKit{
         registry.registerSuffix("4G", FlameableLiquid.class);
 
 
-        registry.registerSuffix("6A", ArrowGenerator.class);
+        registry.registerSuffix("6A", ItemGenerator.class);
         registry.registerSuffix("6B", Panic.class);
         registry.registerSuffix("6C", AstralVision.class);
 

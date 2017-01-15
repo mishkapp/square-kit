@@ -11,6 +11,7 @@ import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.item.inventory.type.CarriedInventory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -42,25 +43,20 @@ public class SuffixFactory {
 
     public static KitItem getKitItem(KitPlayer kitPlayer, ItemStack i){
         String itemCode = Utils.getItemCode(i);
-        ItemUtils.setLore(i, Utils.CODE_PREFIX + itemCode);
+        String[] rawCodes = itemCode.split(";");
         KitItem result = new KitItem(kitPlayer, i, itemCode);
         List<Suffix> suffices = new ArrayList<>();
 
-        while(true){
-            if(itemCode.length() < 3){
-                break;
-            }
-            int id = Utils.getBase64Value(itemCode.substring(0, 2));
-            itemCode = itemCode.substring(2);
-            int level = Utils.getBase64Value(itemCode.substring(0, 1));
-            itemCode = itemCode.substring(1);
-
-            Suffix suffix = Utils.instantiateSuffix(SuffixRegistry.getInstance().getSuffix(id), kitPlayer, i, level);
+        for(String c : rawCodes){
+            int id = Utils.getBase64Value(c.substring(0, 2));
+            String[] args = c.split(":");
+            args = Arrays.copyOfRange(args, 1, args.length);
+            Suffix suffix = Utils.instantiateSuffix(SuffixRegistry.getInstance().getSuffix(id), kitPlayer, i, args);
             if(suffix == null){
                 continue;
             }
-            suffices.add(suffix);
             ItemUtils.addLore(i, suffix.getLoreEntry());
+            suffices.add(suffix);
         }
         result.setSuffices(suffices);
         return result;

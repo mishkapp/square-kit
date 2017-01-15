@@ -2,7 +2,6 @@ package com.mishkapp.minecraft.plugins.squarekit.suffixes.use;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
-import com.mishkapp.minecraft.plugins.squarekit.events.ItemUsedEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
@@ -10,9 +9,7 @@ import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.effect.potion.PotionEffectTypes;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,20 +20,23 @@ import java.util.stream.Collectors;
  */
 public class Cloak extends UseSuffix {
 
-    private int time = 60;
-    private PotionEffect effect = PotionEffect.builder()
-            .potionType(PotionEffectTypes.INVISIBILITY)
-            .amplifier(1)
-            .duration(time * 20)
-            .build();
+    private PotionEffect effect;
 
     private Vector3d invisPosition = null;
 
-    public Cloak(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
+    private double duration = 60.0;
 
-        cooldown = 3 * 1000;
-        manaCost = 10;
+    public Cloak(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length > 2){
+            duration = Integer.parseInt(args[2]);
+        }
+
+        effect = PotionEffect.builder()
+                .potionType(PotionEffectTypes.INVISIBILITY)
+                .amplifier(1)
+                .duration((int) (duration * 20))
+                .build();
     }
 
     @Override
@@ -56,42 +56,22 @@ public class Cloak extends UseSuffix {
                 effects = effects.stream().filter(e -> !e.getType().equals(PotionEffectTypes.INVISIBILITY)).collect(Collectors.toList());
                 kitPlayer.getMcPlayer().offer(Keys.POTION_EFFECTS, effects);
             }
-
         }
-        if(event instanceof ItemUsedEvent){
-            Player player = kitPlayer.getMcPlayer();
+    }
 
-            if(!isItemInHand(((ItemUsedEvent) event).getHandType())){
-                return;
-            }
+    @Override
+    protected void onUse() {
+        List<PotionEffect> effects = kitPlayer.getMcPlayer().get(Keys.POTION_EFFECTS).orElse(new ArrayList<>());
+        effects.add(effect);
+        kitPlayer.getMcPlayer().offer(Keys.POTION_EFFECTS, effects);
 
-            double currentMana = kitPlayer.getCurrentMana();
-
-            if(currentMana < manaCost){
-                player.sendMessage(TextSerializers.FORMATTING_CODE.deserialize(Messages.get("nomana")));
-                return;
-            }
-            if(!isCooldowned(kitPlayer)){
-                return;
-            }
-
-            lastUse = System.currentTimeMillis();
-
-            kitPlayer.setCurrentMana(currentMana - manaCost);
-
-            List<PotionEffect> effects = kitPlayer.getMcPlayer().get(Keys.POTION_EFFECTS).orElse(new ArrayList<>());
-            effects.add(effect);
-            kitPlayer.getMcPlayer().offer(Keys.POTION_EFFECTS, effects);
-
-            invisPosition = kitPlayer.getMcPlayer().getLocation().getPosition();
-
-        }
+        invisPosition = kitPlayer.getMcPlayer().getLocation().getPosition();
     }
 
     @Override
     public String getLoreEntry() {
         return Messages.get("cloak-suffix")
-                .replace("%TIME%", FormatUtils.unsignedRound(time))
+                .replace("%TIME%", FormatUtils.unsignedRound(duration))
                 + super.getLoreEntry();
     }
 }

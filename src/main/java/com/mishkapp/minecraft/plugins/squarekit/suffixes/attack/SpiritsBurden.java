@@ -6,41 +6,48 @@ import com.mishkapp.minecraft.plugins.squarekit.events.PlayerAttackEntityEvent;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.Suffix;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
-import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.effect.potion.PotionEffectTypes;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
+import static com.mishkapp.minecraft.plugins.squarekit.utils.PlayerUtils.applyEffects;
 
 /**
  * Created by mishkapp on 09.12.2016.
  */
 public class SpiritsBurden extends Suffix {
 
-    private int duration = 15;
+    private PotionEffect poison;
 
-    private PotionEffect poison = PotionEffect.builder()
-            .particles(true)
-            .potionType(PotionEffectTypes.POISON)
-            .duration(duration * 20)
-            .amplifier(1)
-            .build();
-
-    private PotionEffect slowness = PotionEffect.builder()
-            .particles(true)
-            .potionType(PotionEffectTypes.SLOWNESS)
-            .duration(duration * 20)
-            .amplifier(1)
-            .build();
+    private PotionEffect slowness;
 
     private double manaCost = 3;
+    private double duration = 15;
 
-    public SpiritsBurden(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
+    public SpiritsBurden(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length > 0){
+            manaCost = Double.parseDouble(args[0]);
+        }
+        if(args.length > 1){
+            duration = Double.parseDouble(args[1]);
+        }
+
+        poison = PotionEffect.builder()
+                .particles(true)
+                .potionType(PotionEffectTypes.POISON)
+                .duration((int) (duration * 20))
+                .amplifier(1)
+                .build();
+
+        slowness = PotionEffect.builder()
+                .particles(true)
+                .potionType(PotionEffectTypes.SLOWNESS)
+                .duration((int) (duration * 20))
+                .amplifier(1)
+                .build();
     }
 
     @Override
@@ -61,10 +68,8 @@ public class SpiritsBurden extends Suffix {
             kitPlayer.setCurrentMana(currentMana - manaCost);
 
             Entity entity = attackEvent.getAttacked();
-            List<PotionEffect> effects = entity.get(Keys.POTION_EFFECTS).orElse(new ArrayList<>());
-            effects.add(poison);
-            effects.add(slowness);
-            entity.offer(Keys.POTION_EFFECTS, effects);
+
+            applyEffects(entity, slowness);
         }
     }
 

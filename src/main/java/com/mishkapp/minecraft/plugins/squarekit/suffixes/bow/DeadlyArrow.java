@@ -35,9 +35,14 @@ public class DeadlyArrow extends Suffix {
 
     private long lastUse;
 
-
-    public DeadlyArrow(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
+    public DeadlyArrow(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length > 0){
+            cooldown = Double.parseDouble(args[0]);
+        }
+        if(args.length > 1){
+            hpTreshold = Integer.parseInt(args[1]);
+        }
 
     }
 

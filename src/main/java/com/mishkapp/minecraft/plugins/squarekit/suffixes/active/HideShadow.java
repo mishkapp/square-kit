@@ -27,16 +27,27 @@ import java.util.Random;
  * Created by mishkapp on 03.10.2016.
  */
 public class HideShadow extends Suffix {
-    private boolean isActive = false;
     private double activationCost = 10;
-    private double regenerationBonus = 0.175;
     private double manaCost = 0.5;
+    private double regenerationBonus = 0.7;
+
+    private boolean isActive = false;
     private ParticleEffect effect;
     private Random rnd = new Random();
     private Slot slot;
 
-    public HideShadow(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
+    public HideShadow(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+        if(args.length > 0){
+            activationCost = Double.parseDouble(args[0]);
+        }
+        if(args.length > 1){
+            manaCost = Double.parseDouble(args[1]);
+        }
+        if(args.length > 2){
+            regenerationBonus = Double.parseDouble(args[2]);
+        }
+
         effect = ParticleEffect.builder()
                 .type(ParticleTypes.LARGE_SMOKE)
                 .quantity(4)
@@ -95,7 +106,7 @@ public class HideShadow extends Suffix {
         itemStack.offer(Keys.ITEM_ENCHANTMENTS, enchantments);
         itemStack.offer(Keys.HIDE_ENCHANTMENTS, true);
         HashMap<Suffix, Double> adds = kitPlayer.getHealthRegenAdds();
-        adds.put(this, regenerationBonus);
+        adds.put(this, regenerationBonus / 4);
         updateSlot();
     }
 
@@ -127,6 +138,7 @@ public class HideShadow extends Suffix {
     public String getLoreEntry() {
         return Messages.get("hide-shadow-suffix")
                 .replace("%ACTIVATION_COST%", FormatUtils.unsignedRound(activationCost))
+                .replace("%REGENERATION_BONUS%", FormatUtils.tenth(regenerationBonus))
                 .replace("%MANA_COST%", FormatUtils.unsignedTenth(manaCost * 4));
     }
 }

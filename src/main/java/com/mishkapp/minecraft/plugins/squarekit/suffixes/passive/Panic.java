@@ -18,8 +18,22 @@ public class Panic extends Suffix {
     private double pRes = -0.1;
     private double mRes = -0.1;
 
-    public Panic(KitPlayer kitPlayer, ItemStack itemStack, Integer level) {
-        super(kitPlayer, itemStack, level);
+    public Panic(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+        super(kitPlayer, itemStack, args);
+
+        if(args.length > 0){
+            hpTreshold = Double.parseDouble(args[0]);
+        }
+        if(args.length > 1){
+            speed = Double.parseDouble(args[1]);
+        }
+        if(args.length > 2){
+            pRes = Double.parseDouble(args[2]);
+        }
+        if(args.length > 3){
+            mRes = Double.parseDouble(args[3]);
+        }
+
     }
 
     @Override
