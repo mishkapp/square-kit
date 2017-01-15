@@ -51,6 +51,14 @@ public class AddCommand implements CommandExecutor {
             b.append(Text.NEW_LINE);
         }
 
+        b.append(Text.of(
+                TextActions.showText(_text(Messages.get("stats.back-to-setup-tip"))),
+                TextActions.runCommand("/statspanel setup"),
+                TextColors.GREEN,
+                Text.of("[<] ",
+                        _text(Messages.get("stats.back-to-setup")))));
+        b.append(Text.NEW_LINE);
+
         b.append(Text.of("================================"));
 
         player.sendMessage(b.build());

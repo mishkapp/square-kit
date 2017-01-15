@@ -21,6 +21,7 @@ public class PlayerSettings {
         statsPanelEntries.add("streak");
         statsPanelEntries.add("physical-resist");
         statsPanelEntries.add("level");
+        statsPanelEntries.add("setup");
     }
 
     public double getHealthScale() {

@@ -66,10 +66,12 @@ public class SetupCommand implements CommandExecutor {
         }
         b.append(Text.of(
                 TextActions.showText(_text(Messages.get("stats.tip-add"))),
-                TextActions.runCommand("/statspanel setup"),
+                TextActions.runCommand("/statspanel add"),
                 TextColors.GREEN,
-                Text.of("[+] ")),
-                _text(Messages.get("stats.add-link")));
+                Text.of("[+] ",
+                        _text(Messages.get("stats.add-link")))));
+        b.append(Text.NEW_LINE);
+
         b.append(Text.of("================================"));
 
         player.sendMessage(b.build());

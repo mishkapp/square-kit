@@ -380,6 +380,7 @@ public class SquareKit{
 
         CommandSpec statsPanelCmd = CommandSpec.builder()
                 .description(Text.of("Stats panel command"))
+                .executor(new SetupCommand())
                 .child(panelAdd, "add")
                 .child(entryAdd, "addentry")
                 .child(entryRemove, "remove")
@@ -388,7 +389,7 @@ public class SquareKit{
                 .child(entrySetup, "setup")
                 .build();
 
-        Sponge.getCommandManager().register(this, statsPanelCmd, "statspanel");
+        Sponge.getCommandManager().register(this, statsPanelCmd, "statspanel", "panel");
 
 
 //        // /setspawn
