@@ -38,7 +38,7 @@ dependencies {
 
     provided 'org.mongodb:mongodb-driver:3.0.4'
 
-    compile 'org.spongepowered:spongeapi:6.0.0-20161129.193523-26'
+    compile 'org.spongepowered:spongeapi:6.0.0-20170108.105512-31 '
 
     compile fileTree(dir: 'libs', include: '*.jar')
 }
