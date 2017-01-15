@@ -1,7 +1,9 @@
 package com.mishkapp.minecraft.plugins.squarekit.commands;
 
-import com.mishkapp.minecraft.plugins.squarekit.*;
-import com.mishkapp.minecraft.plugins.squarekit.areas.Area;
+import com.mishkapp.minecraft.plugins.squarekit.Kit;
+import com.mishkapp.minecraft.plugins.squarekit.Messages;
+import com.mishkapp.minecraft.plugins.squarekit.PlayersRegistry;
+import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.comparators.KitComparator;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.utils.ItemUtils;
@@ -16,9 +18,8 @@ import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.Inventory;
+import org.spongepowered.api.item.inventory.InventoryArchetypes;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.ItemStackSnapshot;
-import org.spongepowered.api.item.inventory.property.InventoryDimension;
 import org.spongepowered.api.item.inventory.property.InventoryTitle;
 import org.spongepowered.api.item.inventory.transaction.SlotTransaction;
 import org.spongepowered.api.item.inventory.type.GridInventory;
@@ -40,24 +41,23 @@ public class KitsCommand implements CommandExecutor {
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         if(src instanceof Player){
             Player player = (Player)src;
-            List<Area> areas = AreaRegistry.getInstance().getApplicableAreas(player);
-
-            int c = (int) areas.parallelStream().filter(Area::isSafe).count();
-            if(c <= 0){
+            KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player);
+            if(!kitPlayer.isInSafeZone()){
                 player.sendMessage(_text(Messages.get("kit-bad-area")));
                 return CommandResult.empty();
             }
 
             List<Kit> kits = SquareKit.getKitRegistry().getKitList().stream()
-                    .filter(k -> (player.hasPermission(k.getPermission()) || (!player.hasPermission(k.getPermission()) && k.getConditionMessage() != null)))
+                    .filter(k -> (
+                            player.hasPermission(k.getPermission())
+                                    || (!player.hasPermission(k.getPermission()) && k.getConditionMessage() != null)))
                     .sorted(new KitComparator())
                     .collect(Collectors.toList());
 
-            HashMap<ItemStack, Kit> itemKitMap = new HashMap<>();
+            final HashMap<ItemStack, Kit> itemKitMap = new HashMap<>();
 
-            KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player);
             Inventory inventory = Inventory.builder()
-                    .property(InventoryDimension.PROPERTY_NAME, InventoryDimension.of(9, 6))
+                    .of(InventoryArchetypes.DOUBLE_CHEST)
                     .property(InventoryTitle.PROPERTY_NAME, InventoryTitle.of(Text.of("Киты")))
                     .listener(
                             ClickInventoryEvent.class,
@@ -68,15 +68,20 @@ public class KitsCommand implements CommandExecutor {
                                     return;
                                 }
                                 List<SlotTransaction> transactions = e.getTransactions();
-                                ItemStackSnapshot t = transactions.get(0).getOriginal();
-
                                 Set<ItemStack> keys = itemKitMap.keySet();
-
-                                List<ItemStack> appliableKeys = keys.stream().filter(i -> ItemUtils.isSimilar(i, t.createStack())).collect(Collectors.toList());
-                                p.closeInventory(Cause.of(NamedCause.source(SquareKit.getInstance().getPlugin())));
-                                if(appliableKeys.size() > 0){
-                                    applyKit(p, itemKitMap.get(appliableKeys.get(0)));
+                                List<ItemStack> applicableKeys = keys.stream()
+                                        .filter(i -> {
+                                            for (SlotTransaction t : transactions) {
+                                                if (ItemUtils.isSimilar(i, t.getOriginal().createStack())) {
+                                                    return true;
+                                                }
+                                            }
+                                            return false;
+                                        }).collect(Collectors.toList());
+                                if (applicableKeys.size() > 0) {
+                                    applyKit(p, itemKitMap.get(applicableKeys.get(0)));
                                 }
+                                p.closeInventory(Cause.of(NamedCause.source(SquareKit.getInstance().getPlugin())));
                             }
                     )
                     .build(SquareKit.getInstance().getPlugin());
@@ -88,8 +93,8 @@ public class KitsCommand implements CommandExecutor {
                 if(kitPlayer.getMoney() < k.getPrice() || kitPlayer.getLevel() < k.getMinLevel() || !kitPlayer.getMcPlayer().hasPermission(k.getPermission())){
                     menuItem = ItemStack.builder().from(menuItem).itemType(ItemTypes.BARRIER).build();
                 }
-                itemKitMap.put(menuItem, k);
-                gridInventory.set(i%9, i/9, menuItem);
+                itemKitMap.put(menuItem.copy(), k);
+                gridInventory.offer(menuItem);
                 i += 1;
             }
 

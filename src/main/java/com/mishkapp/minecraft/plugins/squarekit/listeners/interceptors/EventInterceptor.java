@@ -285,8 +285,8 @@ public class EventInterceptor {
 
     @Listener
     private void onFoodEated(UseItemStackEvent event){
-        System.out.println("event = " + event);
-        System.out.println("cause = " + event.getCause().all());
+//        System.out.println("event = " + event);
+//        System.out.println("cause = " + event.getCause().all());
     }
 
     @Listener

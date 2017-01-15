@@ -39,7 +39,7 @@ public class Kit {
     private Kit(){}
 
     public ItemStack getMenuItem(){
-        return menuItem;
+        return menuItem.copy();
     }
 
     public String getId() {

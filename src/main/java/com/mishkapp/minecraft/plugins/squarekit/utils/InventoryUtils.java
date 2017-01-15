@@ -7,7 +7,6 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.item.inventory.entity.Hotbar;
 import org.spongepowered.api.item.inventory.entity.PlayerInventory;
-import org.spongepowered.api.item.inventory.type.GridInventory;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -31,7 +30,10 @@ public class InventoryUtils {
         inventory.spliterator().forEachRemaining(
                 i -> {
                     if(i instanceof Slot){
-                        ItemStack is = i.peek().get();
+                        ItemStack is = i.peek().orElse(null);
+                        if(is == null){
+                            return;
+                        }
                         if(is.getItem().equals(type)){
                             res.addAndGet(is.getQuantity());
                         }
