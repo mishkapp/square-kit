@@ -492,7 +492,6 @@ public class KitPlayer {
     }
 
     public void update(){
-        System.out.println("UPDATE");
         updateMcPlayer();
         List<KitItem> items = SuffixFactory.getKitItems(this);
 
@@ -522,7 +521,6 @@ public class KitPlayer {
     }
 
     public void forceUpdate(){
-        System.out.println("FORCE UPDATE");
         effects = new ArrayList<>();
         updateMcPlayer();
         purgeAdditions();
