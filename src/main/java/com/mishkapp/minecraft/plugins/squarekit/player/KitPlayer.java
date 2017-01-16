@@ -594,30 +594,10 @@ public class KitPlayer {
     }
 
     private void regenMana(){
-//        double maxMana = getMaxMana();
-//        double manaDelta = maxMana - currentMana;
-//        double manaRegen = getManaRegen();
-//        if(currentMana + manaRegen <= 0){
-//            currentMana = 0;
-//            return;
-//        }
-//        if(manaDelta < manaRegen){
-//            currentMana += manaDelta;
-//        } else {
-//            currentMana += manaRegen;
-//        }
         addMana(getManaRegen());
     }
 
     private void regenHealth(){
-//        Player player = getMcPlayer();
-//        HealthData hd = player.getHealthData();
-//        double health = player.health().get();
-//        if(health <= 0) {return;}
-//        double newHealth = health + getHealthRegen();
-//        if(newHealth > getMaxHealth()) {newHealth = getMaxHealth();}
-//        if(newHealth <= 1){newHealth = 1;}
-//        player.offer(Keys.HEALTH, newHealth);
         addHealth(getHealthRegen());
     }
 

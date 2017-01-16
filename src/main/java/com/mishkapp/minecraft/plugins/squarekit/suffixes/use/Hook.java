@@ -59,7 +59,6 @@ public class Hook extends LaunchProjectileSuffix {
 
     @Override
     protected void onCollide(Entity entity){
-        System.out.println(" entity = " + entity);
         Vector3d a = kitPlayer.getMcPlayer().getLocation().getPosition();
         Vector3d b = entity.getLocation().getPosition();
 
