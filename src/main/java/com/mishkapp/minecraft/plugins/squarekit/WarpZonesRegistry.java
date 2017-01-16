@@ -7,6 +7,9 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.effect.particle.ParticleEffect;
+import org.spongepowered.api.effect.particle.ParticleTypes;
+import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.world.World;
 
@@ -23,6 +26,12 @@ public class WarpZonesRegistry {
     private static WarpZonesRegistry instance;
 
     private HashMap<String, List<WarpPoint>> registry = new HashMap<>();
+
+    private ParticleEffect warpParticle = ParticleEffect.builder()
+            .type(ParticleTypes.PORTAL)
+            .quantity(10)
+            .offset(new Vector3d(0, 1, 0))
+            .build();
 
     public void addPoint(String id, World world, Vector3d pos){
         if(registry.containsKey(id)){
@@ -67,6 +76,22 @@ public class WarpZonesRegistry {
                 .collect(Collectors.toList());
         WarpPoint point = warpPoints1.get(new Random().nextInt(warpPoints1.size()));
         if(point != null){
+            player.playSound(SoundTypes.ENTITY_ENDERMEN_TELEPORT, player.getLocation().getPosition(), 1);
+            player.playSound(SoundTypes.ENTITY_ENDERMEN_TELEPORT, point.getPosition(), 1);
+            for(int i = 0; i < 10; i++){
+                player.getLocation().getExtent().spawnParticles(
+                        warpParticle,
+                        point.getPosition()
+                                .add(SquareKit.random.nextGaussian(), SquareKit.random.nextGaussian(), SquareKit.random.nextGaussian()),
+                        20);
+            }
+            for(int i = 0; i < 10; i++){
+                player.getLocation().getExtent().spawnParticles(
+                        warpParticle,
+                        player.getLocation().getPosition()
+                                .add(SquareKit.random.nextGaussian(), SquareKit.random.nextGaussian(), SquareKit.random.nextGaussian()),
+                        20);
+            }
             player.transferToWorld(point.getWorld(), point.getPosition());
         }
     }

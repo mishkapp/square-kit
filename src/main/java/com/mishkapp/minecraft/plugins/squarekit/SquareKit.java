@@ -67,6 +67,7 @@ import org.spongepowered.api.text.Text;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -75,6 +76,7 @@ import java.util.logging.Logger;
  */
 @Plugin(id = "squarekit", name = "Square Kit", version = "1.0")
 public class SquareKit{
+    public static Random random = new Random();
 
     private static SquareKit instance;
 
