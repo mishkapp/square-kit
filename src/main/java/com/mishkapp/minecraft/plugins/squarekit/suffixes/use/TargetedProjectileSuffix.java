@@ -56,6 +56,7 @@ public abstract class TargetedProjectileSuffix extends SpellSuffix {
             if(!launchedEntities.contains(playersEntity)){
                 return;
             }
+            System.out.println("entityCollideEntityEvent.getAffectedEntity() = " + entityCollideEntityEvent.getAffectedEntity());
             onCollide(entityCollideEntityEvent.getAffectedEntity());
             launchedEntities.remove(playersEntity);
         }
@@ -142,6 +143,7 @@ public abstract class TargetedProjectileSuffix extends SpellSuffix {
                         if(entity.isRemoved()){
                             return;
                         }
+                        launchedEntities.remove(entity);
                         entity.remove();
                     })
                     .submit(SquareKit.getInstance());

@@ -5,18 +5,16 @@ import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
+import com.mishkapp.minecraft.plugins.squarekit.utils.DamageUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.Item;
-import org.spongepowered.api.entity.living.Living;
+import org.spongepowered.api.entity.living.Humanoid;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.entity.damage.DamageTypes;
-import org.spongepowered.api.event.cause.entity.damage.source.DamageSource;
-import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -55,26 +53,41 @@ public class CholesterolExplosion extends UseSuffix {
         Player player = kitPlayer.getMcPlayer();
         List<Entity> entities = player.getNearbyEntities(radius)
                 .parallelStream()
-                .filter(e -> e instanceof Living && e != player)
+                .filter(e -> e instanceof Humanoid && e != player)
                 .collect(Collectors.toList());
 
         int entitiesCount = entities.size();
-        int food = player.getFoodData().foodLevel().get();
+        double power = (player.getFoodData().foodLevel().get() + player.getFoodData().saturation().get()) / entities.size();
         player.offer(Keys.FOOD_LEVEL, 0);
+        player.offer(Keys.SATURATION, 0.0);
+        addEffect();
         if(entitiesCount > 0){
-            addEffect();
             entities.forEach(entity -> {
-                DamageSource ds = EntityDamageSource.builder()
-                        .entity(kitPlayer.getMcPlayer())
-                        .absolute()
-                        .bypassesArmor()
-                        .type(DamageTypes.ATTACK)
-                        .build();
-                entity.damage((double)food / (double)entitiesCount, ds);
-                if(entity instanceof Player){
-                    entity.offer(Keys.FOOD_LEVEL, Math.min(20, entity.get(Keys.FOOD_LEVEL).get() + (food/entitiesCount)));
+                entity.damage(power, DamageUtils.pureDamage(player));
+
+                double targetFood = max(0, ((Humanoid)entity).getFoodData().foodLevel().get());
+                double targetSaturation = ((Humanoid)entity).getFoodData().saturation().get();
+                double playerFood = power;
+
+                if(targetFood < 20){
+                    if(playerFood > 0){
+                        double delta = max(0, 20 - targetFood);
+                        if(delta <= playerFood){
+                            targetFood += delta;
+                            playerFood -= delta;
+                        } else {
+                            targetFood += playerFood;
+                            playerFood = 0;
+                        }
+                    }
                 }
 
+                if(playerFood > 0){
+                    targetSaturation += playerFood;
+                }
+
+                entity.offer(Keys.FOOD_LEVEL, (int)targetFood);
+                entity.offer(Keys.SATURATION, targetSaturation);
             });
         }
     }

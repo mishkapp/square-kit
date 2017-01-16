@@ -14,7 +14,7 @@ import org.spongepowered.api.text.serializer.TextSerializers;
  * Created by mishkapp on 07.01.2017.
  */
 public abstract class TargetedSuffix extends SpellSuffix {
-    private double distance = 30.0;
+    protected double distance = 30.0;
 
     public TargetedSuffix(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
         super(kitPlayer, itemStack, args);
