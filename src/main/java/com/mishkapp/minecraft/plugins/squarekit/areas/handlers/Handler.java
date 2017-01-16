@@ -34,6 +34,8 @@ public abstract class Handler {
                 return VisualHandler.deserialize(args);
             case "floating-item" :
                 return FloatingItemHandler.deserialize(args);
+            case "bank" :
+                return BankHandler.deserialize(args);
             default:
                 return null;
         }
