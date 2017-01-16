@@ -1,10 +1,12 @@
 package com.mishkapp.minecraft.plugins.squarekit;
 
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 
 import java.util.HashMap;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -39,25 +41,22 @@ public class Messages {
 
         keys.forEach(k -> temp.put(k, msgDoc.getString(k)));
 
-        addMessages(temp, "stats");
-
+        collection = SquareKit.getInstance().getMongoDb().getCollection("messages");
+        FindIterable<Document> result = collection.find();
+        result.forEach((Consumer<? super Document>) d -> addMessages(temp, d));
         messages = temp;
     }
 
-    private static void addMessages(HashMap<String, String> messages, String id){
-
-        MongoCollection collection = SquareKit.getInstance().getMongoDb().getCollection("messages");
-        Document document = (Document) collection.find(eq("id", id)).first();
-
+    private static void addMessages(HashMap<String, String> messages, Document document){
         if(document == null){
             return;
         }
 
+        String id = document.getString("id");
         Document msgDoc = (Document)document.get("messages");
 
         Set<String> keys = msgDoc.keySet();
 
         keys.forEach(k -> messages.put(id + "." + k, msgDoc.getString(k)));
-
     }
 }
