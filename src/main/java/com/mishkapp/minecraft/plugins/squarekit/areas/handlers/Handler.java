@@ -36,6 +36,10 @@ public abstract class Handler {
                 return FloatingItemHandler.deserialize(args);
             case "bank" :
                 return BankHandler.deserialize(args);
+            case "health-percent":
+                return HealthPercentHandler.deserialize(args);
+            case "mana-percent":
+                return ManaPercentHandler.deserialize(args);
             default:
                 return null;
         }

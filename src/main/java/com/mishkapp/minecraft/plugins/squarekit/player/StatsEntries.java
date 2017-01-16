@@ -38,6 +38,7 @@ public class StatsEntries {
         entries.put("money-multiplier", new MoneyMultiplierEntry());
         entries.put("kdr", new KdRatioEntry());
         entries.put("setup", new SetupEntry());
+        entries.put("saturation", new SaturationEntry());
     }
 
     public static Text getText(String key, KitPlayer kitPlayer){

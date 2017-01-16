@@ -11,7 +11,6 @@ import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.manipulator.mutable.entity.HealthData;
 import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.living.player.Player;
 
@@ -22,6 +21,7 @@ import java.util.UUID;
 
 import static com.mishkapp.minecraft.plugins.squarekit.utils.Utils._text;
 import static com.mongodb.client.model.Filters.eq;
+import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 /**
@@ -102,7 +102,7 @@ public class KitPlayer {
         for(double i : getPhysicalDamageAdds().values()){
             result += i;
         }
-        return Math.max(1, result);
+        return max(1, result);
     }
 
     public float getSpeed(){
@@ -110,7 +110,7 @@ public class KitPlayer {
         for(double i : getSpeedAdds().values()){
             result += i;
         }
-        return (float)Math.max(Double.MIN_VALUE, result);
+        return (float) max(Double.MIN_VALUE, result);
     }
 
     public double getCooldownRate(){
@@ -118,7 +118,7 @@ public class KitPlayer {
         for(double i : getCooldownRateAdds().values()){
             result += i;
         }
-        return Math.max(Double.MIN_VALUE, result);
+        return max(Double.MIN_VALUE, result);
     }
 
     public double getMaxMana(){
@@ -126,7 +126,7 @@ public class KitPlayer {
         for(double i : getMaxManaAdds().values()){
             result += i;
         }
-        return Math.max(0, result);
+        return max(0, result);
     }
 
     public double getManaRegen() {
@@ -166,7 +166,7 @@ public class KitPlayer {
         for(double i : getMaxHealthAdds().values()){
             result += i;
         }
-        return Math.max(1, result);
+        return max(1, result);
     }
 
     public double getKnockbackResist() {
@@ -185,7 +185,7 @@ public class KitPlayer {
         if(result > 0){
             return min(1, result);
         } else {
-            return Math.max(0, result);
+            return max(0, result);
         }
     }
 
@@ -194,7 +194,7 @@ public class KitPlayer {
         for(double i : getCriticalPowerAdds().values()){
             result += i;
         }
-        return Math.max(0, result);
+        return max(0, result);
     }
 
     public double getEvasion() {
@@ -205,7 +205,7 @@ public class KitPlayer {
         if(result > 0){
             return min(1, result);
         } else {
-            return Math.max(0, result);
+            return max(0, result);
         }
     }
 
@@ -214,7 +214,7 @@ public class KitPlayer {
         for(double i : getMoneyMultiplierAdds().values()){
             result += i;
         }
-        return Math.max(0, result);
+        return max(0, result);
     }
 
     public HashMap<Suffix, Double> getAdditions(String s){
@@ -380,7 +380,7 @@ public class KitPlayer {
         if(money == 0.0){
             return;
         }
-        this.money = Math.max(0.0, this.money - money);
+        this.money = max(0.0, this.money - money);
         if(!silent){
             getMcPlayer().sendMessage(_text(Messages.get("money-lost").replace("%MONEY%", FormatUtils.unsignedRound(money))));
         }
@@ -594,29 +594,31 @@ public class KitPlayer {
     }
 
     private void regenMana(){
-        double maxMana = getMaxMana();
-        double manaDelta = maxMana - currentMana;
-        double manaRegen = getManaRegen();
-        if(currentMana + manaRegen <= 0){
-            currentMana = 0;
-            return;
-        }
-        if(manaDelta < manaRegen){
-            currentMana += manaDelta;
-        } else {
-            currentMana += manaRegen;
-        }
+//        double maxMana = getMaxMana();
+//        double manaDelta = maxMana - currentMana;
+//        double manaRegen = getManaRegen();
+//        if(currentMana + manaRegen <= 0){
+//            currentMana = 0;
+//            return;
+//        }
+//        if(manaDelta < manaRegen){
+//            currentMana += manaDelta;
+//        } else {
+//            currentMana += manaRegen;
+//        }
+        addMana(getManaRegen());
     }
 
     private void regenHealth(){
-        Player player = getMcPlayer();
-        HealthData hd = player.getHealthData();
-        double health = player.health().get();
-        if(health <= 0) {return;}
-        double newHealth = health + getHealthRegen();
-        if(newHealth > getMaxHealth()) {newHealth = getMaxHealth();}
-        if(newHealth <= 1){newHealth = 1;}
-        player.offer(Keys.HEALTH, newHealth);
+//        Player player = getMcPlayer();
+//        HealthData hd = player.getHealthData();
+//        double health = player.health().get();
+//        if(health <= 0) {return;}
+//        double newHealth = health + getHealthRegen();
+//        if(newHealth > getMaxHealth()) {newHealth = getMaxHealth();}
+//        if(newHealth <= 1){newHealth = 1;}
+//        player.offer(Keys.HEALTH, newHealth);
+        addHealth(getHealthRegen());
     }
 
     public Player getMcPlayer() {
@@ -677,14 +679,14 @@ public class KitPlayer {
     }
 
     public void addMana(double manaAdd) {
-        currentMana = min(getMaxMana(), currentMana + manaAdd);
+        currentMana = min(getMaxMana(), max(0, currentMana + manaAdd));
     }
 
     public void addHealth(double hpAdd) {
         if(getHealth() <= 0){
             return;
         }
-        getMcPlayer().offer(Keys.HEALTH, min(getMaxHealth(), getMcPlayer().getHealthData().health().get() + hpAdd));
+        getMcPlayer().offer(Keys.HEALTH, min(getMaxHealth(), max(1, getHealth() + hpAdd)));
     }
 
     public int getBounty() {
