@@ -10,6 +10,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.hanging.ItemFrame;
 import org.spongepowered.api.entity.living.Human;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.projectile.arrow.Arrow;
@@ -125,6 +126,10 @@ public class BattleInterceptor {
 
     @Listener
     public void onEntityDamage(DamageEntityEvent event, @First DamageSource damageSource){
+        if(event.getTargetEntity() instanceof ItemFrame){
+            event.setCancelled(true);
+            return;
+        }
         if(AreaRegistry.getInstance().isInSafeArea(event.getTargetEntity().getLocation())){
             event.setCancelled(true);
             return;

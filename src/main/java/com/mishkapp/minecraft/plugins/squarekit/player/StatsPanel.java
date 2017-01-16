@@ -32,8 +32,8 @@ public class StatsPanel {
                 .displayName(_text(Messages.get("stats.panel-header")))
                 .build();
         scoreboard.addObjective(statsObj);
-        updateScoreboard();
         kitPlayer.getMcPlayer().setScoreboard(scoreboard);
+        updateScoreboard();
     }
 
     public void update(){

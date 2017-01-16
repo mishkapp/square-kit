@@ -14,6 +14,10 @@ public class PlayerSettings {
     private List<String> statsPanelEntries = new ArrayList<>();
 
     public PlayerSettings(){
+        setDefaultPanelEntries();
+    }
+
+    private void setDefaultPanelEntries(){
         statsPanelEntries.add("physical-resist");
         statsPanelEntries.add("magic-resist");
         statsPanelEntries.add("mana");
@@ -43,7 +47,11 @@ public class PlayerSettings {
     static PlayerSettings fromDocument(Document document){
         PlayerSettings result = new PlayerSettings();
         result.healthScale = document.getDouble("healthScale");
-        result.statsPanelEntries = (List<String>) document.get("statsPanelEntries");
+        if(document.containsKey("statsPanelEntries")){
+            result.statsPanelEntries = (List<String>) document.get("statsPanelEntries");
+        } else {
+            result.setDefaultPanelEntries();
+        }
         return result;
     }
 

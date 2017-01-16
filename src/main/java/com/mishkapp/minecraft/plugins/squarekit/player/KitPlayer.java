@@ -64,7 +64,7 @@ public class KitPlayer {
     private int currentKillstreak;
     private PlayerStats playerStats = new PlayerStats();
     private KitsStats kitsStats = new KitsStats();
-    private PlayerSettings playerSettings;
+    private PlayerSettings playerSettings = new PlayerSettings();
     private StatsPanel statsPanel;
 
     private boolean isDefaultsInitialized = false;

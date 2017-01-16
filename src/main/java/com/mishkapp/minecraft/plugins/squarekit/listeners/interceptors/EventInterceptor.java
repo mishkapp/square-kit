@@ -10,6 +10,7 @@ import com.mishkapp.minecraft.plugins.squarekit.utils.Utils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.type.HandType;
 import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.hanging.ItemFrame;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.projectile.Projectile;
 import org.spongepowered.api.event.Listener;
@@ -73,6 +74,10 @@ public class EventInterceptor {
 
     @Listener
     public void onEntityInterract(InteractEntityEvent.Secondary event, @First Player player){
+        if(event.getTargetEntity() instanceof ItemFrame){
+            event.setCancelled(true);
+            return;
+        }
         ItemStack mainHand = player.getItemInHand(MAIN_HAND).orElse(null);
         ItemStack offHand = player.getItemInHand(OFF_HAND).orElse(null);
 
@@ -113,6 +118,14 @@ public class EventInterceptor {
 
         if(Utils.isKitItem(usedItem)){
             Sponge.getEventManager().post(new ItemUsedOnTargetEvent(SquareKit.getPlayersRegistry().getPlayer(player), handType, event.getTargetEntity()));
+        }
+    }
+
+    @Listener
+    public void onEntityInterractMain(InteractEntityEvent.Primary event, @First Player player){
+        if(event.getTargetEntity() instanceof ItemFrame){
+            event.setCancelled(true);
+            return;
         }
     }
 
