@@ -31,19 +31,22 @@ import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.Invisibility;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.HoldingInvisibility;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.HoldingJumpBoost;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.effects.holding.HoldingNightVision;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.passive.ItemGenerator;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.passive.AstralVision;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.passive.ItemGenerator;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.passive.Panic;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.*;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.stats.holding.*;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.use.*;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.use.LivingMine;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.GuiceObjectMapperFactory;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializerCollection;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
@@ -52,7 +55,7 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
-import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartingServerEvent;
@@ -62,7 +65,6 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
@@ -90,8 +92,14 @@ public class SquareKit{
     private TypeSerializerCollection serializers = TypeSerializers.getDefaultSerializers().newChild();
 
     @Inject
-    @ConfigDir(sharedRoot = false)
-    private Path configDir;
+    @DefaultConfig(sharedRoot = true)
+    private Path defaultConfigPath;
+
+    @Inject
+    @DefaultConfig(sharedRoot = true)
+    private ConfigurationLoader<CommentedConfigurationNode> configManager;
+
+    private ConfigurationNode defaultConfig;
 
     @Inject
     private Game game;
@@ -101,22 +109,16 @@ public class SquareKit{
     @Listener
     public void onInit(GameInitializationEvent event){
         instance = this;
+        initConfig();
         initMongo();
         initSerializers();
         initCmds();
         initMessages();
-
     }
-
-//    @Listener
-//    public void onLoadComplete(GameLoadCompleteEvent event){
-//        Sponge.getServer().setHasWhitelist(true);
-//    }
 
     @Listener
     public void onGameStarting(GameStartingServerEvent event){
         initConfigs();
-        saveConf();
         registerSuffixes();
         registerListeners();
         registerKits();
@@ -137,19 +139,32 @@ public class SquareKit{
         getPlayersRegistry().savePlayers();
     }
 
-    private void initMongo(){
-        mongoClient = new MongoClient(
-                new ServerAddress("s7.squareland.ru", 27017),
-                Collections.singletonList(MongoCredential.createScramSha1Credential("squarekit_test", "squarekit_test", "Pcy7F7Y9BBEgqzrA".toCharArray()))
-        );
-        mongoDb = mongoClient.getDatabase("squarekit_test");
+    private void initConfig(){
+        configManager = HoconConfigurationLoader.builder().setPath(defaultConfigPath).build();
+        try {
+            defaultConfig = configManager.load();
+            configManager.save(defaultConfig);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-//    public void onServer() {
-//        getSuffixRegistry().purge();
-//        getPlayersRegistry().purge();
-//        getKitRegistry().purge();
-//    }
+    private void initMongo(){
+        ConfigurationNode mongoNode = defaultConfig.getNode("mongodb");
+        String host = mongoNode.getNode("host").getString("localhost");
+        int port = mongoNode.getNode("port").getInt(27017);
+
+        String user = mongoNode.getNode("user").getString("user");
+        String authDatabase = mongoNode.getNode("authDatabase").getString("authDb");
+        String password = mongoNode.getNode("password").getString("password");
+        String database = mongoNode.getNode("database").getString("database");
+
+        mongoClient = new MongoClient(
+                new ServerAddress(host, port),
+                Collections.singletonList(MongoCredential.createScramSha1Credential(user, authDatabase, password.toCharArray()))
+        );
+        mongoDb = mongoClient.getDatabase(database);
+    }
 
     private void initAreas(){
         MongoCollection collection = mongoDb.getCollection("areas");
@@ -528,22 +543,8 @@ public class SquareKit{
         return initialized;
     }
 
-    public Path getConfigDir(){
-        return configDir;
-    }
-
     public PluginContainer getPlugin() {
         return plugin;
-    }
-
-    private void saveConf(){
-        if(Files.exists(getConfigDir())){
-            try {
-                Files.createDirectories(getConfigDir());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private void registerSuffixes(){
