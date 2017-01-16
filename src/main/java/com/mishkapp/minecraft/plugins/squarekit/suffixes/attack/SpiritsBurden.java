@@ -69,7 +69,7 @@ public class SpiritsBurden extends Suffix {
 
             Entity entity = attackEvent.getAttacked();
 
-            applyEffects(entity, slowness);
+            applyEffects(entity, slowness, poison);
         }
     }
 
