@@ -62,7 +62,7 @@ public class EternalHunger extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("eternal-hunger")
+        return Messages.get("eternal-hunger-suffix")
                 .replace("%INTERVAL%", FormatUtils.unsignedTenth(interval));
     }
 }
