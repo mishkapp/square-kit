@@ -525,6 +525,7 @@ public class KitPlayer {
         updateMcPlayer();
         purgeAdditions();
 
+        kitItems.forEach(i -> i.getSuffices().forEach(Suffix::unregister));
         kitItems = SuffixFactory.getKitItems(this);
         kitItems.forEach(
                 o -> o.getSuffices().forEach(Suffix::register)
