@@ -90,7 +90,7 @@ public class Dehydration extends TargetedSuffix {
         target.offer(Keys.FOOD_LEVEL, (int)targetFood);
         target.offer(Keys.SATURATION, targetSaturation);
 
-        target.damage(kitPlayer.getHealth() * damage, DamageUtils.pureDamage(kitPlayer.getMcPlayer()));
+        target.damage(damage, DamageUtils.pureDamage(kitPlayer.getMcPlayer()));
 
         addEffect(target);
     }
