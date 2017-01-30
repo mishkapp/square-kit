@@ -37,10 +37,6 @@ public abstract class TargetedSuffix extends SpellSuffix {
                 return;
             }
 
-            if(!(((ItemUsedOnTargetEvent) event).getTarget() instanceof Player)){
-                return;
-            }
-
             if(((ItemUsedOnTargetEvent) event).getTarget().getLocation().getPosition().distance(player.getLocation().getPosition()) > distance){
                 return;
             }

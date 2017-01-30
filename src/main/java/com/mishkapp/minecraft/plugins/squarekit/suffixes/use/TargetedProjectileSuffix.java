@@ -67,10 +67,6 @@ public abstract class TargetedProjectileSuffix extends SpellSuffix {
                 return;
             }
 
-            if(!(((ItemUsedOnTargetEvent) event).getTarget() instanceof Player)){
-                return;
-            }
-
             if(AreaRegistry.getInstance().isInSafeArea(player)){
                 return;
             }

@@ -11,6 +11,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.type.HandType;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.hanging.ItemFrame;
+import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.projectile.Projectile;
 import org.spongepowered.api.event.Listener;
@@ -182,7 +183,7 @@ public class EventInterceptor {
 
     private Entity getTarget(InteractBlockEvent.Secondary event, Player player) {
         List<Entity> list = player.getNearbyEntities(30).stream().filter(e -> {
-            if(e == player || !(e instanceof Player)){
+            if(e == player || !(e instanceof Living)){
                 return false;
             }
 
