@@ -43,6 +43,6 @@ public class HoldingSpeed extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("holding-speed-suffix").replace("%SPEED%", FormatUtils.round(speed * 100));
+        return Messages.get("suffix.holding-speed").replace("%SPEED%", FormatUtils.round(speed * 100));
     }
 }

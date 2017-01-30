@@ -129,7 +129,7 @@ public class FlameableLiquid extends TargetedProjectileSuffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("flameable-liquid-suffix")
+        return Messages.get("suffix.flameable-liquid")
                 .replace("%DAMAGE%", FormatUtils.unsignedRound(damage))
                 .replace("%TIME%", FormatUtils.unsignedTenth(time))
                 + super.getLoreEntry();

@@ -181,7 +181,7 @@ public class AstralVision extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("astral-vision-suffix")
+        return Messages.get("suffix.astral-vision")
                 .replace("%HPREGEN%", FormatUtils.tenth(hpRegen * 4))
                 .replace("%MPREGEN%", FormatUtils.tenth(mpRegen * 4))
                 .replace("%SPEED%", FormatUtils.round(speed * 100))

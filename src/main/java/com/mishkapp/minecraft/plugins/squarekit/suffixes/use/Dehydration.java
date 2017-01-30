@@ -173,7 +173,7 @@ public class Dehydration extends TargetedSuffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("dehydration-suffix")
+        return Messages.get("suffix.dehydration")
                 + super.getLoreEntry();
     }
 }

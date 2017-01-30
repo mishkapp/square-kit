@@ -187,7 +187,7 @@ public class Obesity extends TargetedSuffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("obesity-suffix")
+        return Messages.get("suffix.obesity")
                 .replace("%DURATION%", FormatUtils.unsignedRound(duration))
                 + super.getLoreEntry();
     }

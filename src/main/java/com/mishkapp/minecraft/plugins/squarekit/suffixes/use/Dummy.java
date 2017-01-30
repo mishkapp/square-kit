@@ -201,7 +201,7 @@ public class Dummy extends UseSuffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("dummy-suffix")
+        return Messages.get("suffix.dummy")
                 .replace("%DURATION%", FormatUtils.unsignedRound(duration))
                 .replace("%DAMAGE%", FormatUtils.unsignedRound(damage))
                 .replace("%RADIUS%", FormatUtils.unsignedRound(radius))

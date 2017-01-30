@@ -70,7 +70,7 @@ public class Cloak extends UseSuffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("cloak-suffix")
+        return Messages.get("suffix.cloak")
                 .replace("%TIME%", FormatUtils.unsignedRound(duration))
                 + super.getLoreEntry();
     }

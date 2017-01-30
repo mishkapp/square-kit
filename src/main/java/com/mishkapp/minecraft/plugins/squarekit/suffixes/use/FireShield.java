@@ -113,7 +113,7 @@ public class FireShield extends UseSuffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("fire-shield-suffix")
+        return Messages.get("suffix.fire-shield")
                 .replace("%TIME%", FormatUtils.unsignedTenth(duration))
                 + super.getLoreEntry();
     }

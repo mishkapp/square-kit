@@ -150,7 +150,7 @@ public class CholesterolExplosion extends UseSuffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("cholesterol-explosion-suffix")
+        return Messages.get("suffix.cholesterol-explosion")
                 + super.getLoreEntry();
     }
 }

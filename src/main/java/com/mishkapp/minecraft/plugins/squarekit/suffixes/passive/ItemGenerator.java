@@ -57,7 +57,7 @@ public class ItemGenerator extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("item-generator-suffix")
+        return Messages.get("suffix.item-generator")
                 .replace("%TIME%", FormatUtils.unsignedRound(regenCooldown / 4))
                 .replace("%ITEM%", itemType.getTranslation().get(new Locale("ru", "RU")))
                 .replace("%LIMIT%", FormatUtils.unsignedRound(itemLimit));

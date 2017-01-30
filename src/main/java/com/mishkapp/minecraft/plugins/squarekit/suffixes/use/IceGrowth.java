@@ -108,7 +108,7 @@ public class IceGrowth extends UseSuffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("ice-growth-suffix")
+        return Messages.get("suffix.ice-growth")
                 .replace("%DURATION%", FormatUtils.unsignedRound(duration))
                 .replace("%RADIUS%", FormatUtils.unsignedRound(radius))
                 + super.getLoreEntry();

@@ -42,7 +42,7 @@ public class LazyBelly extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("lazy-belly-suffix")
+        return Messages.get("suffix.lazy-belly")
                 .replace("%TRESHOLD%", FormatUtils.unsignedRound(treshold));
     }
 }

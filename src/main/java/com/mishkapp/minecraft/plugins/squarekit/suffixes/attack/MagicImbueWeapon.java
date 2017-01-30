@@ -71,7 +71,7 @@ public class MagicImbueWeapon extends Suffix{
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("magic-imbue-weapon-suffix")
+        return Messages.get("suffix.magic-imbue-weapon")
                 .replace("%DAMAGE%", FormatUtils.round(damage));
     }
 }

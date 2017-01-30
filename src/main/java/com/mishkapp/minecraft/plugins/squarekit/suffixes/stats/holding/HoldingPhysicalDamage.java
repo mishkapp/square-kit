@@ -43,7 +43,7 @@ public class HoldingPhysicalDamage extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("holding-physical-damage-suffix").replace("%DAMAGE%", FormatUtils.round(damage));
+        return Messages.get("suffix.holding-physical-damage").replace("%DAMAGE%", FormatUtils.round(damage));
     }
 
 }

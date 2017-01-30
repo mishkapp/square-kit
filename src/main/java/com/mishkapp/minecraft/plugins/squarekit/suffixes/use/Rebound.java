@@ -70,7 +70,7 @@ public class Rebound extends UseSuffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("rebound-suffix")
+        return Messages.get("suffix.rebound")
                 + super.getLoreEntry();
     }
 }

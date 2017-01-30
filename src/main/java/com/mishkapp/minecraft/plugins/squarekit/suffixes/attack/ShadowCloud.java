@@ -96,6 +96,6 @@ public class ShadowCloud extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("shadow-cloud-suffix");
+        return Messages.get("suffix.shadow-cloud");
     }
 }

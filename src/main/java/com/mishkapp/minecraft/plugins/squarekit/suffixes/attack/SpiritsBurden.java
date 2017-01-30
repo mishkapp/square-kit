@@ -62,7 +62,7 @@ public class SpiritsBurden extends Suffix {
             double currentMana = kitPlayer.getCurrentMana();
 
             if(currentMana < manaCost){
-//                player.sendMessage(TextSerializers.FORMATTING_CODE.deserialize(Messages.get("nomana")));
+//                player.sendMessage(TextSerializers.FORMATTING_CODE.deserialize(Messages.get("alert.nomana")));
                 return;
             }
             kitPlayer.setCurrentMana(currentMana - manaCost);
@@ -75,7 +75,7 @@ public class SpiritsBurden extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("spirits-burden-suffix")
+        return Messages.get("suffix.spirits-burden")
                 .replace("%TIME%", FormatUtils.unsignedRound(duration))
                 .replace("%MANACOST%", FormatUtils.unsignedRound(manaCost));
     }

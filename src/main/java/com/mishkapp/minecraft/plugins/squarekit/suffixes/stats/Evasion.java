@@ -37,6 +37,6 @@ public class Evasion extends Suffix{
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("evasion-suffix").replace("%EVASION%", FormatUtils.round(evasion * 100));
+        return Messages.get("suffix.evasion").replace("%EVASION%", FormatUtils.round(evasion * 100));
     }
 }

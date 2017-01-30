@@ -52,7 +52,7 @@ public class DeadlyArrow extends Suffix {
             double time = ((cooldown * kitPlayer.getCooldownRate()) - delta)/1000.0;
             kitPlayer.getMcPlayer().sendMessage(
                     TextSerializers.FORMATTING_CODE.deserialize(
-                            Messages.get("cooldown")
+                            Messages.get("alert.cooldown")
                                     .replace("%TIME%", FormatUtils.unsignedTenth(time)))
             );
             return false;
@@ -136,7 +136,7 @@ public class DeadlyArrow extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("deadly-arrow-suffix")
+        return Messages.get("suffix.deadly-arrow")
                 .replace("%HPTRESHOLD%", String.valueOf(hpTreshold))
                 .replace("%TIME%", FormatUtils.unsignedRound(cooldown));
     }

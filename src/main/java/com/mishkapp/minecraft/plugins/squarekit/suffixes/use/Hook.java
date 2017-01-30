@@ -75,7 +75,7 @@ public class Hook extends LaunchProjectileSuffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("hook-suffix")
+        return Messages.get("suffix.hook")
                 .replace("%DAMAGE%", FormatUtils.unsignedRound(damage * 100))
                 .replace("%DURATION%", FormatUtils.unsignedRound(duration))
                 + super.getLoreEntry();

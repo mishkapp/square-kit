@@ -91,7 +91,7 @@ public class BeginnersLuck extends UseSuffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("beginners-luck-suffix")
+        return Messages.get("suffix.beginners-luck")
                 .replace("%EVA%", FormatUtils.round(evasion * 100))
                 .replace("%CRCH%", FormatUtils.round(critChance * 100))
                 .replace("%TIME%", FormatUtils.unsignedRound(duration))

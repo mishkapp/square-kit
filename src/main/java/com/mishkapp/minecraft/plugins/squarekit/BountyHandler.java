@@ -11,7 +11,6 @@ import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
 
 import java.util.HashMap;
 import java.util.List;
@@ -64,22 +63,18 @@ public class BountyHandler {
         int bounty = kitPlayer.getBounty();
         lastPlayer = kitPlayer;
 
-        Text.Builder builder = Text.builder();
-
-        builder.color(TextColors.RED);
-        builder.append(kitPlayer.getMcPlayer().getDisplayNameData().displayName().get());
+        String bossbarTitle = Messages.get("bounty.bossbar-name").replace("%PLAYER%", kitPlayer.getMcPlayer().getDisplayNameData().displayName().get().toPlain());
         int treshold = KitRegistry.getInstance().getKit(kitPlayer.getCurrentKit()).getPrice() * 10;
         treshold = max(1000, treshold);
         if(kitPlayer.getBounty() >= treshold){
-            builder.append(_text(" (" + KitRegistry.getInstance().getKit(kitPlayer.getCurrentKit()).getName() + "&c) "));
+            bossbarTitle += Messages.get("bounty.bossbar-kit").replace("%KIT%", KitRegistry.getInstance().getKit(kitPlayer.getCurrentKit()).getName());
         }
-        builder.append(Text.of(" - убийств: " + kitPlayer.getCurrentKillstreak()));
+        bossbarTitle += Messages.get("bounty.bossbar-kills").replace("%KILLS%", Integer.toString(kitPlayer.getCurrentKillstreak()));
         if(bounty > 0){
-            builder.append(Text.of(" - награда за голову: "));
-            builder.append(_text("&6" + kitPlayer.getBounty()));
+            bossbarTitle += Messages.get("bounty.bossbar-bounty").replace("%BOUNTY%", Integer.toString(kitPlayer.getBounty()));
         }
 
-        bossBar.setName(builder.build());
+        bossBar.setName(_text(bossbarTitle));
         bossBar.setPercent((float) Math.min(1, kitPlayer.getHealth()/kitPlayer.getMaxHealth()));
         render();
     }
@@ -149,7 +144,7 @@ public class BountyHandler {
             Sponge.getServer().getOnlinePlayers().forEach(
                     p -> {
                         p.sendMessage(_text(
-                                Messages.get("bounty-complete")
+                                Messages.get("bounty.complete")
                                         .replace("%PLAYER%", killed.getMcPlayer().getName())
                                         .replace("%KILLER%", killer.getMcPlayer().getName())
                                         .replace("%BOUNTY%", killed.getBounty() + "")
@@ -171,7 +166,7 @@ public class BountyHandler {
             Sponge.getServer().getOnlinePlayers().forEach(
                     p -> {
                         p.sendMessage(_text(
-                                Messages.get("bounty-denied")
+                                Messages.get("bounty.denied")
                                         .replace("%PLAYER%", killed.getMcPlayer().getName())
                                         .replace("%BOUNTY%", killed.getBounty()/2 + "")
                         ));

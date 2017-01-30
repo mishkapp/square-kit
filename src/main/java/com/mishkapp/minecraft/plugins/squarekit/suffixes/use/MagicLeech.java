@@ -109,7 +109,7 @@ public class MagicLeech extends TargetedProjectileSuffix{
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("magic-leech-suffix")
+        return Messages.get("suffix.magic-leech")
                 .replace("%TIME%", FormatUtils.unsignedTenth(time))
                 + super.getLoreEntry();
     }

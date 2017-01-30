@@ -43,6 +43,6 @@ public class HoldingMaxMana extends Suffix{
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("holding-max-mana-suffix").replace("%MANA%", FormatUtils.round(mana));
+        return Messages.get("suffix.holding-max-mana").replace("%MANA%", FormatUtils.round(mana));
     }
 }

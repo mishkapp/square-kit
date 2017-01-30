@@ -37,6 +37,6 @@ public class MaxHealth extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("max-health-suffix").replace("%HEALTH%", FormatUtils.round(health));
+        return Messages.get("suffix.max-health").replace("%HEALTH%", FormatUtils.round(health));
     }
 }

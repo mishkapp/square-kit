@@ -44,7 +44,7 @@ public abstract class TargetedSuffix extends SpellSuffix {
             double currentMana = kitPlayer.getCurrentMana();
 
             if(currentMana < manaCost){
-                player.sendMessage(TextSerializers.FORMATTING_CODE.deserialize(Messages.get("nomana")));
+                player.sendMessage(TextSerializers.FORMATTING_CODE.deserialize(Messages.get("alert.nomana")));
                 return;
             }
 

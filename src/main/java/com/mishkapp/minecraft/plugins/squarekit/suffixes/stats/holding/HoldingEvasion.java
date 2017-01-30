@@ -43,6 +43,6 @@ public class HoldingEvasion extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("holding-evasion-suffix").replace("%SPEED%", FormatUtils.round(evasion * 100));
+        return Messages.get("holding-evasion").replace("%SPEED%", FormatUtils.round(evasion * 100));
     }
 }

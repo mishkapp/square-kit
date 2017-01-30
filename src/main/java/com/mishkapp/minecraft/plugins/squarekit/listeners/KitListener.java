@@ -32,11 +32,13 @@ public class KitListener {
     public void onDeath(PlayerKilledByPlayerEvent event){
         KitPlayer killed = event.getPlayer();
         KitPlayer killer = event.getKiller();
+        killed.getMcPlayer().sendMessage(_text(Messages.get("alert.killed-by-player").replace("%KILLER%", killer.getMcPlayer().getName())));
         if(killer != killed){
             if(killed.getMcPlayer().getConnection().getAddress().getAddress().equals(killer.getMcPlayer().getConnection().getAddress().getAddress())){
-                killer.getMcPlayer().sendMessage(_text(Messages.get("error-kill-from-same-ip")));
+                killer.getMcPlayer().sendMessage(_text(Messages.get("alert.error-kill-from-same-ip")));
                 BountyHandler.getInstance().denied(killed);
             } else {
+                killer.getMcPlayer().sendMessage(_text(Messages.get("alert.killed-player").replace("%KILLED%", killed.getMcPlayer().getName())));
                 killer.onKill(killed);
             }
         }
@@ -63,10 +65,9 @@ public class KitListener {
     public void onDeath(DummyKilledByPlayerEvent event){
         KitPlayer killed = event.getPlayer();
         KitPlayer killer = event.getKiller();
-        killed.getMcPlayer().sendMessage(_text(Messages.get("killed-by-player").replace("%KILLER%", killer.getMcPlayer().getName())));
         if(killer != killed){
             if(killed.getMcPlayer().getConnection().getAddress().getAddress().equals(killer.getMcPlayer().getConnection().getAddress().getAddress())){
-                killer.getMcPlayer().sendMessage(_text(Messages.get("error-kill-from-same-ip")));
+                killer.getMcPlayer().sendMessage(_text(Messages.get("alert.error-kill-from-same-ip")));
                 BountyHandler.getInstance().denied(killed);
             } else {
                 killer.onKill(killed);

@@ -126,7 +126,7 @@ public class MagicFlow extends TargetedSuffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("magic-flow-suffix")
+        return Messages.get("suffix.magic-flow")
                 .replace("%SPEED_REDUCTION%", FormatUtils.round(speedReduction * 100))
                 .replace("%MANA_REDUCTION%", FormatUtils.unsignedRound(manaReduction * 100))
                 .replace("%DURATION%", FormatUtils.unsignedTenth(duration))

@@ -68,7 +68,7 @@ public class AntimagicBlade extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("antimagic-blade-suffix")
+        return Messages.get("suffix.antimagic-blade")
                 .replace("%DAMAGE%", FormatUtils.unsignedRound(damage * 100.0));
     }
 }

@@ -37,6 +37,6 @@ public class Speed extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("speed-suffix").replace("%SPEED%", FormatUtils.round(speed * 100));
+        return Messages.get("suffix.speed").replace("%SPEED%", FormatUtils.round(speed * 100));
     }
 }

@@ -58,7 +58,7 @@ public abstract class EffectSuffix extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("effect-suffix")
+        return Messages.get("suffix.effect")
                 .replace("%EFFECT%", effect.getType().getTranslation().get(NamedLocales.RUSSIAN) + " " + (amplifier + 1));
     }
 }

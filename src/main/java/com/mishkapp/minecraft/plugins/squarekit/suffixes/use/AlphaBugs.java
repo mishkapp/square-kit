@@ -94,7 +94,7 @@ public class AlphaBugs extends UseSuffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("alpha-bugs-suffix")
+        return Messages.get("suffix.alpha-bugs")
                 .replace("%SPEED%", FormatUtils.unsignedRound(speed * 100))
                 .replace("%TIME%", FormatUtils.unsignedTenth(duration))
                 + super.getLoreEntry();

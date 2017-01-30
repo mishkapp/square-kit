@@ -43,6 +43,6 @@ public class HoldingManaRegen extends Suffix{
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("holding-mana-regen-suffix").replace("%REGEN%", FormatUtils.tenth(manaRegen));
+        return Messages.get("suffix.holding-mana-regen").replace("%REGEN%", FormatUtils.tenth(manaRegen));
     }
 }

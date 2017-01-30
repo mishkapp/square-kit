@@ -37,6 +37,6 @@ public class HealthRegen extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("health-regen-suffix").replace("%REGEN%", FormatUtils.tenth(healthRegen));
+        return Messages.get("suffix.health-regen").replace("%REGEN%", FormatUtils.tenth(healthRegen));
     }
 }

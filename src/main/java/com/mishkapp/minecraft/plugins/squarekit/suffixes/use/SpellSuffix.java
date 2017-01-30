@@ -38,7 +38,7 @@ public abstract class SpellSuffix extends Suffix {
             double time = (((cooldown * 1000) * kitPlayer.getCooldownRate()) - delta)/1000.0;
             kitPlayer.getMcPlayer().sendMessage(
                     TextSerializers.FORMATTING_CODE.deserialize(
-                            Messages.get("cooldown")
+                            Messages.get("alert.cooldown")
                                     .replace("%TIME%", FormatUtils.unsignedTenth(time)))
             );
             return false;
@@ -80,7 +80,7 @@ public abstract class SpellSuffix extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("use-suffix-trail")
+        return Messages.get("suffix.use-trail")
                 .replace("%COOLDOWN%", FormatUtils.unsignedTenth(cooldown))
                 .replace("%MANACOST%", FormatUtils.unsignedRound(manaCost));
     }

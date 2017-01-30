@@ -40,7 +40,7 @@ public class Disguise extends TargetedSuffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("disguise-suffix")
+        return Messages.get("suffix.disguise")
                 + super.getLoreEntry();
     }
 }

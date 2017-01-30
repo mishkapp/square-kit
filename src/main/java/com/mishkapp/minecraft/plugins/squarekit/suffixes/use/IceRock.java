@@ -68,7 +68,7 @@ public class IceRock extends LaunchProjectileSuffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("ice-rock-suffix")
+        return Messages.get("suffix.ice-rock")
                 .replace("%MDAMAGE%", FormatUtils.unsignedRound(mDamage))
                 .replace("%PDAMAGE%", FormatUtils.unsignedRound(pDamage))
                 .replace("%DURATION%", FormatUtils.unsignedRound(duration))

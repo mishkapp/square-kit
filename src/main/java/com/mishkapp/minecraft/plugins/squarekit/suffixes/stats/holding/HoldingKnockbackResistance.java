@@ -43,6 +43,6 @@ public class HoldingKnockbackResistance extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("holding-knockback-resistance-suffix").replace("%RES%", FormatUtils.round(resistance * 100));
+        return Messages.get("suffix.holding-knockback-resistance").replace("%RES%", FormatUtils.round(resistance * 100));
     }
 }

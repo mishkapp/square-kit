@@ -169,7 +169,7 @@ public class LivingMine extends UseSuffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("living-mine-suffix")
+        return Messages.get("suffix.living-mine")
                 .replace("%DAMAGE%", FormatUtils.unsignedRound(damage))
                 .replace("%SPEEDREDUCTION%", FormatUtils.unsignedRound(speedReduction * 100))
                 .replace("%ACTIVATIONTIME%", FormatUtils.unsignedRound(activationTime))

@@ -56,7 +56,7 @@ public class Panic extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("panic-suffix")
+        return Messages.get("suffix.panic")
                 .replace("%HP%", FormatUtils.unsignedRound(hpTreshold * 100))
                 .replace("%SPEED%", FormatUtils.round(speed * 100))
                 .replace("%PRES%", FormatUtils.round(pRes * 100))

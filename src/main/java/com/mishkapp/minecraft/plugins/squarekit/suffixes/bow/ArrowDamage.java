@@ -42,7 +42,7 @@ public class ArrowDamage extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("arrow-damage-suffix")
+        return Messages.get("suffix.arrow-damage")
                 .replace("%DAMAGE%", FormatUtils.round(damage));
     }
 

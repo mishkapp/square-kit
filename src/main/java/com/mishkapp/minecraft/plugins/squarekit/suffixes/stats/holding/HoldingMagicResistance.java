@@ -43,6 +43,6 @@ public class HoldingMagicResistance extends Suffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("holding-magic-resistance-suffix").replace("%MRES%", FormatUtils.round(resistance * 100));
+        return Messages.get("suffix.holding-magic-resistance").replace("%MRES%", FormatUtils.round(resistance * 100));
     }
 }

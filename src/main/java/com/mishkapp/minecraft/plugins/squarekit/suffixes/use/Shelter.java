@@ -95,7 +95,7 @@ public class Shelter extends UseSuffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("shelter-suffix")
+        return Messages.get("suffix.shelter")
                 .replace("%PRES%", FormatUtils.unsignedRound(pRes * 100))
                 .replace("%ATTACK%", FormatUtils.unsignedRound(fallDamage))
                 .replace("%TIME%", FormatUtils.unsignedTenth(duration))

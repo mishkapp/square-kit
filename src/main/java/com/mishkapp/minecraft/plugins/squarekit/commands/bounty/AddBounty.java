@@ -33,7 +33,7 @@ public class AddBounty implements CommandExecutor {
         KitPlayer target = PlayersRegistry.getInstance().getPlayer(targetPlayer);
 
         if(kitPlayer.getMoney() < bountyAdd || bountyAdd < 0){
-            player.sendMessage(_text(Messages.get("bounty-no-money")
+            player.sendMessage(_text(Messages.get("bounty.no-money")
             ));
             return CommandResult.empty();
         }
@@ -42,7 +42,7 @@ public class AddBounty implements CommandExecutor {
         treshold = max(1000, treshold);
 
         if(target.getMoney() < treshold){
-            player.sendMessage(_text(Messages.get("bounty-target-low-money")
+            player.sendMessage(_text(Messages.get("bounty.target-low-money")
                     .replace("%TARGET%", targetPlayer.getName())
             ));
             return CommandResult.empty();
@@ -56,7 +56,7 @@ public class AddBounty implements CommandExecutor {
         }
         Sponge.getServer().getOnlinePlayers().forEach(
                 p -> {
-                    p.sendMessage(_text(Messages.get("bounty-added")
+                    p.sendMessage(_text(Messages.get("bounty.added")
                             .replace("%WHO%", player.getName())
                             .replace("%TARGET%", targetPlayer.getName())
                             .replace("%AMOUNT%", bountyAdd + "")
