@@ -1,6 +1,5 @@
 package com.mishkapp.minecraft.plugins.squarekit.player.statsentries;
 
-import com.mishkapp.minecraft.plugins.squarekit.KitRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import org.spongepowered.api.text.Text;
@@ -15,7 +14,7 @@ public class KitEntry extends StatsEntry {
     public Text getText(KitPlayer kitPlayer) {
         return _text(Messages.get("stats.kit")
                 .replace("%KIT%",
-                        KitRegistry.getInstance().getKit(kitPlayer.getCurrentKit()).getName()));
+                        kitPlayer.getCurrentKit().getName()));
     }
 
     @Override

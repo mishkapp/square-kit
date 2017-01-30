@@ -1,6 +1,5 @@
 package com.mishkapp.minecraft.plugins.squarekit.utils;
 
-import com.mishkapp.minecraft.plugins.squarekit.KitRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 
 /**
@@ -13,7 +12,7 @@ public class GoldUtils {
         if(killed.getLevel() != 1){
             result += (killed.getMoney() * (0.02 + (Math.max(0, killed.getCurrentKillstreak() - 10)/200)));
         }
-        result += KitRegistry.getInstance().getKit(killed.getCurrentKit()).getPrice() / 10;
+        result += killed.getCurrentKit().getPrice() / 10;
         result *= (Math.max(0, killer.getCurrentKillstreak() - 10) * 0.005) + 1;
         return result;
     }

@@ -122,7 +122,7 @@ public class Kit {
             hotbar.set(new SlotIndex(i), other.get(i));
         }
         hotbar.setSelectedSlotIndex(0);
-        kitPlayer.setCurrentKit(id);
+        kitPlayer.setCurrentKit(this);
         kitPlayer.forceUpdate();
     }
 

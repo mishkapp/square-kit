@@ -333,7 +333,7 @@ public class EventInterceptor {
         event.setMessageCancelled(true);
         PlayersRegistry.getInstance().initPlayer(player);
         KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player);
-        String kitId = kitPlayer.getCurrentKit();
+        String kitId = kitPlayer.getCurrentKit().getId();
         KitRegistry.getInstance().getKit(kitId).applyToPlayer(kitPlayer);
     }
 

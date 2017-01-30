@@ -1,6 +1,5 @@
 package com.mishkapp.minecraft.plugins.squarekit.commands.bounty;
 
-import com.mishkapp.minecraft.plugins.squarekit.KitRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.PlayersRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
@@ -38,7 +37,7 @@ public class AddBounty implements CommandExecutor {
             return CommandResult.empty();
         }
 
-        int treshold = KitRegistry.getInstance().getKit(target.getCurrentKit()).getPrice() * 10;
+        int treshold = target.getCurrentKit().getPrice() * 10;
         treshold = max(1000, treshold);
 
         if(target.getMoney() < treshold){

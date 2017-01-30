@@ -56,7 +56,7 @@ public class KitPlayer {
 
     //here comes the model
     private UUID uuid;
-    private String currentKit = "recruit";
+    private Kit currentKit;
     private int bounty = 0;
     private double money = 0;
     private int level = 1;
@@ -297,11 +297,11 @@ public class KitPlayer {
         this.currentMana = currentMana;
     }
 
-    public String getCurrentKit() {
+    public Kit getCurrentKit() {
         return currentKit;
     }
 
-    public void setCurrentKit(String currentKit) {
+    public void setCurrentKit(Kit currentKit) {
         this.currentKit = currentKit;
     }
 
@@ -447,7 +447,7 @@ public class KitPlayer {
 
     public void onKill(KitPlayer killed){
         playerStats.setKills(playerStats.getKills() + 1);
-        KitsStats.KitStats st = kitsStats.get(currentKit);
+        KitsStats.KitStats st = kitsStats.get(currentKit.getId());
         st.setKills(st.getKills() + 1);
         currentKillstreak += 1;
         recalculateKDRatio();
@@ -457,20 +457,19 @@ public class KitPlayer {
 
     public void onDeath(){
         playerStats.setDeaths(playerStats.getDeaths() + 1);
-        KitsStats.KitStats st = kitsStats.get(currentKit);
+        KitsStats.KitStats st = kitsStats.get(currentKit.getId());
         st.setDeaths(st.getDeaths() + 1);
         subtractExp(ExpUtils.expPenalty(this));
         subtractMoney(GoldUtils.goldPenalty(this), false);
         resetKillstreak();
         recalculateKDRatio();
-        currentKit = "recruit";
     }
 
     private void resetKillstreak(){
         if(playerStats.getMaxKillstreak() < currentKillstreak){
             playerStats.setMaxKillstreak(currentKillstreak);
         }
-        KitsStats.KitStats st = kitsStats.get(currentKit);
+        KitsStats.KitStats st = kitsStats.get(currentKit.getId());
         if(st.getMaxKillstreak() < currentKillstreak){
             st.setMaxKillstreak(currentKillstreak);
         }
@@ -483,7 +482,7 @@ public class KitPlayer {
             deaths = 1;
         }
         playerStats.setKdRatio((double)playerStats.getKills() / deaths);
-        KitsStats.KitStats st = kitsStats.get(currentKit);
+        KitsStats.KitStats st = kitsStats.get(currentKit.getId());
         deaths = st.getDeaths();
         if(deaths == 0){
             deaths = 1;
@@ -628,10 +627,7 @@ public class KitPlayer {
     }
 
     private void fromDocument(Document document){
-        currentKit = document.getString("currentKit");
-        if(currentKit == null){
-            currentKit = "recruit";
-        }
+        currentKit = KitRegistry.getInstance().getKit(document.getString("currentKit"));
         bounty = document.getInteger("bounty", 0);
         money = document.getDouble("money");
         level = document.getInteger("level", 0);
@@ -648,7 +644,7 @@ public class KitPlayer {
 
     private Document toDocument(){
         return new Document("uuid", uuid.toString())
-                .append("currentKit", currentKit)
+                .append("currentKit", currentKit.getId())
                 .append("bounty", bounty)
                 .append("money", money)
                 .append("level", level)

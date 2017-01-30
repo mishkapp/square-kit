@@ -1,7 +1,6 @@
 package com.mishkapp.minecraft.plugins.squarekit.commands.bounty;
 
 import com.mishkapp.minecraft.plugins.squarekit.BountyHandler;
-import com.mishkapp.minecraft.plugins.squarekit.KitRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -34,14 +33,14 @@ public class ListBounty implements CommandExecutor {
         AtomicInteger i = new AtomicInteger(1);
         players.forEach(p -> {
             b.append(Text.of("(" + i.get() + "): "));
-            int treshold = KitRegistry.getInstance().getKit(p.getCurrentKit()).getPrice() * 10;
+            int treshold = p.getCurrentKit().getPrice() * 10;
             treshold = max(1000, treshold);
 
             b.append(Text.of(p.getMcPlayer().getName()));
             b.append(Text.of(" [" + p.getCurrentKillstreak() + "] " + p.getBounty() + "/" + treshold));
 
             if(p.getBounty() >= treshold){
-                b.append(_text(" (" + KitRegistry.getInstance().getKit(p.getCurrentKit()).getName() + "&6)"));
+                b.append(_text(" (" + p.getCurrentKit().getName() + "&6)"));
             }
             b.append(Text.NEW_LINE);
             i.addAndGet(1);

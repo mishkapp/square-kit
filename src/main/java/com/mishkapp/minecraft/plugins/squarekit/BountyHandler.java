@@ -64,10 +64,10 @@ public class BountyHandler {
         lastPlayer = kitPlayer;
 
         String bossbarTitle = Messages.get("bounty.bossbar-name").replace("%PLAYER%", kitPlayer.getMcPlayer().getDisplayNameData().displayName().get().toPlain());
-        int treshold = KitRegistry.getInstance().getKit(kitPlayer.getCurrentKit()).getPrice() * 10;
+        int treshold = kitPlayer.getCurrentKit().getPrice() * 10;
         treshold = max(1000, treshold);
         if(kitPlayer.getBounty() >= treshold){
-            bossbarTitle += Messages.get("bounty.bossbar-kit").replace("%KIT%", KitRegistry.getInstance().getKit(kitPlayer.getCurrentKit()).getName());
+            bossbarTitle += Messages.get("bounty.bossbar-kit").replace("%KIT%", kitPlayer.getCurrentKit().getName());
         }
         bossbarTitle += Messages.get("bounty.bossbar-kills").replace("%KILLS%", Integer.toString(kitPlayer.getCurrentKillstreak()));
         if(bounty > 0){
@@ -93,7 +93,7 @@ public class BountyHandler {
         if(!lastPlayer.getMcPlayer().isOnline()) {
             return;
         }
-        int treshold = KitRegistry.getInstance().getKit(lastPlayer.getCurrentKit()).getPrice() * 10;
+        int treshold = lastPlayer.getCurrentKit().getPrice() * 10;
         treshold = max(1000, treshold);
         if(lastPlayer.getBounty() < treshold){
             return;
