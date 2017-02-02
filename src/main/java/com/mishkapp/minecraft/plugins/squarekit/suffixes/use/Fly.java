@@ -5,6 +5,7 @@ import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
+import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
@@ -114,6 +115,7 @@ public class Fly extends UseSuffix {
     @Override
     public String getLoreEntry() {
         return Messages.get("suffix.fly")
+                .replace("%FLY_MANA%", FormatUtils.unsignedTenth(flyManaCost))
                 + super.getLoreEntry();
     }
 }
