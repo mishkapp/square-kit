@@ -30,6 +30,10 @@ public abstract class UseSuffix extends SpellSuffix{
                 return;
             }
 
+            if(!isPrecondition()){
+                return;
+            }
+
             double currentMana = kitPlayer.getCurrentMana();
 
             if(currentMana < manaCost){
@@ -46,6 +50,10 @@ public abstract class UseSuffix extends SpellSuffix{
 
             onUse();
         }
+    }
+
+    protected boolean isPrecondition(){
+        return true;
     }
 
     protected abstract void onUse();
