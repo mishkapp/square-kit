@@ -39,6 +39,7 @@ public class StatsEntries {
         entries.put("kdr", new KdRatioEntry());
         entries.put("setup", new SetupEntry());
         entries.put("saturation", new SaturationEntry());
+        entries.put("fall-damage-resist", new FallDamageResistanceEntry());
     }
 
     public static Text getText(String key, KitPlayer kitPlayer){
