@@ -6,14 +6,24 @@ import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
 import com.mishkapp.minecraft.plugins.squarekit.events.SuffixTickEvent;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import org.spongepowered.api.block.BlockTypes;
+import org.spongepowered.api.effect.particle.ParticleEffect;
+import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.effect.sound.SoundTypes;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.world.World;
+
+import java.util.Random;
 
 /**
  * Created by mishkapp on 02.02.17.
  */
 public class Fly extends UseSuffix {
+    private Random random = new Random();
+    private ParticleEffect particle = ParticleEffect.builder()
+            .type(ParticleTypes.CLOUD)
+            .quantity(1)
+            .build();
 
     private boolean isFlying = false;
     private double jumpManaCost = 10;
@@ -68,6 +78,15 @@ public class Fly extends UseSuffix {
         } else {
             jump();
         }
+        addTrailEffect(kitPlayer.getMcPlayer());
+    }
+
+    private void addTrailEffect(Player player) {
+        for(int i = 0; i < 25; i++)
+            player.getWorld().spawnParticles(
+                    particle,
+                    player.getLocation().getPosition().add(random.nextGaussian() * 1.2, random.nextGaussian() * 1.2, random.nextGaussian() * 1.2)
+            );
     }
 
     private void fly() {
