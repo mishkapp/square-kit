@@ -41,6 +41,10 @@ public abstract class TargetedSuffix extends SpellSuffix {
                 return;
             }
 
+            if(!isPredicate(((ItemUsedOnTargetEvent) event).getTarget())){
+                return;
+            }
+
             double currentMana = kitPlayer.getCurrentMana();
 
             if(currentMana < manaCost){
@@ -57,6 +61,10 @@ public abstract class TargetedSuffix extends SpellSuffix {
 
             onUse(((ItemUsedOnTargetEvent) event).getTarget());
         }
+    }
+
+    protected boolean isPredicate(Entity target) {
+        return true;
     }
 
     protected abstract void onUse(Entity target);

@@ -75,6 +75,10 @@ public abstract class TargetedProjectileSuffix extends SpellSuffix {
                 return;
             }
 
+            if(!isPrecondition(target)){
+                return;
+            }
+
             double currentMana = kitPlayer.getCurrentMana();
 
             if(currentMana < manaCost){
@@ -91,15 +95,8 @@ public abstract class TargetedProjectileSuffix extends SpellSuffix {
 
             World world = player.getWorld();
 
-            Vector3d spawnLoc = player.getLocation().getPosition();
             Vector3d lookVec = player.getHeadRotation();
             Vector3d thrustVec = new Vector3d(1, 1, 1);
-
-            spawnLoc = spawnLoc.add(
-                    0,
-                    1.75,
-                    0
-            );
 
             thrustVec = thrustVec.mul(
                     hSpeed * -1 * sin(toRadians(lookVec.getY())),
@@ -143,6 +140,10 @@ public abstract class TargetedProjectileSuffix extends SpellSuffix {
                     })
                     .submit(SquareKit.getInstance());
         }
+    }
+
+    protected boolean isPrecondition(Entity target) {
+        return true;
     }
 
     protected abstract Entity prepareEntity();

@@ -609,6 +609,7 @@ public class SquareKit{
         registry.registerSuffix("3Q", Cloak.class);
 
         registry.registerSuffix("4A", Fly.class);
+        registry.registerSuffix("4B", Tracing.class);
         registry.registerSuffix("4G", FlameableLiquid.class);
 
 

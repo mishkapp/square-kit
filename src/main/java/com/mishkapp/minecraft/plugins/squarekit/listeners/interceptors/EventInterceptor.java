@@ -182,7 +182,7 @@ public class EventInterceptor {
     }
 
     private Entity getTarget(InteractBlockEvent.Secondary event, Player player) {
-        List<Entity> list = player.getNearbyEntities(30).stream().filter(e -> {
+        List<Entity> list = player.getNearbyEntities(100).stream().filter(e -> {
             if(e == player || !(e instanceof Living)){
                 return false;
             }

@@ -21,4 +21,16 @@ public class DamageUtils {
     public static DamageSource physicalDamage(Entity e){
         return EntityDamageSource.builder().entity(e).type(DamageTypes.CUSTOM).bypassesArmor().build();
     }
+
+    public static DamageSource magicDamageKnock(Entity e){
+        return EntityDamageSource.builder().entity(e).type(DamageTypes.PROJECTILE).magical().bypassesArmor().build();
+    }
+
+    public static DamageSource pureDamageKnock(Entity e){
+        return EntityDamageSource.builder().entity(e).type(DamageTypes.PROJECTILE).absolute().bypassesArmor().build();
+    }
+
+    public static DamageSource physicalDamageKnock(Entity e){
+        return EntityDamageSource.builder().entity(e).type(DamageTypes.PROJECTILE).bypassesArmor().build();
+    }
 }
