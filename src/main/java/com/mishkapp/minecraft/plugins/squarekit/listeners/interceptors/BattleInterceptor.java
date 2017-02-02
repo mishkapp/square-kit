@@ -140,7 +140,6 @@ public class BattleInterceptor {
         int damageMultiplier = 4;
         if(damageSource.getType() == DamageTypes.CONTACT
                 || damageSource.getType() == DamageTypes.SUFFOCATE
-                || damageSource.getType() == DamageTypes.FALL
                 || damageSource.getType() == DamageTypes.FIRE
                 || damageSource.getType() == DamageTypes.DROWN
                 || damageSource.getType() == DamageTypes.EXPLOSIVE
@@ -149,6 +148,15 @@ public class BattleInterceptor {
                 ){
             event.setBaseDamage(event.getBaseDamage() * damageMultiplier);
             return;
+        }
+
+        if(damageSource.getType() == DamageTypes.FALL) {
+            if(event.getTargetEntity() instanceof Player){
+                KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(event.getTargetEntity().getUniqueId());
+                event.setBaseDamage(event.getBaseDamage() * (1.0 - kitPlayer.getFallDamageResist()));
+            } else {
+                event.setBaseDamage(event.getBaseDamage() * damageMultiplier);
+            }
         }
 
         if(event.getTargetEntity() instanceof Player){

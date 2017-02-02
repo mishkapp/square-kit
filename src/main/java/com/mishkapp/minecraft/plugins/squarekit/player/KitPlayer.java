@@ -45,6 +45,7 @@ public class KitPlayer {
     private double CRITICAL_POWER = 0.0;      // [0, ∞)
     private double EVASION = 0.0;             // [0, 1]
     private double MONEY_MULTIPLIER = 1.0;    // [0, ∞)
+    private double FALL_DAMAGE_RESIST = 0.0;  // (-∞, 1]
 
     private HashMap<String, HashMap<Suffix, Double>> additions = new HashMap();
 
@@ -217,6 +218,14 @@ public class KitPlayer {
         return max(0, result);
     }
 
+    public double getFallDamageResist() {
+        double result = FALL_DAMAGE_RESIST;
+        for(double i : getFallDamageResistAdds().values()){
+            result += i;
+        }
+        return min(1, result);
+    }
+
     public HashMap<Suffix, Double> getAdditions(String s){
         if(!additions.containsKey(s)){
             additions.put(s, new HashMap<>());
@@ -278,6 +287,10 @@ public class KitPlayer {
 
     public HashMap<Suffix, Double> getMoneyMultiplierAdds() {
         return getAdditions("money-multiplier");
+    }
+
+    public HashMap<Suffix, Double> getFallDamageResistAdds() {
+        return getAdditions("fall-damage-resist");
     }
 
     public double getCurrentMana() {
