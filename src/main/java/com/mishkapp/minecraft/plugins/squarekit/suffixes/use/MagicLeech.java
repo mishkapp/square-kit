@@ -50,7 +50,7 @@ public class MagicLeech extends TargetedProjectileSuffix{
 
     @Override
     protected Entity prepareEntity() {
-        return kitPlayer.getMcPlayer().getWorld().createEntity(EntityTypes.SILVERFISH, kitPlayer.getMcPlayer().getLocation().getPosition().add(0, 1.75, 0));
+        return kitPlayer.getMcPlayer().getWorld().createEntity(EntityTypes.ENDERMITE, kitPlayer.getMcPlayer().getLocation().getPosition().add(0, 1.75, 0));
     }
 
     @Override
