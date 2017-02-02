@@ -20,10 +20,7 @@ import com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors.EventInte
 import com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors.WorldChangeListener;
 import com.mishkapp.minecraft.plugins.squarekit.serializers.ItemStackSerializer;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.active.HideShadow;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.attack.AntimagicBlade;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.attack.MagicImbueWeapon;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.attack.ShadowCloud;
-import com.mishkapp.minecraft.plugins.squarekit.suffixes.attack.SpiritsBurden;
+import com.mishkapp.minecraft.plugins.squarekit.suffixes.attack.*;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.bow.ArrowDamage;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.bow.DeadlyArrow;
 import com.mishkapp.minecraft.plugins.squarekit.suffixes.bow.EntanglingArrow;
@@ -589,6 +586,7 @@ public class SquareKit{
         registry.registerSuffix("1C", MagicImbueWeapon.class);
         registry.registerSuffix("1D", SpiritsBurden.class);
         registry.registerSuffix("1E", AntimagicBlade.class);
+        registry.registerSuffix("1F", PureDamageWeapon.class);
 
         registry.registerSuffix("3A", Shelter.class);
         registry.registerSuffix("3B", IceGrowth.class);
