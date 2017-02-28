@@ -59,7 +59,7 @@ public class Fly extends UseSuffix {
     }
 
     @Override
-    protected boolean isPrecondition() {
+    protected boolean predicate() {
         if (isFlying) {
             manaCost = flyManaCost;
         } else {

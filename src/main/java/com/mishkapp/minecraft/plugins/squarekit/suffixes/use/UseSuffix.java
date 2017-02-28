@@ -30,7 +30,7 @@ public abstract class UseSuffix extends SpellSuffix{
                 return;
             }
 
-            if(!isPrecondition()){
+            if(!predicate()){
                 return;
             }
 
@@ -52,7 +52,7 @@ public abstract class UseSuffix extends SpellSuffix{
         }
     }
 
-    protected boolean isPrecondition(){
+    protected boolean predicate(){
         return true;
     }
 
