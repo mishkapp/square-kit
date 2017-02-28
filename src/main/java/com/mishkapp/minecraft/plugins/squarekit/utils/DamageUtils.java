@@ -10,27 +10,27 @@ import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource
  */
 public class DamageUtils {
 
-    public static DamageSource magicDamage(Entity e){
-        return EntityDamageSource.builder().entity(e).type(DamageTypes.MAGIC).magical().bypassesArmor().build();
+    public static DamageSource magicDamage(Entity source){
+        return EntityDamageSource.builder().entity(source).type(DamageTypes.MAGIC).magical().bypassesArmor().build();
     }
 
-    public static DamageSource pureDamage(Entity e){
-        return EntityDamageSource.builder().entity(e).type(DamageTypes.MAGIC).absolute().bypassesArmor().build();
+    public static DamageSource pureDamage(Entity source){
+        return EntityDamageSource.builder().entity(source).type(DamageTypes.MAGIC).absolute().bypassesArmor().build();
     }
 
-    public static DamageSource physicalDamage(Entity e){
-        return EntityDamageSource.builder().entity(e).type(DamageTypes.CUSTOM).bypassesArmor().build();
+    public static DamageSource physicalDamage(Entity source){
+        return EntityDamageSource.builder().entity(source).type(DamageTypes.CUSTOM).bypassesArmor().build();
     }
 
-    public static DamageSource magicDamageKnock(Entity e){
-        return EntityDamageSource.builder().entity(e).type(DamageTypes.PROJECTILE).magical().bypassesArmor().build();
+    public static DamageSource magicDamageKnock(Entity source){
+        return EntityDamageSource.builder().entity(source).type(DamageTypes.PROJECTILE).magical().bypassesArmor().build();
     }
 
-    public static DamageSource pureDamageKnock(Entity e){
-        return EntityDamageSource.builder().entity(e).type(DamageTypes.PROJECTILE).absolute().bypassesArmor().build();
+    public static DamageSource pureDamageKnock(Entity source){
+        return EntityDamageSource.builder().entity(source).type(DamageTypes.PROJECTILE).absolute().bypassesArmor().build();
     }
 
-    public static DamageSource physicalDamageKnock(Entity e){
-        return EntityDamageSource.builder().entity(e).type(DamageTypes.PROJECTILE).bypassesArmor().build();
+    public static DamageSource physicalDamageKnock(Entity source){
+        return EntityDamageSource.builder().entity(source).type(DamageTypes.PROJECTILE).bypassesArmor().build();
     }
 }
