@@ -6,6 +6,7 @@ import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.utils.DamageUtils;
 import com.mishkapp.minecraft.plugins.squarekit.utils.EntityUtils;
+import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleOptions;
@@ -38,9 +39,9 @@ public class MagicShot extends UseSuffix {
     private boolean isCharging = false;
     private final double realCooldown;
     private final double realManacost;
-    private final double maxDistance = 50;
-    private final long chargeTicks = 100;
-    private final double maxDamage = 100.0;
+    private double maxDistance = 50;
+    private long chargeTicks = 100;
+    private double maxDamage = 100.0;
 
     private List<ParticleEffect> chargeParticles = new ArrayList<>();
     private Vector3d lastCenter = new Vector3d();
@@ -53,6 +54,15 @@ public class MagicShot extends UseSuffix {
         realCooldown = cooldown;
         realManacost = 0;
         prepareParticles();
+        if(args.length > 2){
+            maxDistance = Double.parseDouble(args[2]);
+        }
+        if(args.length > 3){
+            chargeTicks = Long.parseLong(args[3]);
+        }
+        if(args.length > 4){
+            maxDamage = Double.parseDouble(args[4]);
+        }
     }
 
     private void prepareParticles(){
@@ -119,6 +129,10 @@ public class MagicShot extends UseSuffix {
                     lastLookVec = lookVec;
                     lastOPos = oPos;
                     lastCharge = step.get();
+
+                    if(step.get() % 4 == 0){
+                        player.playSound(SoundTypes.BLOCK_NOTE_SNARE, oPos, 1, (step.get()/4));
+                    }
 
                     double r = ((chargeTicks - step.get()) / (double)chargeTicks);
                     double d = (step.get() / (double)chargeTicks) * (PI);
@@ -195,6 +209,8 @@ public class MagicShot extends UseSuffix {
             distance = aabb.intersects(startPoint, direction).get().getFirst().distance(startPoint);
         }
 
+        player.playSound(SoundTypes.ENTITY_FIREWORK_LAUNCH, player.getLocation().getPosition(), 1);
+
         for(double i = 0; i < distance; i += 0.1){
             final double r = i;
             Sponge.getScheduler().createTaskBuilder()
@@ -223,6 +239,9 @@ public class MagicShot extends UseSuffix {
     @Override
     public String getLoreEntry() {
         return Messages.get("suffix.magic-shot")
+                .replace("%MAX_DAMAGE%", FormatUtils.unsignedRound(maxDamage))
+                .replace("%MAX_DISTANCE%", FormatUtils.unsignedRound(maxDistance))
+                .replace("%CHARGE_TIME%", FormatUtils.unsignedHundredth(chargeTicks/20.0))
                 + super.getLoreEntry();
     }
 }
