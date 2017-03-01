@@ -5,6 +5,7 @@ import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.utils.DamageUtils;
+import com.mishkapp.minecraft.plugins.squarekit.utils.EntityUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleOptions;
@@ -18,9 +19,6 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.util.AABB;
 import org.spongepowered.api.util.Color;
 import org.spongepowered.api.util.Tuple;
-import org.spongepowered.api.util.blockray.BlockRay;
-import org.spongepowered.api.util.blockray.BlockRayHit;
-import org.spongepowered.api.world.World;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -147,14 +145,7 @@ public class MagicShot extends UseSuffix {
 
         Player player = getPlayer().getMcPlayer();
 
-        BlockRay<World> blockRay = BlockRay.from(player)
-                .skipFilter(BlockRay.continueAfterFilter(BlockRay.onlyAirFilter(), 1))
-                //due to it block nature...
-                .distanceLimit(maxDistance + 1)
-                .build();
-
-        BlockRayHit<World> rayHit = blockRay.end().orElse(null);
-        Vector3d endPoint = rayHit.getPosition();
+        Vector3d endPoint = EntityUtils.getBlockRayHitPoint(player, maxDistance);
 
         Vector3d direction = endPoint.sub(startPoint).normalize();
 

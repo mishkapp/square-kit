@@ -1,8 +1,8 @@
 package com.mishkapp.minecraft.plugins.squarekit.suffixes;
 
-import com.mishkapp.minecraft.plugins.squarekit.utils.ItemUtils;
-import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.events.KitEvent;
+import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
+import com.mishkapp.minecraft.plugins.squarekit.utils.ItemUtils;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.HandType;
 import org.spongepowered.api.item.inventory.ItemStack;

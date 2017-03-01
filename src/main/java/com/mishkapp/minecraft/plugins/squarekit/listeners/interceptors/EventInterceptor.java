@@ -5,6 +5,7 @@ import com.mishkapp.minecraft.plugins.squarekit.PlayersRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.events.*;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
+import com.mishkapp.minecraft.plugins.squarekit.utils.EntityUtils;
 import com.mishkapp.minecraft.plugins.squarekit.utils.MathUtils;
 import com.mishkapp.minecraft.plugins.squarekit.utils.Utils;
 import org.spongepowered.api.Sponge;
@@ -43,6 +44,7 @@ import static org.spongepowered.api.data.type.HandTypes.OFF_HAND;
  * Created by mishkapp on 27.04.2016.
  */
 public class EventInterceptor {
+    private final int MAX_TARGET_DISTANCE = 100;
 
 
     public EventInterceptor(){
@@ -182,7 +184,7 @@ public class EventInterceptor {
     }
 
     private Entity getTarget(InteractBlockEvent.Secondary event, Player player) {
-        List<Entity> list = player.getNearbyEntities(100).stream().filter(e -> {
+        List<Entity> list = player.getNearbyEntities(MAX_TARGET_DISTANCE).stream().filter(e -> {
             if(e == player || !(e instanceof Living)){
                 return false;
             }
@@ -218,7 +220,14 @@ public class EventInterceptor {
         if(list.size() == 0){
             return null;
         } else {
-            return list.get(0);
+            Entity target = list.get(0);
+            double distance = target.getLocation().getPosition().distance(player.getLocation().getPosition());
+            double blockHitDistance = EntityUtils.getBlockRayHitDistance(player, MAX_TARGET_DISTANCE);
+            if(blockHitDistance < distance){
+                return null;
+            } else {
+                return target;
+            }
         }
     }
 
