@@ -148,7 +148,7 @@ public class MagicShot extends UseSuffix {
 
                     double r = ((chargeTicks - step.get()) / (double)chargeTicks);
                     double d = (step.get() / (double)chargeTicks) * (PI);
-                    for (double i = 0; i < PI * 2; i += PI/8){
+                    for (double i = 0; i < PI * 2; i += PI/4){
                         points.add(centralPos.add(
                                 r * sin(i + d),
                                 r * cos(i + d),
