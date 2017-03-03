@@ -158,7 +158,7 @@ public class MagicShot extends UseSuffix {
 
                     points = rotatePoints(points, oPos, lookToRot(lookVec));
 
-                    ParticleEffect particle = chargeParticles.get(step.get());
+                    ParticleEffect particle = chargeParticles.get(step.get() - 1);
                     points.forEach(p -> player.getWorld().spawnParticles(particle, p));
                 })
                 .submit(SquareKit.getInstance().getPlugin());
@@ -239,11 +239,11 @@ public class MagicShot extends UseSuffix {
 
 
                         getPlayer().getMcPlayer().getWorld().spawnParticles(
-                                chargeParticles.get(lastCharge),
+                                chargeParticles.get(lastCharge - 1),
                                 point);
 
                         getPlayer().getMcPlayer().getWorld().spawnParticles(
-                                chargeParticles.get(lastCharge),
+                                chargeParticles.get(lastCharge - 1),
                                 offPoint);
                     })
                     .submit(SquareKit.getInstance().getPlugin());
