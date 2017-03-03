@@ -122,8 +122,6 @@ public class MagicShot extends UseSuffix {
                         task.cancel();
                         return;
                     }
-                    step.incrementAndGet();
-
                     double tickManaCost = maxManacost / chargeTicks;
                     if(getPlayer().getCurrentMana() < tickManaCost){
                         task.cancel();
@@ -131,6 +129,8 @@ public class MagicShot extends UseSuffix {
                         return;
                     }
                     getPlayer().setCurrentMana(getPlayer().getCurrentMana() - tickManaCost);
+
+                    step.incrementAndGet();
 
                     List<Vector3d> points = new ArrayList<>();
                     Player player = kitPlayer.getMcPlayer();
@@ -150,8 +150,8 @@ public class MagicShot extends UseSuffix {
                     double d = (step.get() / (double)chargeTicks) * (PI);
                     for (double i = 0; i < PI * 2; i += PI/4){
                         points.add(centralPos.add(
-                                r * sin(i + d),
-                                r * cos(i + d),
+                                r * sin(i + (d + 0.1)),
+                                r * cos(i + (d + 0.1)),
                                 0
                         ));
                     }
@@ -167,6 +167,9 @@ public class MagicShot extends UseSuffix {
     private void shot(){
         isCharging = false;
         lastUse = System.currentTimeMillis();
+        if(lastCharge == 0){
+            return;
+        }
         final Vector3d startPoint = rotatePoint(lastCenter, lastOPos, lookToRot(lastLookVec));
 
         Player player = getPlayer().getMcPlayer();
@@ -245,7 +248,7 @@ public class MagicShot extends UseSuffix {
                     })
                     .submit(SquareKit.getInstance().getPlugin());
         }
-
+        lastCharge = 0;
     }
 
     @Override
