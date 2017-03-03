@@ -4,44 +4,47 @@ import com.flowpowered.math.vector.Vector3d;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
-import com.mishkapp.minecraft.plugins.squarekit.utils.DamageUtils;
-import com.mishkapp.minecraft.plugins.squarekit.utils.EntityUtils;
 import com.mishkapp.minecraft.plugins.squarekit.utils.FormatUtils;
+import com.mishkapp.minecraft.plugins.squarekit.utils.PlayerUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleOptions;
 import org.spongepowered.api.effect.particle.ParticleTypes;
+import org.spongepowered.api.effect.potion.PotionEffect;
+import org.spongepowered.api.effect.potion.PotionEffectTypes;
 import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.entity.living.Humanoid;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.util.AABB;
 import org.spongepowered.api.util.Color;
 import org.spongepowered.api.util.Tuple;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
-import static com.mishkapp.minecraft.plugins.squarekit.utils.MathUtils.*;
+import static com.mishkapp.minecraft.plugins.squarekit.utils.MathUtils.lookToRot;
+import static com.mishkapp.minecraft.plugins.squarekit.utils.MathUtils.rotatePoints;
 import static java.lang.Math.PI;
 import static java.lang.Math.cos;
 import static java.lang.StrictMath.sin;
 
 /**
- * Created by mishkapp on 03.02.17.
+ * Created by mishkapp on 03.03.17.
  */
-public class MagicShot extends UseSuffix {
+public class EnergyShield extends UseSuffix {
 
     private boolean isCharging = false;
     private final double realCooldown;
     private final double realManacost;
-    private double maxDistance = 50;
     private long chargeTicks = 100;
-    private double maxDamage = 100.0;
+    private double maxDistance = 15.0;
+    private double maxBlindDuration = 15.0;
+    private double maxMRes = 0.5;
+    private double maxPRes = 0.5;
     private double maxManacost = 50;
 
     private List<ParticleEffect> chargeParticles = new ArrayList<>();
@@ -50,7 +53,7 @@ public class MagicShot extends UseSuffix {
     private Vector3d lastOPos = new Vector3d();
     private int lastCharge = 0;
 
-    public MagicShot(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+    public EnergyShield(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
         super(kitPlayer, itemStack, args);
         realCooldown = cooldown;
         realManacost = manaCost;
@@ -61,10 +64,16 @@ public class MagicShot extends UseSuffix {
             chargeTicks = Long.parseLong(args[3]);
         }
         if(args.length > 4){
-            maxDamage = Double.parseDouble(args[4]);
+            maxBlindDuration = Double.parseDouble(args[4]);
         }
         if(args.length > 5){
-            maxManacost = Double.parseDouble(args[5]);
+            maxPRes = Double.parseDouble(args[5]);
+        }
+        if(args.length > 6){
+            maxMRes = Double.parseDouble(args[6]);
+        }
+        if(args.length > 7){
+            maxManacost = Double.parseDouble(args[7]);
         }
         prepareParticles();
     }
@@ -97,7 +106,7 @@ public class MagicShot extends UseSuffix {
     @Override
     protected void onUse() {
         if(isCharging){
-            shot();
+            explode();
         } else {
             charge();
         }
@@ -118,45 +127,77 @@ public class MagicShot extends UseSuffix {
                     }
                     if(step.get() >= chargeTicks){
                         isCharging = false;
-                        shot();
+                        explode();
                         task.cancel();
                         return;
                     }
+                    step.incrementAndGet();
+
                     double tickManaCost = maxManacost / chargeTicks;
                     if(getPlayer().getCurrentMana() < tickManaCost){
                         task.cancel();
-                        shot();
+                        explode();
                         return;
                     }
                     getPlayer().setCurrentMana(getPlayer().getCurrentMana() - tickManaCost);
 
-                    step.incrementAndGet();
-
                     List<Vector3d> points = new ArrayList<>();
                     Player player = kitPlayer.getMcPlayer();
-                    Vector3d oPos = player.getLocation().getPosition().add(0, 1.6, 0);
+                    Vector3d oPos = player.getLocation().getPosition().add(0, 1, 0);
                     Vector3d lookVec = player.getHeadRotation();
-                    Vector3d centralPos = oPos.add(0, 0, 1);
+                    Vector3d centralPos = oPos;
                     lastCenter = centralPos;
                     lastLookVec = lookVec;
                     lastOPos = oPos;
                     lastCharge = step.get();
 
+                    kitPlayer.getMagicResistAdds().put(this, (lastCharge/(double)chargeTicks) * maxMRes);
+                    kitPlayer.getPhysicalResistAdds().put(this, (lastCharge/(double)chargeTicks) * maxPRes);
+
                     if(step.get() % 4 == 0){
                         player.playSound(SoundTypes.BLOCK_NOTE_SNARE, oPos, 1, (step.get()/4));
                     }
 
-                    double r = ((chargeTicks - step.get()) / (double)chargeTicks) + 0.25;
+                    double r = 1;
                     double d = (step.get() / (double)chargeTicks) * (PI);
-                    for (double i = 0; i < PI * 2; i += PI/4){
-                        points.add(centralPos.add(
-                                r * sin(i + d),
-                                r * cos(i + d),
-                                0
-                        ));
-                    }
 
-                    points = rotatePoints(points, oPos, lookToRot(lookVec));
+                    for(int i = 0; i < 3; i++){
+
+                        List<Vector3d> tempPoints = new ArrayList<>();
+                        int particlesCount = step.get()/10;
+                        for(int j = 0; j < particlesCount; j++){
+                            double offset = (lastCharge/(double)chargeTicks) * (PI * 2);
+                            switch (i){
+                                case 1: {
+                                    offset -= d;
+                                    break;
+                                }
+                                default: {
+                                    offset += d;
+                                }
+                            }
+                            double pos = j * ((PI * 2) / particlesCount);
+                            tempPoints.add(centralPos.add(
+                                    r * sin(pos + offset),
+                                    0,
+                                    r * cos(pos + offset)
+                            ));
+                        }
+
+                        double yRot = lookToRot(lastLookVec).getY();
+
+                        switch (i){
+                            case 1: {
+                                tempPoints = rotatePoints(tempPoints, oPos, new Vector3d(0, yRot, 45));
+                                break;
+                            }
+                            case 2: {
+                                tempPoints = rotatePoints(tempPoints, oPos, new Vector3d(0, yRot, -45));
+                                break;
+                            }
+                        }
+                        tempPoints.forEach(points::add);
+                    }
 
                     ParticleEffect particle = chargeParticles.get(step.get() - 1);
                     points.forEach(p -> player.getWorld().spawnParticles(particle, p));
@@ -164,24 +205,22 @@ public class MagicShot extends UseSuffix {
                 .submit(SquareKit.getInstance().getPlugin());
     }
 
-    private void shot(){
+    private void explode(){
         isCharging = false;
         lastUse = System.currentTimeMillis();
         if(lastCharge == 0){
             return;
         }
-        final Vector3d startPoint = rotatePoint(lastCenter, lastOPos, lookToRot(lastLookVec));
+
+        kitPlayer.getMagicResistAdds().put(this, 0.0);
+        kitPlayer.getPhysicalResistAdds().put(this, 0.0);
 
         Player player = getPlayer().getMcPlayer();
 
-        Vector3d endPoint = EntityUtils.getBlockRayHitPoint(player, maxDistance);
+        double distance = (lastCharge/(double)chargeTicks) * maxDistance;
 
-        Vector3d direction = endPoint.sub(startPoint).normalize();
-
-        double distance = startPoint.distance(endPoint);
-
-        Entity target = getPlayer().getMcPlayer()
-                .getNearbyEntities(distance + 1)
+        List<Entity> entities = getPlayer().getMcPlayer()
+                .getNearbyEntities(distance)
                 .stream()
                 .filter(entity -> {
                     if(!(entity instanceof Living)){
@@ -192,65 +231,58 @@ public class MagicShot extends UseSuffix {
                         return false;
                     }
 
+                    Vector3d entityPos = entity.getLocation().getPosition();
+                    Vector3d direction = entityPos.sub(lastCenter).normalize();
                     Tuple<Vector3d, Vector3d> intersectionPoint = entity.getBoundingBox().get()
-                            .intersects(startPoint, direction).orElse(null);
+                            .intersects(lastCenter, direction).orElse(null);
                     if(intersectionPoint == null){
+                        return false;
+                    }
+                    if(intersectionPoint.getFirst().distance(entityPos) > 0.5){
                         return false;
                     }
 
                     return true;
                 })
-                .sorted(Comparator.comparingDouble(e -> e.getLocation().getPosition().distance(player.getLocation().getPosition())))
-                .findFirst().orElse(null);
+                .collect(Collectors.toList());
 
-        if(target != null){
-            boolean headshot = false;
-            AABB aabb = target.getBoundingBox().get();
-            if(target instanceof Humanoid){
-                AABB headAABB = new AABB(
-                        aabb.getMin().getX(), aabb.getMin().getY() + 1.3, aabb.getMin().getZ(),
-                        aabb.getMax().getX(), aabb.getMax().getY(), aabb.getMax().getZ()
-                        );
-                if(headAABB.intersects(startPoint, direction).orElse(null) != null){
-                    headshot = true;
-                }
-            }
+        int blindDuration = (int)(((lastCharge/(double)chargeTicks) * maxBlindDuration) * 20);
+        PotionEffect pe = PotionEffect.builder()
+                .potionType(PotionEffectTypes.BLINDNESS)
+                .duration(blindDuration)
+                .amplifier(1)
+                .build();
 
-            if(headshot){
-                player.playSound(SoundTypes.BLOCK_NOTE_HARP, player.getLocation().getPosition(), 1);
+        Random random = new Random();
+        ParticleEffect particle = chargeParticles.get(lastCharge - 1);
+        entities.forEach(entity -> {
+            PlayerUtils.applyEffects(entity, pe);
+            for(int i = 0; i < 16; i++){
+                player.getWorld().spawnParticles(
+                        particle,
+                        entity.getLocation().getPosition().add(random.nextGaussian()/2, 1.6 + random.nextGaussian()/2, random.nextGaussian()/2)
+                );
             }
-            double damage = (lastCharge/chargeTicks) * maxDamage;
-            target.damage(damage, DamageUtils.pureDamage(player));
-            distance = aabb.intersects(startPoint, direction).get().getFirst().distance(startPoint);
+        });
+
+        for(int i = 0; i < 64; i++){
+            player.getWorld().spawnParticles(
+                    particle,
+                    lastCenter.add(random.nextGaussian() * 2, 2 + random.nextGaussian(), random.nextGaussian() * 2));
         }
 
-        player.playSound(SoundTypes.ENTITY_ELDER_GUARDIAN_CURSE, player.getLocation().getPosition(), 1);
-
-        for(double i = 0; i < distance; i += 0.1){
-            final double r = i;
-            Vector3d point = lastCenter.add(0, 0, r);
-            Vector3d offPoint = point.add(0.5 * sin(r), 0.5 * cos(r), 0);
-
-            point = rotatePoint(point, lastOPos, lookToRot(lastLookVec));
-            offPoint = rotatePoint(offPoint, lastOPos, lookToRot(lastLookVec));
-
-
-            getPlayer().getMcPlayer().getWorld().spawnParticles(
-                    chargeParticles.get(lastCharge - 1),
-                    point);
-
-            getPlayer().getMcPlayer().getWorld().spawnParticles(
-                    chargeParticles.get(lastCharge - 1),
-                    offPoint);
-        }
+        player.playSound(SoundTypes.ENTITY_ENDERDRAGON_FIREBALL_EXPLODE, player.getLocation().getPosition(), 1.5);
         lastCharge = 0;
     }
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("suffix.magic-shot")
-                .replace("%MAX_DAMAGE%", FormatUtils.unsignedRound(maxDamage))
+        return Messages.get("suffix.energy-shield")
+                .replace("%MAX_DAMAGE%", FormatUtils.unsignedRound(maxDistance))
                 .replace("%MAX_DISTANCE%", FormatUtils.unsignedRound(maxDistance))
+                .replace("%MAX_BLIND_DURATION%", FormatUtils.unsignedRound(maxBlindDuration))
+                .replace("%MAX_PRES%", FormatUtils.unsignedRound(maxPRes * 100))
+                .replace("%MAX_MRES%", FormatUtils.unsignedRound(maxMRes * 100))
                 .replace("%CHARGE_MANACOST%", FormatUtils.unsignedTenth(maxManacost/(chargeTicks/20.0)))
                 .replace("%CHARGE_TIME%", FormatUtils.unsignedHundredth(chargeTicks/20.0))
                 + super.getLoreEntry();
