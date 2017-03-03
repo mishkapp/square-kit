@@ -42,6 +42,7 @@ public class MagicShot extends UseSuffix {
     private double maxDistance = 50;
     private long chargeTicks = 100;
     private double maxDamage = 100.0;
+    private double maxManacost = 50;
 
     private List<ParticleEffect> chargeParticles = new ArrayList<>();
     private Vector3d lastCenter = new Vector3d();
@@ -62,6 +63,9 @@ public class MagicShot extends UseSuffix {
         }
         if(args.length > 4){
             maxDamage = Double.parseDouble(args[4]);
+        }
+        if(args.length > 5){
+            maxManacost = Double.parseDouble(args[5]);
         }
     }
 
@@ -119,6 +123,14 @@ public class MagicShot extends UseSuffix {
                         return;
                     }
                     step.incrementAndGet();
+
+                    double tickManaCost = maxManacost / chargeTicks;
+                    if(getPlayer().getCurrentMana() < tickManaCost){
+                        task.cancel();
+                        shot();
+                        return;
+                    }
+                    getPlayer().setCurrentMana(getPlayer().getCurrentMana() - tickManaCost);
 
                     List<Vector3d> points = new ArrayList<>();
                     Player player = kitPlayer.getMcPlayer();
@@ -241,6 +253,7 @@ public class MagicShot extends UseSuffix {
         return Messages.get("suffix.magic-shot")
                 .replace("%MAX_DAMAGE%", FormatUtils.unsignedRound(maxDamage))
                 .replace("%MAX_DISTANCE%", FormatUtils.unsignedRound(maxDistance))
+                .replace("%CHARGE_MANACOST%", FormatUtils.unsignedTenth(maxManacost/(chargeTicks/20.0)))
                 .replace("%CHARGE_TIME%", FormatUtils.unsignedHundredth(chargeTicks/20.0))
                 + super.getLoreEntry();
     }
