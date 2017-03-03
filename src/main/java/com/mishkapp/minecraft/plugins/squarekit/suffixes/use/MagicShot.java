@@ -54,7 +54,6 @@ public class MagicShot extends UseSuffix {
         super(kitPlayer, itemStack, args);
         realCooldown = cooldown;
         realManacost = manaCost;
-        prepareParticles();
         if(args.length > 2){
             maxDistance = Double.parseDouble(args[2]);
         }
@@ -67,10 +66,11 @@ public class MagicShot extends UseSuffix {
         if(args.length > 5){
             maxManacost = Double.parseDouble(args[5]);
         }
+        prepareParticles();
     }
 
     private void prepareParticles(){
-        for(int i = 0; i < 64; i++){
+        for(int i = 0; i < chargeTicks; i++){
             java.awt.Color hsbColor = java.awt.Color.getHSBColor((((i / 64.0f) * (300.0f / 360.0f))), 1.0f, 1.0f);
             ParticleEffect pe = ParticleEffect.builder()
                     .type(ParticleTypes.REDSTONE_DUST)
