@@ -53,7 +53,7 @@ public class MagicShot extends UseSuffix {
     public MagicShot(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
         super(kitPlayer, itemStack, args);
         realCooldown = cooldown;
-        realManacost = 0;
+        realManacost = manaCost;
         prepareParticles();
         if(args.length > 2){
             maxDistance = Double.parseDouble(args[2]);
