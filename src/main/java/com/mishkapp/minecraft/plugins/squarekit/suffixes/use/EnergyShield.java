@@ -131,7 +131,6 @@ public class EnergyShield extends UseSuffix {
                         task.cancel();
                         return;
                     }
-                    step.incrementAndGet();
 
                     double tickManaCost = maxManacost / chargeTicks;
                     if(getPlayer().getCurrentMana() < tickManaCost){
@@ -141,68 +140,72 @@ public class EnergyShield extends UseSuffix {
                     }
                     getPlayer().setCurrentMana(getPlayer().getCurrentMana() - tickManaCost);
 
-                    List<Vector3d> points = new ArrayList<>();
                     Player player = kitPlayer.getMcPlayer();
                     Vector3d oPos = player.getLocation().getPosition().add(0, 1, 0);
                     Vector3d lookVec = player.getHeadRotation();
-                    Vector3d centralPos = oPos;
-                    lastCenter = centralPos;
+                    lastCenter = oPos;
                     lastLookVec = lookVec;
                     lastOPos = oPos;
-                    lastCharge = step.get();
+                    lastCharge = step.incrementAndGet();
 
-                    kitPlayer.getMagicResistAdds().put(this, (lastCharge/(double)chargeTicks) * maxMRes);
-                    kitPlayer.getPhysicalResistAdds().put(this, (lastCharge/(double)chargeTicks) * maxPRes);
-
-                    if(step.get() % 4 == 0){
-                        player.playSound(SoundTypes.BLOCK_NOTE_SNARE, oPos, 1, (step.get()/4));
-                    }
-
-                    double r = 1;
-                    double d = (step.get() / (double)chargeTicks) * (PI);
-
-                    for(int i = 0; i < 3; i++){
-
-                        List<Vector3d> tempPoints = new ArrayList<>();
-                        int particlesCount = step.get()/10;
-                        for(int j = 0; j < particlesCount; j++){
-                            double offset = (lastCharge/(double)chargeTicks) * (PI * 2);
-                            switch (i){
-                                case 1: {
-                                    offset -= d;
-                                    break;
-                                }
-                                default: {
-                                    offset += d;
-                                }
-                            }
-                            double pos = j * ((PI * 2) / particlesCount);
-                            tempPoints.add(centralPos.add(
-                                    r * sin(pos + offset),
-                                    0,
-                                    r * cos(pos + offset)
-                            ));
-                        }
-
-                        double yRot = lookToRot(lastLookVec).getY();
-
-                        switch (i){
-                            case 1: {
-                                tempPoints = rotatePoints(tempPoints, oPos, new Vector3d(0, yRot, 45));
-                                break;
-                            }
-                            case 2: {
-                                tempPoints = rotatePoints(tempPoints, oPos, new Vector3d(0, yRot, -45));
-                                break;
-                            }
-                        }
-                        tempPoints.forEach(points::add);
-                    }
-
-                    ParticleEffect particle = chargeParticles.get(step.get() - 1);
-                    points.forEach(p -> player.getWorld().spawnParticles(particle, p));
+                    chargeSound();
+                    chargeParticles();
+                    updateStats();
                 })
                 .submit(SquareKit.getInstance().getPlugin());
+    }
+
+    private void chargeSound(){
+        if(lastCharge % 4 == 0){
+            getPlayer().getMcPlayer().playSound(SoundTypes.BLOCK_NOTE_SNARE, lastOPos, 1, (lastCharge/4));
+        }
+    }
+
+    private void chargeParticles(){
+        List<Vector3d> points = new ArrayList<>();
+        double r = 1;
+        double d = (lastCharge / (double)chargeTicks) * (PI);
+
+        for(int i = 0; i < 3; i++){
+
+            List<Vector3d> tempPoints = new ArrayList<>();
+            int particlesCount = lastCharge / 10;
+            for(int j = 0; j < particlesCount; j++){
+                double offset = (lastCharge / (double)chargeTicks) * (PI * 2);
+                switch (i){
+                    case 1: {
+                        offset -= d;
+                        break;
+                    }
+                    default: {
+                        offset += d;
+                    }
+                }
+                double pos = j * ((PI * 2) / particlesCount);
+                tempPoints.add(lastCenter.add(
+                        r * sin(pos + offset),
+                        0,
+                        r * cos(pos + offset)
+                ));
+            }
+
+            double yRot = lookToRot(lastLookVec).getY();
+
+            switch (i){
+                case 1: {
+                    tempPoints = rotatePoints(tempPoints, lastOPos, new Vector3d(0, yRot, 45));
+                    break;
+                }
+                case 2: {
+                    tempPoints = rotatePoints(tempPoints, lastOPos, new Vector3d(0, yRot, -45));
+                    break;
+                }
+            }
+            tempPoints.forEach(points::add);
+        }
+
+        ParticleEffect particle = chargeParticles.get(lastCharge - 1);
+        points.forEach(p -> getPlayer().getMcPlayer().getWorld().spawnParticles(particle, p));
     }
 
     private void explode(){
@@ -212,14 +215,24 @@ public class EnergyShield extends UseSuffix {
             return;
         }
 
-        kitPlayer.getMagicResistAdds().put(this, 0.0);
-        kitPlayer.getPhysicalResistAdds().put(this, 0.0);
+        List<Entity> entities = getAffectedEntities();
 
+        explodeSound();
+        explodeParticles(entities);
+        explodeEffect(entities);
+        updateStats();
+
+        lastCharge = 0;
+    }
+
+    private void explodeSound(){
         Player player = getPlayer().getMcPlayer();
+        player.playSound(SoundTypes.ENTITY_ENDERDRAGON_FIREBALL_EXPLODE, player.getLocation().getPosition(), 1.5);
+    }
 
+    private List<Entity> getAffectedEntities(){
         double distance = (lastCharge/(double)chargeTicks) * maxDistance;
-
-        List<Entity> entities = getPlayer().getMcPlayer()
+        return getPlayer().getMcPlayer()
                 .getNearbyEntities(distance)
                 .stream()
                 .filter(entity -> {
@@ -241,22 +254,16 @@ public class EnergyShield extends UseSuffix {
                     if(intersectionPoint.getFirst().distance(entityPos) > 0.5){
                         return false;
                     }
-
                     return true;
                 })
                 .collect(Collectors.toList());
+    }
 
-        int blindDuration = (int)(((lastCharge/(double)chargeTicks) * maxBlindDuration) * 20);
-        PotionEffect pe = PotionEffect.builder()
-                .potionType(PotionEffectTypes.BLINDNESS)
-                .duration(blindDuration)
-                .amplifier(1)
-                .build();
-
+    private void explodeParticles(List<Entity> entities){
         Random random = new Random();
+        Player player = getPlayer().getMcPlayer();
         ParticleEffect particle = chargeParticles.get(lastCharge - 1);
         entities.forEach(entity -> {
-            PlayerUtils.applyEffects(entity, pe);
             for(int i = 0; i < 16; i++){
                 player.getWorld().spawnParticles(
                         particle,
@@ -270,9 +277,21 @@ public class EnergyShield extends UseSuffix {
                     particle,
                     lastCenter.add(random.nextGaussian() * 2, 2 + random.nextGaussian(), random.nextGaussian() * 2));
         }
+    }
 
-        player.playSound(SoundTypes.ENTITY_ENDERDRAGON_FIREBALL_EXPLODE, player.getLocation().getPosition(), 1.5);
-        lastCharge = 0;
+    private void explodeEffect(List<Entity> entities){
+        int blindDuration = (int)(((lastCharge/(double)chargeTicks) * maxBlindDuration) * 20);
+        PotionEffect pe = PotionEffect.builder()
+                .potionType(PotionEffectTypes.BLINDNESS)
+                .duration(blindDuration)
+                .amplifier(1)
+                .build();
+        entities.forEach(e -> PlayerUtils.applyEffects(e, pe));
+    }
+
+    private void updateStats(){
+        kitPlayer.getMagicResistAdds().put(this, (lastCharge/(double)chargeTicks) * maxMRes);
+        kitPlayer.getPhysicalResistAdds().put(this, (lastCharge/(double)chargeTicks) * maxPRes);
     }
 
     @Override
