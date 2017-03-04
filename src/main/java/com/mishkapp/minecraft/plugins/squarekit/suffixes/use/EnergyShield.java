@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static com.mishkapp.minecraft.plugins.squarekit.utils.MathUtils.lookToRot;
-import static com.mishkapp.minecraft.plugins.squarekit.utils.MathUtils.rotatePoints;
+import static com.mishkapp.minecraft.plugins.squarekit.utils.MathUtils.rotatePointsInv;
 import static java.lang.Math.PI;
 import static java.lang.Math.cos;
 import static java.lang.StrictMath.sin;
@@ -193,11 +193,11 @@ public class EnergyShield extends UseSuffix {
 
             switch (i){
                 case 1: {
-                    tempPoints = rotatePoints(tempPoints, lastOPos, new Vector3d(0, yRot, 45));
+                    tempPoints = rotatePointsInv(tempPoints, lastOPos, new Vector3d(0, yRot, 45));
                     break;
                 }
                 case 2: {
-                    tempPoints = rotatePoints(tempPoints, lastOPos, new Vector3d(0, yRot, -45));
+                    tempPoints = rotatePointsInv(tempPoints, lastOPos, new Vector3d(0, yRot, -45));
                     break;
                 }
             }

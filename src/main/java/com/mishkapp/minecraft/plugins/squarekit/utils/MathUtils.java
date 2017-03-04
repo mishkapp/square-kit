@@ -46,6 +46,24 @@ public class MathUtils {
         return result;
     }
 
+    public static Vector3d rotatePointInv(Vector3d point, Vector3d oPos, Vector3d rot){
+        Quaterniond xQ = Quaterniond.fromAngleDegAxis(rot.getX(), new Vector3d(1, 0, 0));
+        Quaterniond yQ = Quaterniond.fromAngleDegAxis(rot.getY(), new Vector3d(0, 1, 0));
+        Quaterniond zQ = Quaterniond.fromAngleDegAxis(rot.getZ(), new Vector3d(0, 0, 1));
+
+        point = point.sub(oPos);
+        point = xQ.rotate(yQ.rotate(zQ.rotate(point)));
+        point = point.add(oPos);
+
+        return point;
+    }
+
+    public static List<Vector3d> rotatePointsInv(List<Vector3d> points, Vector3d oPos, Vector3d rot){
+        List<Vector3d> result = new ArrayList<>();
+        points.forEach(p -> result.add(rotatePointInv(p, oPos, rot)));
+        return result;
+    }
+
     public static Vector3d lookToRot(Vector3d look){
         return new Vector3d(
                 look.getX(),
