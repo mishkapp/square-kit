@@ -40,7 +40,7 @@ public class MagicShot extends UseSuffix {
     private final double realCooldown;
     private final double realManacost;
     private double maxDistance = 50;
-    private long chargeTicks = 100;
+    private long maxCharge = 100;
     private double maxDamage = 100.0;
     private double maxManacost = 50;
 
@@ -58,7 +58,7 @@ public class MagicShot extends UseSuffix {
             maxDistance = Double.parseDouble(args[2]);
         }
         if(args.length > 3){
-            chargeTicks = Long.parseLong(args[3]);
+            maxCharge = Long.parseLong(args[3]);
         }
         if(args.length > 4){
             maxDamage = Double.parseDouble(args[4]);
@@ -70,8 +70,8 @@ public class MagicShot extends UseSuffix {
     }
 
     private void prepareParticles(){
-        for(int i = 0; i < chargeTicks; i++){
-            java.awt.Color hsbColor = java.awt.Color.getHSBColor((((i / (float)chargeTicks) * (300.0f / 360.0f))), 1.0f, 1.0f);
+        for(int i = 0; i < maxCharge; i++){
+            java.awt.Color hsbColor = java.awt.Color.getHSBColor((((i / (float) maxCharge) * (300.0f / 360.0f))), 1.0f, 1.0f);
             ParticleEffect pe = ParticleEffect.builder()
                     .type(ParticleTypes.REDSTONE_DUST)
                     .option(ParticleOptions.COLOR, Color.ofRgb(hsbColor.getRed(), hsbColor.getGreen(), hsbColor.getBlue()))
@@ -116,13 +116,13 @@ public class MagicShot extends UseSuffix {
                         task.cancel();
                         return;
                     }
-                    if(step.get() >= chargeTicks){
+                    if(step.get() >= maxCharge){
                         isCharging = false;
                         shot();
                         task.cancel();
                         return;
                     }
-                    double tickManaCost = maxManacost / chargeTicks;
+                    double tickManaCost = maxManacost / maxCharge;
                     if(getPlayer().getCurrentMana() < tickManaCost){
                         task.cancel();
                         shot();
@@ -130,9 +130,6 @@ public class MagicShot extends UseSuffix {
                     }
                     getPlayer().setCurrentMana(getPlayer().getCurrentMana() - tickManaCost);
 
-                    step.incrementAndGet();
-
-                    List<Vector3d> points = new ArrayList<>();
                     Player player = kitPlayer.getMcPlayer();
                     Vector3d oPos = player.getLocation().getPosition().add(0, 1.6, 0);
                     Vector3d lookVec = player.getHeadRotation();
@@ -140,28 +137,36 @@ public class MagicShot extends UseSuffix {
                     lastCenter = centralPos;
                     lastLookVec = lookVec;
                     lastOPos = oPos;
-                    lastCharge = step.get();
+                    lastCharge = step.incrementAndGet();
 
-                    if(step.get() % 4 == 0){
-                        player.playSound(SoundTypes.BLOCK_NOTE_SNARE, oPos, 1, (step.get()/4));
-                    }
-
-                    double r = ((chargeTicks - step.get()) / (double)chargeTicks) + 0.25;
-                    double d = (step.get() / (double)chargeTicks) * (PI);
-                    for (double i = 0; i < PI * 2; i += PI/4){
-                        points.add(centralPos.add(
-                                r * sin(i + d),
-                                r * cos(i + d),
-                                0
-                        ));
-                    }
-
-                    points = rotatePoints(points, oPos, lookToRot(lookVec));
-
-                    ParticleEffect particle = chargeParticles.get(step.get() - 1);
-                    points.forEach(p -> player.getWorld().spawnParticles(particle, p));
+                    chargeSound();
+                    chargeParticles();
                 })
                 .submit(SquareKit.getInstance().getPlugin());
+    }
+
+    private void chargeSound(){
+        if(lastCharge % 4 == 0){
+            getPlayer().getMcPlayer().playSound(SoundTypes.BLOCK_NOTE_SNARE, lastOPos, 1, (lastCharge/4));
+        }
+    }
+
+    private void chargeParticles(){
+        List<Vector3d> points = new ArrayList<>();
+        double r = ((maxCharge - lastCharge) / (double) maxCharge) + 0.25;
+        double d = (lastCharge / (double) maxCharge) * (PI);
+        for (double i = 0; i < PI * 2; i += PI/4){
+            points.add(lastCenter.add(
+                    r * sin(i + d),
+                    r * cos(i + d),
+                    0
+            ));
+        }
+
+        points = rotatePoints(points, lastOPos, lookToRot(lastLookVec));
+
+        ParticleEffect particle = chargeParticles.get(lastCharge - 1);
+        points.forEach(p -> getPlayer().getMcPlayer().getWorld().spawnParticles(particle, p));
     }
 
     private void shot(){
@@ -170,18 +175,28 @@ public class MagicShot extends UseSuffix {
         if(lastCharge == 0){
             return;
         }
-        final Vector3d startPoint = rotatePoint(lastCenter, lastOPos, lookToRot(lastLookVec));
+        Entity target = getTarget();
 
-        Player player = getPlayer().getMcPlayer();
+        double distance = getDistance();
+        if(target != null){
+            Vector3d headshotPoint = isHeadshot(target);
+            boolean headshot = headshotPoint != null;
+            if(headshot){
+                headshotSound();
+            }
+            dealDamage(target, headshot);
 
-        Vector3d endPoint = EntityUtils.getBlockRayHitPoint(player, maxDistance);
+            distance = headshotPoint.distance(getStartPoint());
+        }
 
-        Vector3d direction = endPoint.sub(startPoint).normalize();
+        shotSound();
+        shotParticles(distance);
+        lastCharge = 0;
+    }
 
-        double distance = startPoint.distance(endPoint);
-
-        Entity target = getPlayer().getMcPlayer()
-                .getNearbyEntities(distance + 1)
+    private Entity getTarget(){
+        return getPlayer().getMcPlayer()
+                .getNearbyEntities(getDistance() + 1)
                 .stream()
                 .filter(entity -> {
                     if(!(entity instanceof Living)){
@@ -193,39 +208,52 @@ public class MagicShot extends UseSuffix {
                     }
 
                     Tuple<Vector3d, Vector3d> intersectionPoint = entity.getBoundingBox().get()
-                            .intersects(startPoint, direction).orElse(null);
+                            .intersects(getStartPoint(), getDirection()).orElse(null);
                     if(intersectionPoint == null){
                         return false;
                     }
 
                     return true;
                 })
-                .sorted(Comparator.comparingDouble(e -> e.getLocation().getPosition().distance(player.getLocation().getPosition())))
+                .sorted(Comparator.comparingDouble(e -> e.getLocation().getPosition().distance(getPlayer().getMcPlayer().getLocation().getPosition())))
                 .findFirst().orElse(null);
+    }
 
-        if(target != null){
-            boolean headshot = false;
-            AABB aabb = target.getBoundingBox().get();
-            if(target instanceof Humanoid){
-                AABB headAABB = new AABB(
-                        aabb.getMin().getX(), aabb.getMin().getY() + 1.3, aabb.getMin().getZ(),
-                        aabb.getMax().getX(), aabb.getMax().getY(), aabb.getMax().getZ()
-                        );
-                if(headAABB.intersects(startPoint, direction).orElse(null) != null){
-                    headshot = true;
-                }
+    private Vector3d isHeadshot(Entity target){
+        Vector3d result = null;
+        AABB aabb = target.getBoundingBox().get();
+        if(target instanceof Humanoid){
+            AABB headAABB = new AABB(
+                    aabb.getMin().getX(), aabb.getMin().getY() + 1.3, aabb.getMin().getZ(),
+                    aabb.getMax().getX(), aabb.getMax().getY(), aabb.getMax().getZ()
+            );
+            Tuple<Vector3d, Vector3d> intersectionPoint = headAABB.intersects(getStartPoint(), getDirection()).orElse(null);
+            if(intersectionPoint != null){
+                result = intersectionPoint.getFirst();
             }
-
-            if(headshot){
-                player.playSound(SoundTypes.BLOCK_NOTE_HARP, player.getLocation().getPosition(), 1);
-            }
-            double damage = (lastCharge/chargeTicks) * maxDamage;
-            target.damage(damage, DamageUtils.pureDamage(player));
-            distance = aabb.intersects(startPoint, direction).get().getFirst().distance(startPoint);
         }
+        return result;
+    }
 
+    private void headshotSound(){
+        Player player = getPlayer().getMcPlayer();
+        player.playSound(SoundTypes.BLOCK_NOTE_HARP, player.getLocation().getPosition(), 1);
+    }
+
+    private void dealDamage(Entity target, boolean headshot){
+        double damage = (lastCharge/ maxCharge) * maxDamage;
+        if(headshot){
+            damage *= 2;
+        }
+        target.damage(damage, DamageUtils.pureDamage(getPlayer().getMcPlayer()));
+    }
+
+    private void shotSound(){
+        Player player = getPlayer().getMcPlayer();
         player.playSound(SoundTypes.ENTITY_ELDER_GUARDIAN_CURSE, player.getLocation().getPosition(), 1);
+    }
 
+    private void shotParticles(double distance){
         for(double i = 0; i < distance; i += 0.1){
             final double r = i;
             Vector3d point = lastCenter.add(0, 0, r);
@@ -243,7 +271,22 @@ public class MagicShot extends UseSuffix {
                     chargeParticles.get(lastCharge - 1),
                     offPoint);
         }
-        lastCharge = 0;
+    }
+
+    private Vector3d getStartPoint(){
+        return rotatePoint(lastCenter, lastOPos, lookToRot(lastLookVec));
+    }
+
+    private Vector3d getEndPoint(){
+        return EntityUtils.getBlockRayHitPoint(getPlayer().getMcPlayer(), maxDistance);
+    }
+
+    private Vector3d getDirection(){
+        return getEndPoint().sub(getStartPoint()).normalize();
+    }
+
+    private double getDistance(){
+        return getStartPoint().distance(getEndPoint());
     }
 
     @Override
@@ -251,8 +294,8 @@ public class MagicShot extends UseSuffix {
         return Messages.get("suffix.magic-shot")
                 .replace("%MAX_DAMAGE%", FormatUtils.unsignedRound(maxDamage))
                 .replace("%MAX_DISTANCE%", FormatUtils.unsignedRound(maxDistance))
-                .replace("%CHARGE_MANACOST%", FormatUtils.unsignedTenth(maxManacost/(chargeTicks/20.0)))
-                .replace("%CHARGE_TIME%", FormatUtils.unsignedHundredth(chargeTicks/20.0))
+                .replace("%CHARGE_MANACOST%", FormatUtils.unsignedTenth(maxManacost/(maxCharge /20.0)))
+                .replace("%CHARGE_TIME%", FormatUtils.unsignedHundredth(maxCharge /20.0))
                 + super.getLoreEntry();
     }
 }
