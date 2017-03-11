@@ -385,7 +385,7 @@ public class KitPlayer {
         money = money * getMoneyMultiplier();
         this.money += money;
         if(!silent){
-            getMcPlayer().sendMessage(_text(Messages.get("money-gained").replace("%MONEY%", FormatUtils.unsignedRound(money))));
+            getMcPlayer().sendMessage(_text(Messages.get("alert.money-gained").replace("%MONEY%", FormatUtils.unsignedRound(money))));
         }
     }
 
@@ -395,7 +395,7 @@ public class KitPlayer {
         }
         this.money = max(0.0, this.money - money);
         if(!silent){
-            getMcPlayer().sendMessage(_text(Messages.get("money-lost").replace("%MONEY%", FormatUtils.unsignedRound(money))));
+            getMcPlayer().sendMessage(_text(Messages.get("alert.money-lost").replace("%MONEY%", FormatUtils.unsignedRound(money))));
         }
     }
 
@@ -413,7 +413,7 @@ public class KitPlayer {
         if(exp <= 0){
             return;
         }
-        getMcPlayer().sendMessage(_text(Messages.get("exp-gained").replace("%EXP%", String.valueOf(exp))));
+        getMcPlayer().sendMessage(_text(Messages.get("alert.exp-gained").replace("%EXP%", String.valueOf(exp))));
     }
 
     public void subtractExp(int exp){
@@ -433,7 +433,7 @@ public class KitPlayer {
         if(exp <= 0){
             return;
         }
-        getMcPlayer().sendMessage(_text(Messages.get("exp-lost").replace("%EXP%", String.valueOf(exp))));
+        getMcPlayer().sendMessage(_text(Messages.get("alert.exp-lost").replace("%EXP%", String.valueOf(exp))));
     }
 
     public boolean delvl(){
@@ -443,7 +443,7 @@ public class KitPlayer {
         level -= 1;
 
         getMcPlayer().playSound(SoundTypes.ITEM_SHIELD_BREAK, getMcPlayer().getLocation().getPosition(), 1);
-        getMcPlayer().sendMessage(_text(Messages.get("delvl").replace("%LVL%", String.valueOf(level))));
+        getMcPlayer().sendMessage(_text(Messages.get("alert.delvl").replace("%LVL%", String.valueOf(level))));
         return true;
     }
 
@@ -454,7 +454,7 @@ public class KitPlayer {
         level += 1;
 
         getMcPlayer().playSound(SoundTypes.ENTITY_PLAYER_LEVELUP, getMcPlayer().getLocation().getPosition(), 1);
-        getMcPlayer().sendMessage(_text(Messages.get("lvlup").replace("%LVL%", String.valueOf(level))));
+        getMcPlayer().sendMessage(_text(Messages.get("alert.lvlup").replace("%LVL%", String.valueOf(level))));
         return true;
     }
 

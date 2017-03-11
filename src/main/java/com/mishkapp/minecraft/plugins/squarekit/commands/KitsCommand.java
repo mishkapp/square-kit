@@ -43,7 +43,7 @@ public class KitsCommand implements CommandExecutor {
             Player player = (Player)src;
             KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player);
             if(!kitPlayer.isInSafeZone()){
-                player.sendMessage(_text(Messages.get("kit-bad-area")));
+                player.sendMessage(_text(Messages.get("kit.bad-area")));
                 return CommandResult.empty();
             }
 
@@ -113,22 +113,22 @@ public class KitsCommand implements CommandExecutor {
         }
 
         if(kitPlayer.getMoney() < kit.getPrice()){
-            player.sendMessage(_text(Messages.get("kit-too-expensive").replace("%KIT%", kit.getName())));
+            player.sendMessage(_text(Messages.get("kit.too-expensive").replace("%KIT%", kit.getName())));
             return;
         }
 
         if(kitPlayer.getLevel() < kit.getMinLevel()){
-            player.sendMessage(_text(Messages.get("kit-level-too-small").replace("%KIT%", kit.getName())));
+            player.sendMessage(_text(Messages.get("kit.level-too-small").replace("%KIT%", kit.getName())));
             return;
         }
 
         if(kitPlayer.getCurrentKit().equals(kit.getId())){
-            player.sendMessage(_text(Messages.get("kit-already-picked").replace("%KIT%", kit.getName())));
+            player.sendMessage(_text(Messages.get("kit.already-picked").replace("%KIT%", kit.getName())));
             return;
         }
 
         kitPlayer.subtractMoney(kit.getPrice(), true);
         kit.applyToPlayer(kitPlayer);
-        player.sendMessage(_text(Messages.get("kit-purchased").replace("%KIT%", kit.getName())));
+        player.sendMessage(_text(Messages.get("kit.purchased").replace("%KIT%", kit.getName())));
     }
 }
