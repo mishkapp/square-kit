@@ -115,13 +115,13 @@ public class Obesity extends TargetedSuffix {
             Sponge.getScheduler().createTaskBuilder()
                     .delayTicks((long) i)
                     .execute(t -> {
-                        double x0 = target.getBoundingBox().get().getCenter().getX();
-                        double y0 = target.getBoundingBox().get().getCenter().getY();
-                        double z0 = target.getBoundingBox().get().getCenter().getZ();
+                        double x0 = kitPlayer.getMcPlayer().getBoundingBox().get().getCenter().getX();
+                        double y0 = kitPlayer.getMcPlayer().getBoundingBox().get().getCenter().getY();
+                        double z0 = kitPlayer.getMcPlayer().getBoundingBox().get().getCenter().getZ();
 
-                        double x = kitPlayer.getMcPlayer().getBoundingBox().get().getCenter().getX() - x0;
-                        double y = kitPlayer.getMcPlayer().getBoundingBox().get().getCenter().getY() - y0;
-                        double z = kitPlayer.getMcPlayer().getBoundingBox().get().getCenter().getZ() - z0;
+                        double x = target.getBoundingBox().get().getCenter().getX() - x0;
+                        double y = target.getBoundingBox().get().getCenter().getY() - y0;
+                        double z = target.getBoundingBox().get().getCenter().getZ() - z0;
 
                         double r = Math.sqrt((x * x) + (y * y) + (z * z));
 
@@ -138,7 +138,7 @@ public class Obesity extends TargetedSuffix {
                             phi = phi * (-1);
                         }
 
-                        Vector3d point = target.getLocation().getPosition().add(
+                        Vector3d point = kitPlayer.getMcPlayer().getLocation().getPosition().add(
                                 p * -1 * sin(toRadians(phi)),
                                 p * tan(toRadians(-1 * theta)),
                                 p * cos(toRadians(phi))
@@ -146,7 +146,7 @@ public class Obesity extends TargetedSuffix {
 
                         Item item = createItem(point);
 
-                        target.getWorld().spawnEntity(
+                        kitPlayer.getMcPlayer().getWorld().spawnEntity(
                                 item,
                                 Cause.builder()
                                         .owner(SquareKit.getInstance())

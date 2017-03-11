@@ -94,20 +94,20 @@ public class Dehydration extends TargetedSuffix {
 
         addEffect(target);
     }
-
+    
     private void addEffect(Entity target){
         for(double i = 0; i < distance; i += 0.5){
             final double p = i;
             Sponge.getScheduler().createTaskBuilder()
                     .delayTicks((long) i)
                     .execute(t -> {
-                        double x0 = kitPlayer.getMcPlayer().getBoundingBox().get().getCenter().getX();
-                        double y0 = kitPlayer.getMcPlayer().getBoundingBox().get().getCenter().getY();
-                        double z0 = kitPlayer.getMcPlayer().getBoundingBox().get().getCenter().getZ();
+                        double x0 = target.getBoundingBox().get().getCenter().getX();
+                        double y0 = target.getBoundingBox().get().getCenter().getY();
+                        double z0 = target.getBoundingBox().get().getCenter().getZ();
 
-                        double x = target.getBoundingBox().get().getCenter().getX() - x0;
-                        double y = target.getBoundingBox().get().getCenter().getY() - y0;
-                        double z = target.getBoundingBox().get().getCenter().getZ() - z0;
+                        double x = kitPlayer.getMcPlayer().getBoundingBox().get().getCenter().getX() - x0;
+                        double y = kitPlayer.getMcPlayer().getBoundingBox().get().getCenter().getY() - y0;
+                        double z = kitPlayer.getMcPlayer().getBoundingBox().get().getCenter().getZ() - z0;
 
                         double r = Math.sqrt((x * x) + (y * y) + (z * z));
 
@@ -124,7 +124,7 @@ public class Dehydration extends TargetedSuffix {
                             phi = phi * (-1);
                         }
 
-                        Vector3d point = kitPlayer.getMcPlayer().getLocation().getPosition().add(
+                        Vector3d point = target.getLocation().getPosition().add(
                                 p * -1 * sin(toRadians(phi)),
                                 p * tan(toRadians(-1 * theta)),
                                 p * cos(toRadians(phi))
@@ -132,7 +132,7 @@ public class Dehydration extends TargetedSuffix {
 
                         Item item = createItem(point);
 
-                        kitPlayer.getMcPlayer().getWorld().spawnEntity(
+                        target.getWorld().spawnEntity(
                                 item,
                                 Cause.builder()
                                         .owner(SquareKit.getInstance())
