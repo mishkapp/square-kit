@@ -308,7 +308,7 @@ public class EnergyBeam extends UseSuffix {
 
     @Override
     public String getLoreEntry() {
-        return Messages.get("suffix.magic-shot")
+        return Messages.get("suffix.energy-beam")
                 .replace("%MAX_DAMAGE%", FormatUtils.unsignedRound(maxDamage))
                 .replace("%MAX_DISTANCE%", FormatUtils.unsignedRound(maxDistance))
                 .replace("%CHARGE_MANACOST%", FormatUtils.unsignedTenth(maxManacost/(maxCharge /20.0)))
