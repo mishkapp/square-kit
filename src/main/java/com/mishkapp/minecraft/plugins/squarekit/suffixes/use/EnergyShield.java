@@ -300,7 +300,6 @@ public class EnergyShield extends UseSuffix {
     @Override
     public String getLoreEntry() {
         return Messages.get("suffix.energy-shield")
-                .replace("%MAX_DAMAGE%", FormatUtils.unsignedRound(maxDistance))
                 .replace("%MAX_DISTANCE%", FormatUtils.unsignedRound(maxDistance))
                 .replace("%MAX_BLIND_DURATION%", FormatUtils.unsignedRound(maxBlindDuration))
                 .replace("%MAX_PRES%", FormatUtils.unsignedRound(maxPRes * 100))
