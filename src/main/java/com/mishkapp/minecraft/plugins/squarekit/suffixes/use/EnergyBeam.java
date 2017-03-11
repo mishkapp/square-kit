@@ -2,6 +2,7 @@ package com.mishkapp.minecraft.plugins.squarekit.suffixes.use;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.mishkapp.minecraft.plugins.squarekit.Messages;
+import com.mishkapp.minecraft.plugins.squarekit.PlayersRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
 import com.mishkapp.minecraft.plugins.squarekit.player.KitPlayer;
 import com.mishkapp.minecraft.plugins.squarekit.utils.DamageUtils;
@@ -181,11 +182,20 @@ public class EnergyBeam extends UseSuffix {
         Entity target = getTarget();
 
         double distance = getDistance();
+        double damage = (lastCharge/ maxCharge) * maxDamage;
         if(target != null){
             Vector3d headshotPoint = isHeadshot(target);
             boolean headshot = headshotPoint != null;
             if(headshot){
+                damage *= 2;
                 headshotSound();
+                if(target instanceof Player){
+                    KitPlayer targetPlayer = PlayersRegistry.getInstance().getPlayer(target.getUniqueId());
+                    double targetHp = targetPlayer.getHealth();
+                    if(damage > targetHp){
+                        kitPlayer.addMana((lastCharge/maxCharge) * maxManacost);
+                    }
+                }
             }
             dealDamage(target, headshot);
 
@@ -241,6 +251,10 @@ public class EnergyBeam extends UseSuffix {
     private void headshotSound(){
         Player player = getPlayer().getMcPlayer();
         player.playSound(SoundTypes.BLOCK_NOTE_HARP, player.getLocation().getPosition(), 1);
+    }
+
+    private double getDamage(){
+        return (lastCharge/ maxCharge) * maxDamage;
     }
 
     private void dealDamage(Entity target, boolean headshot){
