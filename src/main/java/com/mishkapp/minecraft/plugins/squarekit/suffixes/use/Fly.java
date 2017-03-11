@@ -98,6 +98,7 @@ public class Fly extends UseSuffix {
     private void jump() {
         kitPlayer.getMcPlayer().setVelocity(kitPlayer.getMcPlayer().getVelocity().add(0, jumpHeight, 0));
         kitPlayer.getMcPlayer().playSound(SoundTypes.ITEM_ELYTRA_FLYING, kitPlayer.getMcPlayer().getLocation().getPosition(), 1);
+        isFlying = true;
     }
 
     private boolean isEnoughSpace() {
