@@ -48,6 +48,8 @@ public abstract class UseSuffix extends SpellSuffix{
 
             kitPlayer.setCurrentMana(currentMana - manaCost);
 
+            preUse();
+
             onUse();
         }
     }
@@ -55,6 +57,8 @@ public abstract class UseSuffix extends SpellSuffix{
     protected boolean predicate(){
         return true;
     }
+
+    protected void preUse(){};
 
     protected abstract void onUse();
 }

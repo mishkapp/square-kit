@@ -85,13 +85,20 @@ public class MagicShot extends UseSuffix {
     protected boolean predicate() {
         if(isCharging){
             manaCost = 0;
-            cooldown = realCooldown;
         } else {
-            cooldown = 0;
             manaCost = realManacost;
         }
 
         return true;
+    }
+
+    @Override
+    protected void preUse(){
+        if(isCharging){
+            cooldown = realCooldown;
+        } else {
+            cooldown = 0;
+        }
     }
 
     @Override
@@ -104,10 +111,7 @@ public class MagicShot extends UseSuffix {
     }
 
     private void charge(){
-        cooldown = 0;
-        manaCost = 0;
         isCharging = true;
-        lastUse = (long) (System.currentTimeMillis() + (cooldown * 1000));
         AtomicInteger step = new AtomicInteger(0);
         Sponge.getScheduler().createTaskBuilder()
                 .intervalTicks(1)
@@ -171,7 +175,6 @@ public class MagicShot extends UseSuffix {
 
     private void shot(){
         isCharging = false;
-        lastUse = System.currentTimeMillis();
         if(lastCharge == 0){
             return;
         }
