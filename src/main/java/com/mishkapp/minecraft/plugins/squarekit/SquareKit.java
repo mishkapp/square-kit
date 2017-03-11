@@ -125,7 +125,10 @@ public class SquareKit{
         getPlayersRegistry().updateAllPlayers();
 
         Sponge.getScheduler().createTaskBuilder()
-                .execute(r -> initialized = true)
+                .execute(r -> {
+                    initialized = true;
+                    Sponge.getCommandManager().process(Sponge.getServer().getConsole(), "gamerule naturalRegeneration false");
+                })
                 .async()
                 .delay(3, TimeUnit.SECONDS)
                 .submit(getPlugin());
