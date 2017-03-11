@@ -607,7 +607,7 @@ public class SquareKit{
         registry.registerSuffix("3O", Disguise.class);
         registry.registerSuffix("3P", LivingMine.class);
         registry.registerSuffix("3Q", Cloak.class);
-        registry.registerSuffix("3R", MagicShot.class);
+        registry.registerSuffix("3R", EnergyBeam.class);
         registry.registerSuffix("3S", EnergyShield.class);
 
         registry.registerSuffix("4A", Fly.class);

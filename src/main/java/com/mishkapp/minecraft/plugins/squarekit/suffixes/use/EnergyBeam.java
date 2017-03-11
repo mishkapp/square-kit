@@ -34,7 +34,7 @@ import static java.lang.StrictMath.sin;
 /**
  * Created by mishkapp on 03.02.17.
  */
-public class MagicShot extends UseSuffix {
+public class EnergyBeam extends UseSuffix {
 
     private boolean isCharging = false;
     private final double realCooldown;
@@ -50,7 +50,7 @@ public class MagicShot extends UseSuffix {
     private Vector3d lastOPos = new Vector3d();
     private int lastCharge = 0;
 
-    public MagicShot(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
+    public EnergyBeam(KitPlayer kitPlayer, ItemStack itemStack, String[] args) {
         super(kitPlayer, itemStack, args);
         realCooldown = cooldown;
         realManacost = manaCost;
