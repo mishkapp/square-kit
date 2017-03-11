@@ -28,11 +28,31 @@ public class ItemUtils {
         setLore(i, list);
     }
 
+    public static void clearKitLore(ItemStack i){
+        List<Text> list;
+        if(i.get(Keys.ITEM_LORE).isPresent()){
+            list = i.get(Keys.ITEM_LORE).get();
+        } else {
+            list = new ArrayList<>();
+        }
+        if(list.isEmpty()){
+            return;
+        } else {
+            setLore(i, list.get(0));
+        }
+    }
+
     public static void setLore(ItemStack i, String lore){
         List<Text> list = new ArrayList<>();
         for(String s : lore.split("\n")){
             list.add(TextSerializers.FORMATTING_CODE.deserialize(s));
         }
+        setLore(i, list);
+    }
+
+    public static void setLore(ItemStack i, Text lore){
+        List<Text> list = new ArrayList<>();
+        list.add(lore);
         setLore(i, list);
     }
 

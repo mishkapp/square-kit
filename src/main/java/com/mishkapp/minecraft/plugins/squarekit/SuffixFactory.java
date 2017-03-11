@@ -46,6 +46,7 @@ public class SuffixFactory {
         String[] rawCodes = itemCode.split(";");
         KitItem result = new KitItem(kitPlayer, i, itemCode);
         List<Suffix> suffices = new ArrayList<>();
+        ItemUtils.clearKitLore(i);
 
         for(String c : rawCodes){
             int id = Utils.getBase64Value(c.substring(0, 2));
