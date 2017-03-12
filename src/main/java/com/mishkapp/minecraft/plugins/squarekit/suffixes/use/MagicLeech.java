@@ -35,9 +35,9 @@ public class MagicLeech extends TargetedProjectileSuffix{
 
         cooldown = 15;
         manaCost = 0;
-        hSpeed = 0.5;
-        vSpeed = 0.5;
-        liveTime = 5 * 20;
+        hSpeed = 0.75;
+        vSpeed = 0.75;
+        liveTime = 3 * 20;
     }
 
     @Override
