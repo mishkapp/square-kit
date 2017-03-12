@@ -180,7 +180,7 @@ public class Tracing extends TargetedSuffix {
                 2 * cos(toRadians(phi))
         );
 
-        thrustVec = thrustVec.add(0, -0.35, 0);
+        thrustVec = thrustVec.add(0, -0.15, 0);
 
         player.setVelocity(thrustVec);
     }
