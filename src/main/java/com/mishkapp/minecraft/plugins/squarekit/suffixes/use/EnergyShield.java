@@ -131,6 +131,7 @@ public class EnergyShield extends UseSuffix {
                     }
                     if(step.get() >= chargeTicks){
                         isCharging = false;
+                        cooldown = realCooldown;
                         explode();
                         task.cancel();
                         return;

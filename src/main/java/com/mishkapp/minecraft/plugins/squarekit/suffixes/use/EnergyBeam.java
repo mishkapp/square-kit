@@ -123,6 +123,7 @@ public class EnergyBeam extends UseSuffix {
                     }
                     if(step.get() >= maxCharge){
                         isCharging = false;
+                        cooldown = realCooldown;
                         shot();
                         task.cancel();
                         return;
