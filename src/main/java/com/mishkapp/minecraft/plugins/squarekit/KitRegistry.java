@@ -48,4 +48,9 @@ public class KitRegistry {
             registerKit(kitDoc.getString("id"), Kit.fromDocument(kitDoc));
         }
     }
+
+    public Kit getDefaultKit() {
+        //TODO: need to be generalized
+        return getKit("recruit");
+    }
 }

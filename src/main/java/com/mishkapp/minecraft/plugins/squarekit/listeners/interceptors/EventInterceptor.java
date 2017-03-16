@@ -1,5 +1,6 @@
 package com.mishkapp.minecraft.plugins.squarekit.listeners.interceptors;
 
+import com.mishkapp.minecraft.plugins.squarekit.Kit;
 import com.mishkapp.minecraft.plugins.squarekit.KitRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.PlayersRegistry;
 import com.mishkapp.minecraft.plugins.squarekit.SquareKit;
@@ -342,8 +343,11 @@ public class EventInterceptor {
         event.setMessageCancelled(true);
         PlayersRegistry.getInstance().initPlayer(player);
         KitPlayer kitPlayer = PlayersRegistry.getInstance().getPlayer(player);
-        String kitId = kitPlayer.getCurrentKit().getId();
-        KitRegistry.getInstance().getKit(kitId).applyToPlayer(kitPlayer);
+        Kit playerKit = kitPlayer.getCurrentKit();
+        if(playerKit == null){
+            playerKit = KitRegistry.getInstance().getDefaultKit();
+        }
+        playerKit.applyToPlayer(kitPlayer);
     }
 
     @Listener
