@@ -183,7 +183,7 @@ public class EnergyBeam extends UseSuffix {
         Entity target = getTarget();
 
         double distance = getDistance();
-        double damage = (lastCharge/ maxCharge) * maxDamage;
+        double damage = (lastCharge/ (double)maxCharge) * maxDamage;
         if(target != null){
             Vector3d headshotPoint = isHeadshot(target);
             boolean headshot = headshotPoint != null;
